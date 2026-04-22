@@ -1,0 +1,28 @@
+{
+  "assembly_bbox_mm": {
+    "x": 465,
+    "y": 220,
+    "z": 340
+  },
+  "part_dimensions": [
+    {
+      "id": "pt-engine_block",
+      "label": "Test-engine_block",
+      "dimensions_mm": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 465,
+        "y": 220,
+        "z": 340
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

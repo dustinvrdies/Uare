@@ -1,0 +1,53 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:49:26.542Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-engine_block"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "pt-engine_block",
+      "label": "Test-engine_block",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 465,
+        "y": 220,
+        "z": 340
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 68
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 465,
+    "y": 220,
+    "z": 340
+  }
+}

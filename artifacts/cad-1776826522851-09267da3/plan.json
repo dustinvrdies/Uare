@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "test-exhaust_manifold",
+      "name": "Part-exhaust_manifold",
+      "type": "exhaust_manifold",
+      "dims": {
+        "width": 340,
+        "height": 110,
+        "depth": 120,
+        "runners": 4,
+        "runner_diameter": 32
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T01:34:49.994Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "ch-1",
+      "name": "V4Head",
+      "kind": "mechanical",
+      "shape": "cylinder_head",
+      "dimensions_mm": {
+        "width": 390,
+        "height": 90,
+        "depth": 225,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 390,
+        "y": 225,
+        "z": 90
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 18
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "ch-1"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 390,
+    "y": 225,
+    "z": 90
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

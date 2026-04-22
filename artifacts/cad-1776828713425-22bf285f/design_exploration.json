@@ -1,0 +1,128 @@
+{
+  "generated_at": "2026-04-22T03:31:53.460Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "name": "Main control PCB",
+      "domains": [
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "name": "Microcontroller module",
+      "domains": [
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "name": "Power regulator",
+      "domains": [
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "name": "Sensor module",
+      "domains": [
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "name": "I/O connector",
+      "domains": [
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "part-a958758b37ee",
+      "name": "Main bracket body",
+      "domains": [
+        "general"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "part-8b7f47357478",
+      "name": "Mounting plate",
+      "domains": [
+        "general"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-oil_pump",
+    "name": "Regression-oil_pump",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

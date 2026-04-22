@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T11:38:32.561Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "part-nut_hex",
+      "name": "Regression-nut_hex",
+      "kind": "mechanical",
+      "shape": "nut_hex",
+      "dimensions_mm": {
+        "across_flats": 13,
+        "thickness": 8,
+        "thread_diameter": 8,
+        "x": 50,
+        "y": 50,
+        "z": 30
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      },
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "plasma"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#8f9399",
+        "finish": "passivated",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "plasma"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": true,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": true,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-nut_hex"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 50,
+    "y": 50,
+    "z": 30
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  },
+  "engineering_domains": [
+    "plasma"
+  ]
+}

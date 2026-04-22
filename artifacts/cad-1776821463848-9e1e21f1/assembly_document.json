@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T01:31:03.848Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "eb-1",
+      "name": "V4Block",
+      "kind": "mechanical",
+      "shape": "engine_block",
+      "dimensions_mm": {
+        "width": 480,
+        "height": 360,
+        "depth": 230,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 480,
+        "y": 230,
+        "z": 360
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 72
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "eb-1"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 480,
+    "y": 230,
+    "z": 360
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

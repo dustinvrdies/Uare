@@ -1,0 +1,11 @@
+[
+  {
+    "id": "f-dowel_pin",
+    "name": "Test-dowel_pin",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

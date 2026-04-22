@@ -1,0 +1,9 @@
+{
+  "parameters": {
+    "bracket_length_mm": 140,
+    "bracket_width_mm": 42,
+    "bracket_height_mm": 32,
+    "wall_thickness_mm": 4,
+    "bolt_hole_diameter_mm": 8
+  }
+}

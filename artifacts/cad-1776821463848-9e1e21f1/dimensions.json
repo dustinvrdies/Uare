@@ -1,0 +1,28 @@
+{
+  "assembly_bbox_mm": {
+    "x": 480,
+    "y": 230,
+    "z": 360
+  },
+  "part_dimensions": [
+    {
+      "id": "eb-1",
+      "label": "V4Block",
+      "dimensions_mm": {
+        "width": 480,
+        "height": 360,
+        "depth": 230,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 480,
+        "y": 230,
+        "z": 360
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

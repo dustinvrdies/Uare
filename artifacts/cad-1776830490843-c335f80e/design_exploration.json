@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-04-22T04:02:04.266Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "part-engine_block",
+      "name": "Regression-engine_block",
+      "domains": [
+        "mechanical",
+        "propulsion",
+        "aerospace",
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "fluid"
+      ]
+    }
+  ]
+}

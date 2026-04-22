@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "piston-1",
+      "name": "HyperPiston",
+      "kind": "mechanical",
+      "type": "piston",
+      "dims": {
+        "diameter": 86,
+        "height": 70,
+        "pin_diameter": 22,
+        "ring_count": 3
+      },
+      "position": [
+        0,
+        0,
+        35
+      ]
+    }
+  ]
+}

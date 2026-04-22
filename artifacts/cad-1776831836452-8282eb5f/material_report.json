@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-04-22T04:24:45.030Z",
+  "parts": [
+    {
+      "id": "part-oil_pump",
+      "name": "Regression-oil_pump",
+      "material": "steel",
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "thermal-fluid",
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": true,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": false,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850,
+        "volume_mm3": 234800.05940289647,
+        "surface_area_mm2": 48752.89894570053,
+        "mass_proxy_kg": 1.8431804663127374,
+        "bbox_fill_ratio": 0.53902676480871,
+        "thin_wall_proxy_mm": 9.63225016278148,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.002057603794999694,
+          "iy": 0.002057603794999694,
+          "iz": 0.0037170806070640204
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 0,
+          "z": 17.99999995
+        }
+      }
+    }
+  ]
+}

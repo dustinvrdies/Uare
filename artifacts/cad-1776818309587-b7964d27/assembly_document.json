@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T00:38:29.588Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "p1",
+      "name": "PlateFromType",
+      "kind": "mechanical",
+      "shape": "plate",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 12
+      },
+      "feature_timeline": [
+        {
+          "type": "hole_pattern",
+          "pattern": "circular",
+          "count": 4,
+          "diameter": 6,
+          "pcd": 60
+        }
+      ],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 2.4000000000000004
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "p1"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 120,
+    "y": 80,
+    "z": 18
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

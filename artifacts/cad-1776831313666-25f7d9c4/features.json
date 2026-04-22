@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-water_pump"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "part-water_pump",
+      "label": "Regression-water_pump",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 24
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

@@ -1,0 +1,3 @@
+(kicad_sch (version 20240108) (generator UARE))
+  (symbol (lib_id "UARE:GENERIC") (property "Reference" "U1") (property "Value" "MainController"))
+)

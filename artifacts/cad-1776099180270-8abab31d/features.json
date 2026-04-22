@@ -1,0 +1,220 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Invented system",
+      "children": [
+        {
+          "id": "electrical",
+          "name": "Electrical subsystem",
+          "children": [
+            "pcb-5da6c0f545ef",
+            "cmp-d3d126c2bb1f",
+            "cmp-21a9756a2bfe",
+            "cmp-2fc03be5f18a",
+            "cmp-4dc37f61dd2c"
+          ]
+        },
+        {
+          "id": "mechanical",
+          "name": "Mechanical subsystem",
+          "children": [
+            "part-9817c6de2674",
+            "part-8b7f47357478"
+          ]
+        }
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "label": "Main control PCB",
+      "kind": "electrical_pcb",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 24
+      }
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "label": "Microcontroller module",
+      "kind": "electrical_component",
+      "footprint": "QFP-64",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 32
+      }
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "label": "Power regulator",
+      "kind": "electrical_component",
+      "footprint": "SOT-223",
+      "exploded_offset_mm": {
+        "x": -6,
+        "y": 0,
+        "z": 28
+      }
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "label": "Sensor module",
+      "kind": "electrical_component",
+      "footprint": "LGA-16",
+      "exploded_offset_mm": {
+        "x": 6,
+        "y": 0,
+        "z": 28
+      }
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "label": "I/O connector",
+      "kind": "electrical_component",
+      "footprint": "HEADER-8",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 8,
+        "z": 20
+      }
+    },
+    {
+      "id": "part-9817c6de2674",
+      "label": "Main bracket body",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 4.4
+      }
+    },
+    {
+      "id": "part-8b7f47357478",
+      "label": "Mounting plate",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 7.199999999999999,
+        "z": 0
+      }
+    }
+  ],
+  "wiring": [
+    {
+      "id": "wire-bda1f7ce0043",
+      "name": "Power net",
+      "kind": "wiring",
+      "from": "input_vin",
+      "to": "regulator",
+      "net": "VIN",
+      "gauge_awg": 20,
+      "path_mm": [
+        [
+          -40,
+          0,
+          3.6
+        ],
+        [
+          -17.6,
+          0,
+          3.6
+        ]
+      ],
+      "voltage_v": 12
+    },
+    {
+      "id": "wire-71fdc5187ab0",
+      "name": "Regulated bus",
+      "kind": "wiring",
+      "from": "regulator",
+      "to": "mcu",
+      "net": "VCC_5V",
+      "gauge_awg": 24,
+      "path_mm": [
+        [
+          -17.6,
+          0,
+          3.6
+        ],
+        [
+          0,
+          0,
+          3.6
+        ]
+      ],
+      "voltage_v": 5
+    },
+    {
+      "id": "wire-4852243b30c8",
+      "name": "Sensor signal",
+      "kind": "wiring",
+      "from": "mcu",
+      "to": "sensor",
+      "net": "I2C",
+      "gauge_awg": 28,
+      "path_mm": [
+        [
+          0,
+          0,
+          3.6
+        ],
+        [
+          14.399999999999999,
+          0,
+          3.6
+        ]
+      ],
+      "voltage_v": 3.3
+    }
+  ],
+  "netlist": [
+    {
+      "net": "VIN",
+      "nodes": [
+        "input_vin",
+        "regulator.in"
+      ],
+      "nominal_voltage_v": 12
+    },
+    {
+      "net": "VCC_5V",
+      "nodes": [
+        "regulator.out",
+        "mcu.vcc"
+      ],
+      "nominal_voltage_v": 5
+    },
+    {
+      "net": "I2C_SCL",
+      "nodes": [
+        "mcu.scl",
+        "sensor.scl"
+      ],
+      "nominal_voltage_v": 3.3
+    },
+    {
+      "net": "I2C_SDA",
+      "nodes": [
+        "mcu.sda",
+        "sensor.sda"
+      ],
+      "nominal_voltage_v": 3.3
+    },
+    {
+      "net": "GND",
+      "nodes": [
+        "input_gnd",
+        "regulator.gnd",
+        "mcu.gnd",
+        "sensor.gnd"
+      ],
+      "nominal_voltage_v": 0
+    }
+  ]
+}

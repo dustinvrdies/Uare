@@ -1,0 +1,3 @@
+id,name,kind,material,process,footprint,quantity
+"p-eb","HeavyBlock","mechanical","titanium_ti6al4v","cnc","","1"
+"p-pcb","MainController","electrical_pcb","fr4","cnc","","1"

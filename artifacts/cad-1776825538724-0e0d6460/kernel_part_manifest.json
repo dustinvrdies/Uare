@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "id": "test-oil_pump",
+      "name": "Part-oil_pump",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "outer_diameter": 110.0,
+        "thickness": 36.0,
+        "inner_rotor_diameter": 46.0,
+        "outer_rotor_diameter": 72.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 110.0,
+        "y": 110.0,
+        "z": 36.0
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "v-engine_block"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "v-engine_block",
+      "label": "V-engine_block",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 68
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

@@ -1,0 +1,107 @@
+{
+  "assembly_bbox_mm": {
+    "x": 120,
+    "y": 50,
+    "z": 45
+  },
+  "part_dimensions": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "label": "Main control PCB",
+      "dimensions_mm": {
+        "x": 80,
+        "y": 50,
+        "z": 1.6
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8
+      }
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "label": "Microcontroller module",
+      "dimensions_mm": {
+        "x": 14,
+        "y": 14,
+        "z": 1.7
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 2.45
+      }
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "label": "Power regulator",
+      "dimensions_mm": {
+        "x": 6.5,
+        "y": 7,
+        "z": 1.8
+      },
+      "transform_mm": {
+        "x": -17.6,
+        "y": 0,
+        "z": 2.5
+      }
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "label": "Sensor module",
+      "dimensions_mm": {
+        "x": 6,
+        "y": 6,
+        "z": 1.4
+      },
+      "transform_mm": {
+        "x": 14.399999999999999,
+        "y": 0,
+        "z": 2.3
+      }
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "label": "I/O connector",
+      "dimensions_mm": {
+        "x": 20,
+        "y": 5,
+        "z": 8
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 21,
+        "z": 5.6
+      }
+    },
+    {
+      "id": "part-a958758b37ee",
+      "label": "Main bracket body",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 40,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 15
+      }
+    },
+    {
+      "id": "part-8b7f47357478",
+      "label": "Mounting plate",
+      "dimensions_mm": {
+        "x": 86.39999999999999,
+        "y": 40,
+        "z": 4
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 32
+      }
+    }
+  ]
+}

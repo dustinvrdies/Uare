@@ -1,0 +1,971 @@
+openapi: 3.1.0
+info:
+  title: UARE Custom Backend API
+  version: 1.0.0
+  description: |
+    Production API for the UARE enterprise platform — auth, billing, orgs,
+    CAD execution, workflows, workers, analytics, patents, and ops quality.
+
+servers:
+  - url: http://localhost:8787
+    description: Local development
+  - url: https://api.uare.app
+    description: Production
+
+security:
+  - cookieAuth: []
+  - devHeaderAuth: []
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: uare_session
+    devHeaderAuth:
+      type: apiKey
+      in: header
+      name: x-dev-user-id
+    opsBearerToken:
+      type: http
+      scheme: bearer
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        error:
+          type: string
+
+    OkResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+
+    Plan:
+      type: object
+      properties:
+        plan_id:
+          type: string
+          enum: [free, pro, studio, enterprise]
+        name:
+          type: string
+        price_monthly:
+          type: number
+        credits_monthly:
+          type: integer
+          nullable: true
+        features:
+          type: array
+          items:
+            type: string
+
+    Subscription:
+      type: object
+      properties:
+        subscription_id:
+          type: string
+        user_id:
+          type: string
+        plan_id:
+          type: string
+        status:
+          type: string
+          enum: [active, past_due, canceled, trialing]
+        billing_provider:
+          type: string
+        current_period_start:
+          type: string
+          format: date-time
+        current_period_end:
+          type: string
+          format: date-time
+          nullable: true
+        metadata_json:
+          type: object
+
+    CheckoutSession:
+      type: object
+      properties:
+        checkout_session_id:
+          type: string
+        user_id:
+          type: string
+        plan_id:
+          type: string
+        status:
+          type: string
+        checkout_url:
+          type: string
+          nullable: true
+        provider:
+          type: string
+
+    Invoice:
+      type: object
+      properties:
+        invoice_id:
+          type: string
+        number:
+          type: string
+          nullable: true
+        status:
+          type: string
+        amount_due:
+          type: integer
+        amount_paid:
+          type: integer
+        currency:
+          type: string
+        created:
+          type: integer
+        due_date:
+          type: integer
+          nullable: true
+        hosted_invoice_url:
+          type: string
+          nullable: true
+        invoice_pdf:
+          type: string
+          nullable: true
+        period_start:
+          type: integer
+        period_end:
+          type: integer
+
+    Org:
+      type: object
+      properties:
+        org_id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+        owner_user_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    Membership:
+      type: object
+      properties:
+        membership_id:
+          type: string
+        org_id:
+          type: string
+        user_id:
+          type: string
+        role:
+          type: string
+          enum: [owner, admin, member, billing_manager, viewer]
+        created_at:
+          type: string
+          format: date-time
+
+    AuditEvent:
+      type: object
+      properties:
+        audit_id:
+          type: string
+        actor_id:
+          type: string
+          nullable: true
+        actor_role:
+          type: string
+          nullable: true
+        action:
+          type: string
+        target_type:
+          type: string
+          nullable: true
+        target_id:
+          type: string
+          nullable: true
+        status:
+          type: string
+        request_id:
+          type: string
+          nullable: true
+        ip:
+          type: string
+          nullable: true
+        metadata_json:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+
+    Project:
+      type: object
+      properties:
+        project_id:
+          type: string
+        owner_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CadJob:
+      type: object
+      properties:
+        run_id:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, success, error]
+        script:
+          type: string
+          nullable: true
+        artifacts:
+          type: array
+          items:
+            type: object
+        error:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+paths:
+  # ── Auth ──────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 320
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 128
+                full_name:
+                  type: string
+                  maxLength: 200
+      responses:
+        '201':
+          description: User registered and session created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkResponse'
+                  - type: object
+                    properties:
+                      user:
+                        type: object
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Log in with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 320
+                password:
+                  type: string
+                  maxLength: 128
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkResponse'
+                  - type: object
+                    properties:
+                      user:
+                        type: object
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: End the current session
+      responses:
+        '200':
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+
+  /auth/me:
+    get:
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkResponse'
+                  - type: object
+                    properties:
+                      user:
+                        type: object
+        '401':
+          description: Not authenticated
+
+  # ── Billing ───────────────────────────────────────────────────────────────
+  /billing/plans:
+    get:
+      tags: [billing]
+      summary: List available subscription plans
+      security: []
+      responses:
+        '200':
+          description: Plans list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  plans:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Plan'
+                  provider:
+                    type: string
+
+  /billing/subscription:
+    get:
+      tags: [billing]
+      summary: Get current subscription status
+      responses:
+        '200':
+          description: Subscription info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  provider:
+                    type: string
+                  configured:
+                    type: boolean
+                  currentPlan:
+                    type: string
+                  status:
+                    type: string
+                  renewsAt:
+                    type: string
+                    nullable: true
+
+  /billing/summary:
+    get:
+      tags: [billing]
+      summary: Get full billing summary including entitlements and usage
+      parameters:
+        - in: query
+          name: org_id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Billing summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  user:
+                    type: object
+                  subscription:
+                    $ref: '#/components/schemas/Subscription'
+                  usage:
+                    type: object
+                  entitlements:
+                    type: object
+
+  /billing/checkout-session:
+    post:
+      tags: [billing]
+      summary: Create a checkout session to upgrade or start a subscription
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan_id:
+                  type: string
+                  enum: [free, pro, studio, enterprise]
+                  default: pro
+                org_id:
+                  type: string
+      responses:
+        '201':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  session:
+                    $ref: '#/components/schemas/CheckoutSession'
+                  provider:
+                    type: string
+
+  /billing/portal-session:
+    post:
+      tags: [billing]
+      summary: Create a Stripe customer portal session (manage subscription/invoices)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                return_url:
+                  type: string
+                  format: uri
+                org_id:
+                  type: string
+      responses:
+        '201':
+          description: Portal session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  portal_url:
+                    type: string
+                  portal_session_id:
+                    type: string
+                    nullable: true
+                  stub:
+                    type: boolean
+        '422':
+          description: No Stripe customer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /billing/invoices:
+    get:
+      tags: [billing]
+      summary: List recent invoices from Stripe
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            maximum: 25
+            default: 10
+      responses:
+        '200':
+          description: Invoice list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  invoices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Invoice'
+                  provider:
+                    type: string
+
+  /billing/webhook/stripe:
+    post:
+      tags: [billing]
+      summary: Stripe webhook receiver
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Event processed
+        '400':
+          description: Invalid signature
+
+  # ── Organizations ─────────────────────────────────────────────────────────
+  /orgs:
+    get:
+      tags: [orgs]
+      summary: List orgs for the current user
+      responses:
+        '200':
+          description: Orgs list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  orgs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Org'
+    post:
+      tags: [orgs]
+      summary: Create a new organization
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  maxLength: 200
+                slug:
+                  type: string
+                  maxLength: 100
+      responses:
+        '201':
+          description: Org created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  org:
+                    $ref: '#/components/schemas/Org'
+
+  /orgs/{orgId}/members:
+    get:
+      tags: [orgs]
+      summary: List members of an organization
+      parameters:
+        - in: path
+          name: orgId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Members list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Membership'
+    post:
+      tags: [orgs]
+      summary: Add or update a member in an organization
+      parameters:
+        - in: path
+          name: orgId
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Idempotency-Key
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                user_id:
+                  type: string
+                role:
+                  type: string
+                  enum: [owner, admin, member, billing_manager, viewer]
+      responses:
+        '201':
+          description: Member added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  membership:
+                    $ref: '#/components/schemas/Membership'
+
+  /orgs/{orgId}/members/{userId}:
+    delete:
+      tags: [orgs]
+      summary: Remove a member from an organization
+      parameters:
+        - in: path
+          name: orgId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Member removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+
+  /orgs/{orgId}/audit:
+    get:
+      tags: [orgs]
+      summary: View org-scoped audit log (owner/admin only)
+      parameters:
+        - in: path
+          name: orgId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            maximum: 200
+            default: 50
+        - in: query
+          name: action
+          schema:
+            type: string
+        - in: query
+          name: actor_id
+          schema:
+            type: string
+        - in: query
+          name: target_type
+          schema:
+            type: string
+        - in: query
+          name: target_id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Audit events scoped to this org
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  org_id:
+                    type: string
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditEvent'
+        '403':
+          description: Insufficient org role
+
+  # ── Projects ──────────────────────────────────────────────────────────────
+  /projects/list:
+    post:
+      tags: [projects]
+      summary: List projects for the authenticated actor
+      responses:
+        '200':
+          description: Project list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+
+  /projects/save:
+    post:
+      tags: [projects]
+      summary: Save or update a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: Project saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  project:
+                    $ref: '#/components/schemas/Project'
+
+  # ── CAD ───────────────────────────────────────────────────────────────────
+  /cad/run:
+    post:
+      tags: [cad]
+      summary: Execute a CAD script
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [script]
+              properties:
+                script:
+                  type: string
+                project_id:
+                  type: string
+                engine:
+                  type: string
+                  enum: [cadquery, openscad, freecad]
+      responses:
+        '202':
+          description: CAD job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CadJob'
+
+  /cad/status/{runId}:
+    get:
+      tags: [cad]
+      summary: Get status of a CAD execution job
+      parameters:
+        - in: path
+          name: runId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CadJob'
+
+  # ── Health ────────────────────────────────────────────────────────────────
+  /health:
+    get:
+      tags: [ops]
+      summary: Liveness check
+      security: []
+      responses:
+        '200':
+          description: Server is alive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  status:
+                    type: string
+
+  /ready:
+    get:
+      tags: [ops]
+      summary: Readiness check
+      security: []
+      responses:
+        '200':
+          description: Server is ready
+        '503':
+          description: Not ready
+
+  # ── Ops Quality ───────────────────────────────────────────────────────────
+  /ops/quality/metrics-json:
+    get:
+      tags: [ops]
+      summary: Internal metrics snapshot (ops token required)
+      security:
+        - opsBearerToken: []
+      responses:
+        '200':
+          description: Metrics JSON
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+
+  /ops/quality/metrics-prometheus:
+    get:
+      tags: [ops]
+      summary: Prometheus metrics (ops token required)
+      security:
+        - opsBearerToken: []
+      responses:
+        '200':
+          description: Prometheus text format
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+
+  /ops/quality/recent-audit:
+    get:
+      tags: [ops]
+      summary: Recent audit events, all actions (ops token required)
+      security:
+        - opsBearerToken: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            maximum: 200
+            default: 50
+        - in: query
+          name: action
+          schema:
+            type: string
+        - in: query
+          name: actor_id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Audit events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditEvent'
+
+  /ops/quality/config-audit:
+    get:
+      tags: [ops]
+      summary: Runtime config audit (ops token required)
+      security:
+        - opsBearerToken: []
+      responses:
+        '200':
+          description: Config audit result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  runtime:
+                    type: object
+                  requiredProdVars:
+                    type: array
+                    items:
+                      type: string
+                  missingRequiredProdVars:
+                    type: array
+                    items:
+                      type: string

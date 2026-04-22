@@ -1,0 +1,63 @@
+{
+  "parts": [
+    {
+      "id": "part-water_pump",
+      "name": "Regression-water_pump",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "impeller_diameter": 72.0,
+        "body_diameter": 90.0,
+        "length": 120.0,
+        "hub_diameter": 24.0,
+        "x": 50.0,
+        "y": 50.0,
+        "z": 120.0,
+        "w": 50.0,
+        "width": 50.0,
+        "d": 50.0,
+        "depth": 50.0,
+        "h": 120.0,
+        "height": 120.0,
+        "L": 120.0,
+        "diameter": 50.0,
+        "dia": 50.0,
+        "outer_diameter": 50.0,
+        "outerD": 50.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 50.0,
+        "y": 50.0,
+        "z": 120.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 300000.0,
+        "surface_area_mm2": 29000.0,
+        "mass_proxy_kg": 2.3550000000000004,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 20.689655172413794,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.003316625,
+          "iy": 0.003316625,
+          "iz": 0.0009812500000000004
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

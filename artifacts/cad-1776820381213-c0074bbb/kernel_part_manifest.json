@@ -1,0 +1,43 @@
+{
+  "parts": [
+    {
+      "id": "piston-1",
+      "name": "HyperPiston",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "diameter": 86.0,
+        "height": 70.0,
+        "pin_diameter": 22.0,
+        "ring_count": 3.0,
+        "x": 86.0,
+        "y": 86.0,
+        "z": 70.0,
+        "w": 86.0,
+        "width": 86.0,
+        "d": 86.0,
+        "depth": 86.0,
+        "h": 70.0,
+        "length": 70.0,
+        "L": 70.0,
+        "dia": 86.0,
+        "outer_diameter": 86.0,
+        "outerD": 86.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 35.0
+      },
+      "bbox_mm": {
+        "x": 86.0,
+        "y": 86.0,
+        "z": 70.0
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

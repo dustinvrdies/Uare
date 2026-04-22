@@ -1,0 +1,27 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-cylinder_head",
+      "name": "Regression-cylinder_head",
+      "type": "cylinder_head",
+      "kind": "mechanical",
+      "dims": {
+        "width": 380,
+        "height": 78,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

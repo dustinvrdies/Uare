@@ -1,0 +1,17 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "bracket_height_mm": 13.308,
+      "bracket_width_mm": 24.981
+    }
+  },
+  "script": "print(\"cad\")",
+  "project_id": "proj-mutation",
+  "workflow_run_id": "wf-1776250577676-fc19802f",
+  "workflow_step": "cad"
+}

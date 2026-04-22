@@ -1,0 +1,25 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "cr-final",
+      "name": "con_rod",
+      "type": "con_rod",
+      "dims": {
+        "ctc": 140,
+        "bigEndD": 50,
+        "smallEndD": 21,
+        "thickness": 20
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

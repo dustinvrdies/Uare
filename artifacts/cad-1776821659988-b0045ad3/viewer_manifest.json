@@ -1,0 +1,53 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T01:34:19.988Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "ch-1"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "ch-1",
+      "label": "V4Head",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 390,
+        "height": 90,
+        "depth": 225,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 390,
+        "y": 225,
+        "z": 90
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 18
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 390,
+    "y": 225,
+    "z": 90
+  }
+}

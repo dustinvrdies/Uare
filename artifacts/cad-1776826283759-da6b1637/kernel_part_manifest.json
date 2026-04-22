@@ -1,0 +1,42 @@
+{
+  "parts": [
+    {
+      "id": "pt-cylinder_head",
+      "name": "Test-cylinder_head",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 380.0,
+        "height": 78.0,
+        "depth": 220.0,
+        "bore": 86.0,
+        "cylinders": 4.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 380.0,
+        "y": 250.8,
+        "z": 67.86
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 3429215.5611199103,
+        "mass_proxy_kg": 26.9193421547913,
+        "center_mm": {
+          "x": 0.0,
+          "y": -24.199999999999996,
+          "z": 5.07
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

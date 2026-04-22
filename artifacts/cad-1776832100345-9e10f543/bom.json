@@ -1,0 +1,20 @@
+[
+  {
+    "id": "metrics-engine-block",
+    "name": "Metrics-EngineBlock",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "metrics-pcb",
+    "name": "Metrics-PCB",
+    "kind": "electrical_pcb",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

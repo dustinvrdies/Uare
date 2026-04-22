@@ -1,0 +1,11 @@
+[
+  {
+    "id": "ch-1",
+    "name": "V4Head",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

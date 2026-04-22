@@ -1,0 +1,44 @@
+[
+  {
+    "net": "VIN",
+    "nodes": [
+      "input_vin",
+      "regulator.in"
+    ],
+    "nominal_voltage_v": 12
+  },
+  {
+    "net": "VCC_5V",
+    "nodes": [
+      "regulator.out",
+      "mcu.vcc"
+    ],
+    "nominal_voltage_v": 5
+  },
+  {
+    "net": "I2C_SCL",
+    "nodes": [
+      "mcu.scl",
+      "sensor.scl"
+    ],
+    "nominal_voltage_v": 3.3
+  },
+  {
+    "net": "I2C_SDA",
+    "nodes": [
+      "mcu.sda",
+      "sensor.sda"
+    ],
+    "nominal_voltage_v": 3.3
+  },
+  {
+    "net": "GND",
+    "nodes": [
+      "input_gnd",
+      "regulator.gnd",
+      "mcu.gnd",
+      "sensor.gnd"
+    ],
+    "nominal_voltage_v": 0
+  }
+]

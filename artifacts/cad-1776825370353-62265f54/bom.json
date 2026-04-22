@@ -1,0 +1,11 @@
+[
+  {
+    "id": "pt-oil_pump",
+    "name": "Test-oil_pump",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

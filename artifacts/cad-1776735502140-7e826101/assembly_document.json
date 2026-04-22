@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-21T01:38:22.141Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "imp001",
+      "name": "Impeller — 316L Investment Cast",
+      "kind": "mechanical",
+      "shape": "impeller",
+      "dimensions_mm": {
+        "outer_diameter": 320,
+        "inlet_diameter": 180,
+        "width": 52,
+        "num_blades": 5,
+        "x": 52,
+        "y": 320,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "316L stainless",
+      "process": "casting",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "ASTM A744 CF-8M",
+        "revision": "C",
+        "surface_finish": "Ra 1.6 μm flow passages (electropolished)",
+        "tolerance": "OD ±0.3 mm, balance G2.5 at 1450 RPM",
+        "notes": "Closed impeller. 5 backward-curved blades. Wear ring OD 185.00–185.03 mm.",
+        "heat_treatment": "Solution anneal 1050°C WQ",
+        "mass_kg": 8.4,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "csg001",
+      "name": "Pump Casing — Volute, Cast Iron",
+      "kind": "mechanical",
+      "shape": "housing",
+      "dimensions_mm": {
+        "width": 480,
+        "height": 420,
+        "depth": 340,
+        "discharge_nozzle_dn": 150,
+        "suction_nozzle_dn": 200,
+        "x": 480,
+        "y": 340,
+        "z": 420
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "cast_iron",
+      "process": "casting",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 84
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "EN 1561 EN-GJL-250",
+        "revision": "B",
+        "surface_finish": "Ra 6.3 μm flow passages, Ra 1.6 μm seal faces",
+        "tolerance": "Seal bore H7, impeller clearance 0.3–0.5 mm",
+        "notes": "Spiral volute with tangential discharge. Back-pull-out design. Pressure rating PN10.",
+        "heat_treatment": null,
+        "mass_kg": 48,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "shf001",
+      "name": "Pump Shaft — 316L Stainless",
+      "kind": "mechanical",
+      "shape": "shaft",
+      "dimensions_mm": {
+        "diameter": 55,
+        "length": 420,
+        "coupling_end_diameter": 50,
+        "impeller_end_diameter": 38,
+        "x": 55,
+        "y": 55,
+        "z": 420
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "316L stainless",
+      "process": "turning",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 84
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "ASTM A276 316L",
+        "revision": "A",
+        "surface_finish": "Ra 0.4 μm bearing seats (ground), Ra 0.8 μm seal area",
+        "tolerance": "Bearing seat: 55 k6, coupling: 50 h6",
+        "notes": null,
+        "heat_treatment": "Stress relief 450°C 2h",
+        "mass_kg": 5.6,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "slp001",
+      "name": "Mechanical Seal — John Crane Type 1",
+      "kind": "mechanical",
+      "shape": "lip_seal",
+      "dimensions_mm": {
+        "shaft_diameter": 55,
+        "oc_diameter": 95,
+        "length": 68,
+        "x": 50,
+        "y": 50,
+        "z": 68
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 60
+      },
+      "material": "silicon carbide",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 13.600000000000001
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "API 682 Arrangement 1",
+        "revision": "A",
+        "surface_finish": "Ra 0.05 μm seal faces (lapped)",
+        "tolerance": "Face flatness ≤2 helium light bands",
+        "notes": "Silicon carbide mating ring + rotary face. Double O-ring drive. API Plan 11 seal flush from discharge.",
+        "heat_treatment": null,
+        "mass_kg": 0.48,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "brg001",
+      "name": "Inboard Bearing — 6312-2RS",
+      "kind": "mechanical",
+      "shape": "ball_bearing",
+      "dimensions_mm": {
+        "inner_diameter": 60,
+        "outer_diameter": 130,
+        "width": 31,
+        "x": 31,
+        "y": 130,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 80
+      },
+      "material": "4340 steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "ISO 15 (6312)",
+        "revision": "—",
+        "surface_finish": null,
+        "tolerance": "Housing: H7 (Ø130 H7), shaft: k5 (Ø60 k5)",
+        "notes": "Deep groove. FAG 6312-2RS1/C3. Grease: Esso Unirex N3. Re-lube interval 2000 h.",
+        "heat_treatment": null,
+        "mass_kg": 1.08,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "brg002",
+      "name": "Outboard Bearing — 6309-2RS",
+      "kind": "mechanical",
+      "shape": "ball_bearing",
+      "dimensions_mm": {
+        "inner_diameter": 45,
+        "outer_diameter": 100,
+        "width": 25,
+        "x": 25,
+        "y": 100,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 200
+      },
+      "material": "4340 steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "ISO 15 (6309)",
+        "revision": "—",
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": "Angular contact optional for high thrust. Same grease as inboard.",
+        "heat_treatment": null,
+        "mass_kg": 0.62,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "brk001",
+      "name": "Bearing Housing — Cast Iron",
+      "kind": "mechanical",
+      "shape": "housing",
+      "dimensions_mm": {
+        "width": 220,
+        "height": 200,
+        "depth": 280,
+        "x": 220,
+        "y": 280,
+        "z": 200
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 140
+      },
+      "material": "cast_iron",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 40
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": "Grease nipple both ends. Oil level sight glass. Cast iron EN-GJL-200.",
+        "heat_treatment": null,
+        "mass_kg": 14,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "cpl001",
+      "name": "Flexible Coupling — Jaw Type",
+      "kind": "mechanical",
+      "shape": "coupling",
+      "dimensions_mm": {
+        "diameter": 120,
+        "length": 80,
+        "bore": 50,
+        "x": 120,
+        "y": 120,
+        "z": 80
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 330
+      },
+      "material": "7075-t6 aluminium",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 16
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "DIN 740",
+        "revision": "A",
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": "Jaw type elastomeric. 95 Shore A polyurethane spider. Transmits 500 N·m. ±1° misalignment.",
+        "heat_treatment": null,
+        "mass_kg": 1.8,
+        "quantity": 1
+      }
+    },
+    {
+      "id": "bst001",
+      "name": "Baseplate — Welded Steel",
+      "kind": "mechanical",
+      "shape": "plate",
+      "dimensions_mm": {
+        "width": 900,
+        "height": 50,
+        "depth": 600,
+        "x": 900,
+        "y": 600,
+        "z": 50
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": -200,
+        "z": 200
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": "ISO 3069 C-frame",
+        "revision": "A",
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": "Epoxy grouted to concrete plinth. Pump + motor common baseplate. 4 × M20 anchor bolts.",
+        "heat_treatment": null,
+        "mass_kg": 28,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Centrifugal Pump Assembly — 50 kW / 200 m³/h",
+      "children": [
+        "imp001",
+        "csg001",
+        "shf001",
+        "slp001",
+        "brg001",
+        "brg002",
+        "brk001",
+        "cpl001",
+        "bst001"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 900,
+    "y": 600,
+    "z": 420
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "casting",
+      "turning",
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

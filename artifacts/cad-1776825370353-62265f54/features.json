@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-oil_pump"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "pt-oil_pump",
+      "label": "Test-oil_pump",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

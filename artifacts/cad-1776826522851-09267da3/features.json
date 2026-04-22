@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "test-exhaust_manifold"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "test-exhaust_manifold",
+      "label": "Part-exhaust_manifold",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 22
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

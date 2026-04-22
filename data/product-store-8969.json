@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "user_id": "user-1776389549108-aca1edce",
+      "email": "owner@example.com",
+      "full_name": "Owner User",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "df7b1a08a76db905d01b54dac9b0cf2b:b10a33499e48634b52b929ae7e7c7ee9596c055d45b9ce31188ba7333d0a2240219aa6fe2388bdf424034059503b03bcf6be6204c37c50845bd47d36daf22b35",
+      "created_at": "2026-04-17T01:32:29.188Z",
+      "updated_at": "2026-04-17T01:32:29.197Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "subscription_id": "sub-user-1776389549108-aca1edce",
+      "user_id": "user-1776389549108-aca1edce",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T01:32:29.188Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T01:32:29.188Z",
+      "updated_at": "2026-04-17T01:32:29.188Z",
+      "metadata_json": {}
+    }
+  ],
+  "usage": [],
+  "checkoutSessions": [],
+  "authSessions": [
+    {
+      "session_id": "sess-1776389549275-f308d283",
+      "user_id": "user-1776389549108-aca1edce",
+      "expires_at": "2026-05-01T01:32:29.275Z",
+      "created_at": "2026-04-17T01:32:29.275Z",
+      "updated_at": "2026-04-17T01:32:29.275Z",
+      "metadata_json": {
+        "source": "login"
+      }
+    }
+  ],
+  "orgs": [
+    {
+      "org_id": "org-1776389549189-09e3613d",
+      "slug": "owner-9f42",
+      "name": "Owner User's Workspace",
+      "owner_user_id": "user-1776389549108-aca1edce",
+      "created_at": "2026-04-17T01:32:29.189Z",
+      "updated_at": "2026-04-17T01:32:29.189Z"
+    }
+  ],
+  "memberships": [
+    {
+      "membership_id": "mem-1776389549189-5d328397",
+      "org_id": "org-1776389549189-09e3613d",
+      "user_id": "user-1776389549108-aca1edce",
+      "role": "owner",
+      "invited_by": "user-1776389549108-aca1edce",
+      "created_at": "2026-04-17T01:32:29.189Z",
+      "updated_at": "2026-04-17T01:32:29.189Z"
+    }
+  ],
+  "webhookEvents": []
+}

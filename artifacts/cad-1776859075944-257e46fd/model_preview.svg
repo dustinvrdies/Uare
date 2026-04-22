@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+<rect width="900" height="500" fill="#f0f4f8" />
+<rect x="1" y="1" width="898" height="498" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1" />
+<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#4a9eff" stroke-width="1"/></marker></defs>
+<rect x="40" y="70" width="54" height="180" rx="4" fill="#f8fafc" stroke="#1e293b" stroke-width="1.5" />
+<circle cx="67" cy="160" r="12" fill="#e0e7ff" stroke="#1e293b" stroke-width="1.5" />
+<line x1="40" y1="70" x2="40" y2="52" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="94" y1="70" x2="94" y2="52" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="40" y1="52" x2="94" y2="52" stroke="#4a9eff" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)" />
+<text x="67" y="66" text-anchor="middle" font-size="11" font-family="Inter,Arial,sans-serif" fill="#4a9eff">18 mm</text>
+<line x1="40" y1="70" x2="22" y2="70" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="40" y1="250" x2="22" y2="250" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="22" y1="70" x2="22" y2="250" stroke="#4a9eff" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)" />
+<text x="36" y="164" font-size="11" font-family="Inter,Arial,sans-serif" fill="#4a9eff">60 mm</text>
+<text x="67" y="164" font-size="16" font-family="Inter,Arial,sans-serif" fill="#4a9eff" ></text>
+<text x="67" y="64" font-size="10" font-family="Inter,Arial,sans-serif" fill="#6b7280" font-weight="600">TOP</text>
+<rect x="40" y="310" width="54" height="180" rx="4" fill="#f8fafc" stroke="#1e293b" stroke-width="1.5" />
+<line x1="50.8" y1="310" x2="50.8" y2="490" stroke="#1e293b" stroke-width="1.5" />
+<line x1="83.2" y1="310" x2="83.2" y2="490" stroke="#1e293b" stroke-width="1.5" />
+<line x1="40" y1="310" x2="40" y2="292" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="94" y1="310" x2="94" y2="292" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="40" y1="292" x2="94" y2="292" stroke="#4a9eff" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)" />
+<text x="67" y="306" text-anchor="middle" font-size="11" font-family="Inter,Arial,sans-serif" fill="#4a9eff">18 mm</text>
+<line x1="40" y1="490" x2="22" y2="490" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="40" y1="310" x2="22" y2="310" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="22" y1="490" x2="22" y2="310" stroke="#4a9eff" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)" />
+<text x="36" y="404" font-size="11" font-family="Inter,Arial,sans-serif" fill="#4a9eff">60 mm</text>
+<text x="67" y="304" font-size="10" font-family="Inter,Arial,sans-serif" fill="#6b7280" font-weight="600">FRONT</text>
+<rect x="154" y="70" width="180" height="180" rx="4" fill="#f8fafc" stroke="#1e293b" stroke-width="1.5" />
+<line x1="154" y1="70" x2="154" y2="52" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="334" y1="70" x2="334" y2="52" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="154" y1="52" x2="334" y2="52" stroke="#4a9eff" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)" />
+<text x="244" y="66" text-anchor="middle" font-size="11" font-family="Inter,Arial,sans-serif" fill="#4a9eff">60 mm</text>
+<line x1="334" y1="70" x2="348" y2="70" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="334" y1="250" x2="348" y2="250" stroke="#4a9eff" stroke-width="1" stroke-dasharray="3,2" />
+<line x1="348" y1="70" x2="348" y2="250" stroke="#4a9eff" stroke-width="1.2" marker-end="url(#arr)" marker-start="url(#arr)" />
+<text x="362" y="164" font-size="11" font-family="Inter,Arial,sans-serif" fill="#4a9eff">60 mm</text>
+<text x="244" y="64" font-size="10" font-family="Inter,Arial,sans-serif" fill="#6b7280" font-weight="600">SIDE</text>
+<text x="374" y="70" font-size="14" font-family="Inter,Arial,sans-serif" fill="#0f172a" font-weight="600">UARE CAD — Execution Preview</text>
+<text x="374" y="92" font-size="11" font-family="Inter,Arial,sans-serif" fill="#6b7280" >ID: cad-1776859075944-257e46fd</text>
+<text x="374" y="120" font-size="12" font-family="Inter,Arial,sans-serif" fill="#1e293b" font-weight="600">Regression-timing_chain</text>
+<text x="374" y="140" font-size="11" font-family="Inter,Arial,sans-serif" fill="#374151" >Parts: 1</text>
+<text x="374" y="158" font-size="11" font-family="Inter,Arial,sans-serif" fill="#6b7280" >L × W × H  (mm)</text>
+<text x="374" y="174" font-size="13" font-family="Inter,Arial,sans-serif" fill="#1e40af" font-weight="600">18 × 60 × 60</text>
+<text x="374" y="194" font-size="11" font-family="Inter,Arial,sans-serif" fill="#374151" >Bore/Hole: Ø8 mm</text>
+<text x="374" y="450" font-size="10" font-family="Inter,Arial,sans-serif" fill="#9ca3af" >⚠ Envelope preview — kernel geometry</text>
+<text x="374" y="466" font-size="10" font-family="Inter,Arial,sans-serif" fill="#9ca3af" >in assembly_kernel.stl / assembly.step</text>
+</svg>

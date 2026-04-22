@@ -1,0 +1,62 @@
+[
+  {
+    "part_id": "pcb-5da6c0f545ef",
+    "footprint": "GENERIC",
+    "details": {
+      "pads": 4,
+      "body_mm": {
+        "x": 10,
+        "y": 10
+      },
+      "pitch_mm": 2.54
+    }
+  },
+  {
+    "part_id": "cmp-d3d126c2bb1f",
+    "footprint": "QFP-64",
+    "details": {
+      "pads": 64,
+      "body_mm": {
+        "x": 14,
+        "y": 14
+      },
+      "pitch_mm": 0.5
+    }
+  },
+  {
+    "part_id": "cmp-21a9756a2bfe",
+    "footprint": "SOT-223",
+    "details": {
+      "pads": 4,
+      "body_mm": {
+        "x": 6.5,
+        "y": 7
+      },
+      "pitch_mm": 2.3
+    }
+  },
+  {
+    "part_id": "cmp-2fc03be5f18a",
+    "footprint": "LGA-16",
+    "details": {
+      "pads": 16,
+      "body_mm": {
+        "x": 6,
+        "y": 6
+      },
+      "pitch_mm": 0.8
+    }
+  },
+  {
+    "part_id": "cmp-4dc37f61dd2c",
+    "footprint": "HEADER-8",
+    "details": {
+      "pads": 8,
+      "body_mm": {
+        "x": 20,
+        "y": 5
+      },
+      "pitch_mm": 2.54
+    }
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "parts": [
+    {
+      "id": "pt-engine_block",
+      "name": "Test-engine_block",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 465.0,
+        "height": 340.0,
+        "depth": 220.0,
+        "bore": 86.0,
+        "cylinders": 4.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 465.0,
+        "y": 220.0,
+        "z": 295.80000010000003
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 14466408.072649151,
+        "mass_proxy_kg": 113.56130337029585,
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": -5.100000049999991
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

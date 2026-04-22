@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "cr-1"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "cr-1",
+      "label": "ConRodQuery",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 35.1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

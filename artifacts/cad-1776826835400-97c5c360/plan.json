@@ -1,0 +1,24 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "v-nut_hex",
+      "name": "V-nut_hex",
+      "type": "nut_hex",
+      "dims": {
+        "across_flats": 13,
+        "thickness": 8,
+        "thread_diameter": 8
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

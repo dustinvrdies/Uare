@@ -1,0 +1,19 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "bracket_length_mm": 120,
+      "bracket_width_mm": 24,
+      "bracket_height_mm": 12,
+      "bolt_hole_diameter_mm": 7
+    }
+  },
+  "script": "print(\"cad\")",
+  "project_id": "proj-mutation",
+  "workflow_run_id": "wf-1776701170763-ea30b8e0",
+  "workflow_step": "cad"
+}

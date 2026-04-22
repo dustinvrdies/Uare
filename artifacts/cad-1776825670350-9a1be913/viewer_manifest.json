@@ -1,0 +1,52 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:41:10.350Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "test-oil_pump"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "test-oil_pump",
+      "label": "Part-oil_pump",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "outer_diameter": 110,
+        "thickness": 36,
+        "inner_rotor_diameter": 46,
+        "outer_rotor_diameter": 72,
+        "x": 110,
+        "y": 110,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 110,
+    "y": 110,
+    "z": 30
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "bracket_length_mm": 90,
+      "bracket_width_mm": 38,
+      "bracket_height_mm": 22,
+      "bolt_hole_diameter_mm": 5
+    }
+  },
+  "script": "print(\"cad\")",
+  "project_id": "proj-predictive",
+  "workflow_run_id": "wf-1775863302043-57043f7d",
+  "workflow_step": "cad"
+}

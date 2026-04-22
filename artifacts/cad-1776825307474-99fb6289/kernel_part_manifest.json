@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "id": "cr-final",
+      "name": "con_rod",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "ctc": 140.0,
+        "bigEndD": 50.0,
+        "smallEndD": 21.0,
+        "thickness": 20.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 50.00000000000001,
+        "y": 20.0,
+        "z": 175.5
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

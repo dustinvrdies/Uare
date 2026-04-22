@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-engine_block",
+    "name": "Regression-engine_block",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

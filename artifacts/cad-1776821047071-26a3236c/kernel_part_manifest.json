@@ -1,0 +1,45 @@
+{
+  "parts": [
+    {
+      "id": "rod-test",
+      "name": "ConRodFinal",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "ctc": 140.0,
+        "bigEndD": 50.0,
+        "smallEndD": 21.0,
+        "thickness": 20.0,
+        "x": 50.0,
+        "y": 20.0,
+        "z": 175.5,
+        "w": 50.0,
+        "width": 50.0,
+        "d": 20.0,
+        "depth": 20.0,
+        "h": 175.5,
+        "height": 175.5,
+        "length": 175.5,
+        "L": 175.5,
+        "diameter": 20.0,
+        "dia": 20.0,
+        "outer_diameter": 20.0,
+        "outerD": 20.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 50.0,
+        "y": 20.0,
+        "z": 175.5
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

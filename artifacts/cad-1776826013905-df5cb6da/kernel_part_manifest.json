@@ -1,0 +1,39 @@
+{
+  "parts": [
+    {
+      "id": "f-dowel_pin",
+      "name": "Test-dowel_pin",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "diameter": 8.0,
+        "length": 20.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 8.0,
+        "y": 8.0,
+        "z": 20.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 1005.3096491487335,
+        "mass_proxy_kg": 0.007891680745817559,
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 10.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

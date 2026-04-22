@@ -1,0 +1,365 @@
+{
+  "assembly_id": "asm-89217292b53d",
+  "generated_at": "2026-04-20T14:54:15.554Z",
+  "part_count": 7,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Invented system",
+      "children": [
+        {
+          "id": "electrical",
+          "name": "Electrical subsystem",
+          "children": [
+            "pcb-5da6c0f545ef",
+            "cmp-d3d126c2bb1f",
+            "cmp-21a9756a2bfe",
+            "cmp-2fc03be5f18a",
+            "cmp-4dc37f61dd2c"
+          ]
+        },
+        {
+          "id": "mechanical",
+          "name": "Mechanical subsystem",
+          "children": [
+            "part-a958758b37ee",
+            "part-8b7f47357478"
+          ]
+        }
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "label": "Main control PCB",
+      "kind": "electrical_pcb",
+      "material": "FR4",
+      "process": "pcb_fab",
+      "dimensions_mm": {
+        "x": 80,
+        "y": 50,
+        "z": 1.6
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 24
+      },
+      "measurement_anchors": {
+        "envelope": [
+          [
+            -40,
+            -25,
+            0
+          ],
+          [
+            40,
+            25,
+            1.6
+          ]
+        ]
+      },
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "label": "Microcontroller module",
+      "kind": "electrical_component",
+      "material": null,
+      "process": null,
+      "dimensions_mm": {
+        "x": 14,
+        "y": 14,
+        "z": 1.7
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 2.45
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 32
+      },
+      "measurement_anchors": {},
+      "footprint": "QFP-64",
+      "pins": 64
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "label": "Power regulator",
+      "kind": "electrical_component",
+      "material": null,
+      "process": null,
+      "dimensions_mm": {
+        "x": 6.5,
+        "y": 7,
+        "z": 1.8
+      },
+      "transform_mm": {
+        "x": -17.6,
+        "y": 0,
+        "z": 2.5
+      },
+      "exploded_offset_mm": {
+        "x": -6,
+        "y": 0,
+        "z": 28
+      },
+      "measurement_anchors": {},
+      "footprint": "SOT-223",
+      "pins": 4
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "label": "Sensor module",
+      "kind": "electrical_component",
+      "material": null,
+      "process": null,
+      "dimensions_mm": {
+        "x": 6,
+        "y": 6,
+        "z": 1.4
+      },
+      "transform_mm": {
+        "x": 14.399999999999999,
+        "y": 0,
+        "z": 2.3
+      },
+      "exploded_offset_mm": {
+        "x": 6,
+        "y": 0,
+        "z": 28
+      },
+      "measurement_anchors": {},
+      "footprint": "LGA-16",
+      "pins": 16
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "label": "I/O connector",
+      "kind": "electrical_component",
+      "material": null,
+      "process": null,
+      "dimensions_mm": {
+        "x": 20,
+        "y": 5,
+        "z": 8
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 21,
+        "z": 5.6
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 8,
+        "z": 20
+      },
+      "measurement_anchors": {},
+      "footprint": "HEADER-8",
+      "pins": 8
+    },
+    {
+      "id": "part-a958758b37ee",
+      "label": "Main bracket body",
+      "kind": "mechanical",
+      "material": "aluminum_6061",
+      "process": "cnc",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 40,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 15
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {
+        "envelope": [
+          [
+            -60,
+            -20,
+            0
+          ],
+          [
+            60,
+            20,
+            30
+          ]
+        ]
+      },
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "part-8b7f47357478",
+      "label": "Mounting plate",
+      "kind": "mechanical",
+      "material": "aluminum_6061",
+      "process": "cnc",
+      "dimensions_mm": {
+        "x": 86.39999999999999,
+        "y": 40,
+        "z": 4
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 32
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 7.199999999999999,
+        "z": 0
+      },
+      "measurement_anchors": {
+        "envelope": [
+          [
+            -43.199999999999996,
+            -20,
+            0
+          ],
+          [
+            43.199999999999996,
+            20,
+            4
+          ]
+        ]
+      },
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-bda1f7ce0043",
+      "name": "Power net",
+      "kind": "wiring",
+      "from": "input_vin",
+      "to": "regulator",
+      "net": "VIN",
+      "gauge_awg": 20,
+      "path_mm": [
+        [
+          -40,
+          0,
+          3.6
+        ],
+        [
+          -17.6,
+          0,
+          3.6
+        ]
+      ],
+      "voltage_v": 12
+    },
+    {
+      "id": "wire-71fdc5187ab0",
+      "name": "Regulated bus",
+      "kind": "wiring",
+      "from": "regulator",
+      "to": "mcu",
+      "net": "VCC_5V",
+      "gauge_awg": 24,
+      "path_mm": [
+        [
+          -17.6,
+          0,
+          3.6
+        ],
+        [
+          0,
+          0,
+          3.6
+        ]
+      ],
+      "voltage_v": 5
+    },
+    {
+      "id": "wire-4852243b30c8",
+      "name": "Sensor signal",
+      "kind": "wiring",
+      "from": "mcu",
+      "to": "sensor",
+      "net": "I2C",
+      "gauge_awg": 28,
+      "path_mm": [
+        [
+          0,
+          0,
+          3.6
+        ],
+        [
+          14.399999999999999,
+          0,
+          3.6
+        ]
+      ],
+      "voltage_v": 3.3
+    }
+  ],
+  "netlist": [
+    {
+      "net": "VIN",
+      "nodes": [
+        "input_vin",
+        "regulator.in"
+      ],
+      "nominal_voltage_v": 12
+    },
+    {
+      "net": "VCC_5V",
+      "nodes": [
+        "regulator.out",
+        "mcu.vcc"
+      ],
+      "nominal_voltage_v": 5
+    },
+    {
+      "net": "I2C_SCL",
+      "nodes": [
+        "mcu.scl",
+        "sensor.scl"
+      ],
+      "nominal_voltage_v": 3.3
+    },
+    {
+      "net": "I2C_SDA",
+      "nodes": [
+        "mcu.sda",
+        "sensor.sda"
+      ],
+      "nominal_voltage_v": 3.3
+    },
+    {
+      "net": "GND",
+      "nodes": [
+        "input_gnd",
+        "regulator.gnd",
+        "mcu.gnd",
+        "sensor.gnd"
+      ],
+      "nominal_voltage_v": 0
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 120,
+    "y": 50,
+    "z": 45
+  }
+}

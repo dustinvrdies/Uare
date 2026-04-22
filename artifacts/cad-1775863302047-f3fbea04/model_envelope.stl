@@ -1,0 +1,86 @@
+solid cad-1775863302047-f3fbea04
+facet normal 1 0 0
+  outer loop
+    vertex 45 -19 -11
+    vertex 45 -19 11
+    vertex 45 19 11
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 45 -19 -11
+    vertex 45 19 11
+    vertex 45 19 -11
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -45 -19 -11
+    vertex -45 19 11
+    vertex -45 -19 11
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -45 -19 -11
+    vertex -45 19 -11
+    vertex -45 19 11
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -45 19 -11
+    vertex 45 19 -11
+    vertex 45 19 11
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -45 19 -11
+    vertex 45 19 11
+    vertex -45 19 11
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -45 -19 -11
+    vertex -45 -19 11
+    vertex 45 -19 11
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -45 -19 -11
+    vertex 45 -19 11
+    vertex 45 -19 -11
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -45 -19 11
+    vertex -45 19 11
+    vertex 45 19 11
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -45 -19 11
+    vertex 45 19 11
+    vertex 45 -19 11
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -45 -19 -11
+    vertex 45 -19 -11
+    vertex 45 19 -11
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -45 -19 -11
+    vertex 45 19 -11
+    vertex -45 19 -11
+  endloop
+endfacet
+endsolid cad-1775863302047-f3fbea04

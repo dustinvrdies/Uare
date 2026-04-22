@@ -1,0 +1,20 @@
+[
+  {
+    "id": "p-eb",
+    "name": "V4Block",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "p-pcb",
+    "name": "Controller",
+    "kind": "electrical_pcb",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

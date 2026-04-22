@@ -1,0 +1,51 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:45:49.831Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "f-washer"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "f-washer",
+      "label": "Test-washer",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "outer_diameter": 16,
+        "inner_diameter": 8.4,
+        "thickness": 1.6,
+        "x": 16,
+        "y": 16,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 16,
+    "y": 16,
+    "z": 30
+  }
+}

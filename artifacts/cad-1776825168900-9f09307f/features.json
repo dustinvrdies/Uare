@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-con_rod"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "part-con_rod",
+      "label": "CON_ROD",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 35.1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

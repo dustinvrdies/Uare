@@ -1,0 +1,27 @@
+{
+  "assembly_bbox_mm": {
+    "x": 86,
+    "y": 86,
+    "z": 105
+  },
+  "part_dimensions": [
+    {
+      "id": "piston-1",
+      "label": "HyperPiston",
+      "dimensions_mm": {
+        "diameter": 86,
+        "height": 70,
+        "pin_diameter": 22,
+        "ring_count": 3,
+        "x": 86,
+        "y": 86,
+        "z": 70
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 35
+      }
+    }
+  ]
+}

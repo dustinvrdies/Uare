@@ -1,0 +1,19 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "channel_length_mm": 300,
+      "channel_diameter_mm": 3,
+      "bend_count": 5,
+      "surface_roughness_mm": 0.05
+    }
+  },
+  "script": "print(\"cad\")",
+  "project_id": "proj-portfolio-b",
+  "workflow_run_id": "wf-1775963575700-54a8d5cd",
+  "workflow_step": "cad"
+}

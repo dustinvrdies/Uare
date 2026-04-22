@@ -1,0 +1,193 @@
+{
+  "generated_at": "2026-04-22T11:57:11.676Z",
+  "execution_id": "cad-1776858988319-4db9d3fd",
+  "type": "cad_invention_update",
+  "headline": "Engineering concept generated with 1 parts",
+  "domains": [
+    "thermal-fluid",
+    "plasma"
+  ],
+  "summary": {
+    "engine": "cadquery",
+    "kernel_ok": true,
+    "manufacturable": false,
+    "part_count": 1
+  },
+  "linked_artifacts": [
+    {
+      "type": "plan",
+      "filename": "plan.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/plan.json"
+    },
+    {
+      "type": "recipe",
+      "filename": "recipe.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/recipe.json"
+    },
+    {
+      "type": "cadquery_script",
+      "filename": "cadquery_script.py",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/cadquery_script.py"
+    },
+    {
+      "type": "assembly_document",
+      "filename": "assembly_document.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/assembly_document.json"
+    },
+    {
+      "type": "viewer_manifest",
+      "filename": "viewer_manifest.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/viewer_manifest.json"
+    },
+    {
+      "type": "bom_json",
+      "filename": "bom.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/bom.json"
+    },
+    {
+      "type": "bom_csv",
+      "filename": "bom.csv",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/bom.csv"
+    },
+    {
+      "type": "dimensions",
+      "filename": "dimensions.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/dimensions.json"
+    },
+    {
+      "type": "features",
+      "filename": "features.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/features.json"
+    },
+    {
+      "type": "kicad_pcb",
+      "filename": "pcb_layout.kicad_pcb",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/pcb_layout.kicad_pcb"
+    },
+    {
+      "type": "kicad_schematic",
+      "filename": "schematic.kicad_sch",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/schematic.kicad_sch"
+    },
+    {
+      "type": "footprints",
+      "filename": "footprints.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/footprints.json"
+    },
+    {
+      "type": "easyeda_project",
+      "filename": "easyeda_project.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/easyeda_project.json"
+    },
+    {
+      "type": "netlist",
+      "filename": "netlist.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/netlist.json"
+    },
+    {
+      "type": "wiring",
+      "filename": "wiring_routes.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/wiring_routes.json"
+    },
+    {
+      "type": "simulation_report",
+      "filename": "simulation_report.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/simulation_report.json"
+    },
+    {
+      "type": "assembly_instructions",
+      "filename": "assembly_instructions.md",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/assembly_instructions.md"
+    },
+    {
+      "type": "gerber_top_copper",
+      "filename": "board_top_copper.gbr",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/board_top_copper.gbr"
+    },
+    {
+      "type": "gerber_outline",
+      "filename": "board_outline.gbr",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/board_outline.gbr"
+    },
+    {
+      "type": "drill_file",
+      "filename": "board_drill.drl",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/board_drill.drl"
+    },
+    {
+      "type": "svg_preview",
+      "filename": "model_preview.svg",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/model_preview.svg"
+    },
+    {
+      "type": "stl_envelope",
+      "filename": "model_envelope.stl",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/model_envelope.stl"
+    },
+    {
+      "type": "obj_mesh",
+      "filename": "model_mesh.obj",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/model_mesh.obj"
+    },
+    {
+      "type": "glb_mesh",
+      "filename": "model_mesh.glb",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/model_mesh.glb"
+    },
+    {
+      "type": "step_exchange",
+      "filename": "model_step.step",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/model_step.step"
+    },
+    {
+      "type": "step",
+      "filename": "assembly.step",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/assembly.step"
+    },
+    {
+      "type": "stl_kernel",
+      "filename": "assembly_kernel.stl",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/assembly_kernel.stl"
+    },
+    {
+      "type": "kernel_part_manifest",
+      "filename": "kernel_part_manifest.json",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/kernel_part_manifest.json"
+    },
+    {
+      "type": "html_preview",
+      "filename": "preview.html",
+      "url": "/cad/artifacts/cad-1776858988319-4db9d3fd/preview.html"
+    }
+  ],
+  "next_actions": [
+    "run domain-specific simulation set",
+    "evaluate AI-generated material alternatives",
+    "publish blueprint and manufacturing package review"
+  ],
+  "exploration": {
+    "generated_at": "2026-04-22T11:57:11.676Z",
+    "autonomous_search_enabled": true,
+    "candidates": [
+      {
+        "id": "part-oil_pump",
+        "name": "Regression-oil_pump",
+        "domains": [
+          "thermal-fluid",
+          "plasma"
+        ],
+        "recommended_mutations": [
+          "resize_for_mass_efficiency",
+          "evaluate_material_alternatives",
+          "add_feature_timeline_detail"
+        ],
+        "recommended_simulations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "fluid"
+        ]
+      }
+    ]
+  }
+}

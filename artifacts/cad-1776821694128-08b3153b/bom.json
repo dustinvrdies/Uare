@@ -1,0 +1,11 @@
+[
+  {
+    "id": "cr-1",
+    "name": "ConRodQuery",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

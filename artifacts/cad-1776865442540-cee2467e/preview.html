@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UARE CAD Preview — cad-1776865442540-cee2467e</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Inter,Arial,sans-serif;background:#0f1117;color:#e2e8f0;margin:0;padding:24px}
+h1{margin:0 0 20px;font-size:20px;font-weight:700;color:#fff}
+h2{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#8899cc;margin:0 0 12px}
+.card{background:#161b28;border:1px solid #1e293b;border-radius:14px;padding:18px;margin-bottom:16px}
+.viewer-card{padding:18px}
+.meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:0}
+.meta-item{background:#1a2236;border-radius:8px;padding:10px 12px}
+.meta-label{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.meta-val{font-size:15px;font-weight:600;color:#e2e8f0}
+ul{margin:0;padding-left:20px}
+li{margin-bottom:6px;font-size:13px}
+a{color:#60a5fa;text-decoration:none}
+a:hover{text-decoration:underline}
+code{background:#1e293b;border-radius:4px;padding:1px 5px;font-size:12px;color:#93c5fd}
+</style>
+</head><body>
+<h1>UARE CAD Execution Preview</h1>
+<div class="card">
+  <div class="meta">
+    <div class="meta-item"><div class="meta-label">Execution ID</div><div class="meta-val"><code>cad-1776865442540-cee2467e</code></div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-val">completed</div></div>
+    <div class="meta-item"><div class="meta-label">Parts</div><div class="meta-val">—</div></div>
+    <div class="meta-item"><div class="meta-label">Total Mass</div><div class="meta-val">—</div></div>
+    <div class="meta-item"><div class="meta-label">Deterministic</div><div class="meta-val">true</div></div>
+  </div>
+</div>
+
+  <div class="card viewer-card">
+    <h2 style="margin-top:0">3D Model — CadQuery Kernel Output</h2>
+    <div id="viewport" style="width:100%;height:520px;background:#0b0d12;border-radius:12px;overflow:hidden;position:relative">
+      <div id="vp-status" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#8899cc;font-size:13px;font-family:monospace">Loading geometry…</div>
+    </div>
+    <div style="margin-top:8px;font-size:12px;color:#6b7280;display:flex;gap:16px;flex-wrap:wrap">
+      <span id="tri-count"></span>
+      <span>Drag to orbit · Scroll to zoom · Right-drag to pan</span>
+    </div>
+  </div>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js';
+    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/controls/OrbitControls.js';
+    (async function() {
+      const container = document.getElementById('viewport');
+      const status = document.getElementById('vp-status');
+      const W = container.clientWidth, H = container.clientHeight;
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setSize(W, H);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      container.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0b0d12);
+      scene.add(new THREE.AmbientLight(0x334466, 0.7));
+      const key = new THREE.DirectionalLight(0xffffff, 1.4);
+      key.position.set(2, 4, 3); key.castShadow = true; scene.add(key);
+      scene.add(new THREE.DirectionalLight(0x8899cc, 0.5).position.set(-3, 2, -2) && scene.children[scene.children.length-1]);
+      scene.add(Object.assign(new THREE.DirectionalLight(0x99bbff, 0.3), { position: new THREE.Vector3(0,-3,5) }));
+      scene.add(new THREE.GridHelper(2, 20, 0x223344, 0x112233));
+
+      const camera = new THREE.PerspectiveCamera(45, W/H, 0.001, 1000);
+      camera.position.set(0.8, 0.6, 1.0);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true; controls.dampingFactor = 0.06;
+
+      // Fetch and parse STL
+      try {
+        const resp = await fetch("/cad/artifacts/cad-1776865442540-cee2467e/assembly_kernel.stl");
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const buf = await resp.arrayBuffer();
+        const view = new DataView(buf);
+        const isASCII = new TextDecoder().decode(new Uint8Array(buf, 0, 5)).startsWith('solid');
+        let positions, normals;
+        if (isASCII) {
+          const text = new TextDecoder().decode(buf);
+          const posArr = [], normArr = [];
+          const re = /facet\s+normal\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)[\s\S]*?vertex\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)\s+vertex\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)\s+vertex\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)\s+([\d.eE+\-]+)/g;
+          let m;
+          while ((m = re.exec(text)) !== null) {
+            const nx=+m[1],ny=+m[2],nz=+m[3];
+            posArr.push(+m[4],+m[5],+m[6],+m[7],+m[8],+m[9],+m[10],+m[11],+m[12]);
+            normArr.push(nx,ny,nz,nx,ny,nz,nx,ny,nz);
+          }
+          positions = new Float32Array(posArr); normals = new Float32Array(normArr);
+        } else {
+          const triCount = view.getUint32(80, true);
+          positions = new Float32Array(triCount*9); normals = new Float32Array(triCount*9);
+          let off = 84;
+          for (let i = 0; i < triCount; i++) {
+            const nx=view.getFloat32(off,true),ny=view.getFloat32(off+4,true),nz=view.getFloat32(off+8,true);
+            off+=12;
+            const b=i*9;
+            for (let v=0;v<3;v++){
+              positions[b+v*3]=view.getFloat32(off,true); positions[b+v*3+1]=view.getFloat32(off+4,true); positions[b+v*3+2]=view.getFloat32(off+8,true);
+              normals[b+v*3]=nx; normals[b+v*3+1]=ny; normals[b+v*3+2]=nz;
+              off+=12;
+            }
+            off+=2;
+          }
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geo.setAttribute('normal',   new THREE.BufferAttribute(normals,   3));
+        geo.computeBoundingSphere();
+
+        const mat = new THREE.MeshStandardMaterial({ color:0x8a9bb5, metalness:0.72, roughness:0.35, side:THREE.DoubleSide });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.scale.setScalar(0.001); // mm → metres for display
+        mesh.castShadow = mesh.receiveShadow = true;
+
+        // Centre mesh
+        const box3 = new THREE.Box3().setFromObject(mesh);
+        const ctr = box3.getCenter(new THREE.Vector3());
+        mesh.position.sub(ctr);
+        scene.add(mesh);
+
+        // Fit camera
+        const sz = box3.getSize(new THREE.Vector3());
+        const maxD = Math.max(sz.x,sz.y,sz.z);
+        camera.position.set(maxD*0.9, maxD*0.65, maxD*1.1);
+        camera.lookAt(0,0,0); controls.update();
+
+        if (status) status.remove();
+        const tc = document.getElementById('tri-count');
+        if (tc) tc.textContent = (positions.length/9).toLocaleString() + ' triangles (CadQuery kernel output)';
+      } catch(e) {
+        if (status) status.textContent = 'Geometry load error: ' + e.message;
+      }
+
+      // Resize
+      new ResizeObserver(()=>{ const nw=container.clientWidth,nh=container.clientHeight; renderer.setSize(nw,nh); camera.aspect=nw/nh; camera.updateProjectionMatrix(); }).observe(container);
+
+      (function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); })();
+    })();
+  </script>
+<div class="card"><h2>Artifacts</h2><ul>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/plan.json" target="_blank">plan — plan.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/recipe.json" target="_blank">recipe — recipe.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/cadquery_script.py" target="_blank">cadquery_script — cadquery_script.py</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/assembly_document.json" target="_blank">assembly_document — assembly_document.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/viewer_manifest.json" target="_blank">viewer_manifest — viewer_manifest.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/bom.json" target="_blank">bom_json — bom.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/bom.csv" target="_blank">bom_csv — bom.csv</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/dimensions.json" target="_blank">dimensions — dimensions.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/features.json" target="_blank">features — features.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/pcb_layout.kicad_pcb" target="_blank">kicad_pcb — pcb_layout.kicad_pcb</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/schematic.kicad_sch" target="_blank">kicad_schematic — schematic.kicad_sch</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/footprints.json" target="_blank">footprints — footprints.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/easyeda_project.json" target="_blank">easyeda_project — easyeda_project.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/netlist.json" target="_blank">netlist — netlist.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/wiring_routes.json" target="_blank">wiring — wiring_routes.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/simulation_report.json" target="_blank">simulation_report — simulation_report.json</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/assembly_instructions.md" target="_blank">assembly_instructions — assembly_instructions.md</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/board_top_copper.gbr" target="_blank">gerber_top_copper — board_top_copper.gbr</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/board_outline.gbr" target="_blank">gerber_outline — board_outline.gbr</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/board_drill.drl" target="_blank">drill_file — board_drill.drl</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/model_preview.svg" target="_blank">svg_preview — model_preview.svg</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/model_envelope.stl" target="_blank">stl_envelope — model_envelope.stl</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/model_mesh.obj" target="_blank">obj_mesh — model_mesh.obj</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/model_mesh.glb" target="_blank">glb_mesh — model_mesh.glb</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/model_step.step" target="_blank">step_exchange — model_step.step</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/assembly.step" target="_blank">step — assembly.step</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/assembly_kernel.stl" target="_blank">stl_kernel — assembly_kernel.stl</a></li>
+<li><a href="/cad/artifacts/cad-1776865442540-cee2467e/kernel_part_manifest.json" target="_blank">kernel_part_manifest — kernel_part_manifest.json</a></li>
+</ul></div>
+<div class="card"><h2>STEP Download</h2><a href="/cad/artifacts/cad-1776865442540-cee2467e/assembly.step" download="assembly.step">assembly.step</a> — full B-Rep solid for CAD import</div>
+</body></html>

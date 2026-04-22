@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+<rect width="1200" height="700" fill="white" />
+<text x="40" y="40" font-size="14" font-family="Arial, sans-serif" fill="#111827">Uare deterministic CAD preview - cad-1776099077103-ecbebfa3</text>
+<text x="40" y="90" font-size="14" font-family="Arial, sans-serif" fill="#111827">Top View</text>
+<rect x="60" y="110" width="240" height="80" rx="8" fill="#f8fafc" stroke="#111827" stroke-width="2" />
+<circle cx="180" cy="150" r="8" fill="none" stroke="#111827" stroke-width="2" />
+<text x="60" y="218" font-size="14" font-family="Arial, sans-serif" fill="#111827">Length 120 mm · Width 40 mm</text>
+<text x="40" y="260" font-size="14" font-family="Arial, sans-serif" fill="#111827">Front View</text>
+<rect x="60" y="280" width="240" height="60" rx="8" fill="#f8fafc" stroke="#111827" stroke-width="2" />
+<text x="60" y="368" font-size="14" font-family="Arial, sans-serif" fill="#111827">Length 120 mm · Height 30 mm</text>
+<text x="40" y="430" font-size="14" font-family="Arial, sans-serif" fill="#111827">Side View</text>
+<rect x="60" y="450" width="80" height="60" rx="8" fill="#f8fafc" stroke="#111827" stroke-width="2" />
+<text x="60" y="538" font-size="14" font-family="Arial, sans-serif" fill="#111827">Width 40 mm · Height 30 mm</text>
+<text x="520" y="90" font-size="14" font-family="Arial, sans-serif" fill="#111827">Execution Notes</text>
+<text x="520" y="130" font-size="14" font-family="Arial, sans-serif" fill="#111827">Deterministic preview generated from engineering parameters</text>
+<text x="520" y="160" font-size="14" font-family="Arial, sans-serif" fill="#111827">Backend writes manifest, recipe, CadQuery script, STL envelope, and SVG preview</text>
+<text x="520" y="190" font-size="14" font-family="Arial, sans-serif" fill="#111827">STL artifact is envelope-accurate at this stage; full boolean feature execution</text>
+<text x="520" y="220" font-size="14" font-family="Arial, sans-serif" fill="#111827">still requires a live CadQuery kernel/runtime integration</text>
+</svg>

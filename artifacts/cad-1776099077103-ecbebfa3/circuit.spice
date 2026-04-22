@@ -1,0 +1,12 @@
+* UARE generated circuit
+* NET 1: VIN => input_vin, regulator.in
+* NET 2: VCC_5V => regulator.out, mcu.vcc
+* NET 3: I2C_SCL => mcu.scl, sensor.scl
+* NET 4: I2C_SDA => mcu.sda, sensor.sda
+* NET 5: GND => input_gnd, regulator.gnd, mcu.gnd, sensor.gnd
+V1 VIN 0 DC 12
+RREG VIN VREG 0.5
+RMCU VREG MCU_VCC 2
+RSNS MCU_VCC SENS_VCC 5
+.op
+.end

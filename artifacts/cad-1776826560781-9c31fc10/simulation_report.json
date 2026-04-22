@@ -1,0 +1,16 @@
+{
+  "engine": "heuristic",
+  "ok": false,
+  "errors": [
+    "Missing VIN supply net.",
+    "Missing GND reference net."
+  ],
+  "warnings": [],
+  "summary": {
+    "net_count": 0,
+    "supply_nets": 0,
+    "nominal_voltage_range_v": []
+  },
+  "netlist_filename": "circuit.spice",
+  "raw_output_filename": null
+}

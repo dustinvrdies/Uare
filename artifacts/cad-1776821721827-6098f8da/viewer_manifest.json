@@ -1,0 +1,52 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T01:35:21.828Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "cr-1"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "cr-1",
+      "label": "ConRodQuery",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "ctc": 140,
+        "bigEndD": 50,
+        "smallEndD": 21,
+        "thickness": 20,
+        "x": 50,
+        "y": 20,
+        "z": 175.5
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 35.1
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 50,
+    "y": 20,
+    "z": 175.5
+  }
+}

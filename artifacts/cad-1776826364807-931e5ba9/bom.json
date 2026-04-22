@@ -1,0 +1,11 @@
+[
+  {
+    "id": "eb-metrics",
+    "name": "EB-Metrics",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

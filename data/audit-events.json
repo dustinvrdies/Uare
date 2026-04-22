@@ -1,0 +1,2109 @@
+{
+  "events": [
+    {
+      "audit_id": "audit-1776701205813-8cbf79be",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776701205811-in1wj6",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T16:06:45.813Z"
+    },
+    {
+      "audit_id": "audit-1776701205808-d71579d9",
+      "actor_id": "user-1776701205697-b2d6229e",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776701205807-7db23a2d",
+      "status": "success",
+      "request_id": "req-1776701205806-9upmyn",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776701205790-7626aff4"
+      },
+      "created_at": "2026-04-20T16:06:45.809Z"
+    },
+    {
+      "audit_id": "audit-1776701205794-7b328f07",
+      "actor_id": "user-1776701205697-b2d6229e",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776701205794-0b3288e9",
+      "status": "success",
+      "request_id": "req-1776701205793-yaphak",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776701205790-7626aff4",
+        "user_id": "user-1776701205746-d3a7f6d9",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T16:06:45.794Z"
+    },
+    {
+      "audit_id": "audit-1776701205791-8c00fb50",
+      "actor_id": "user-1776701205697-b2d6229e",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776701205790-7626aff4",
+      "status": "success",
+      "request_id": "req-1776701205790-0qk9lq",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-35a8",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T16:06:45.791Z"
+    },
+    {
+      "audit_id": "audit-1776701205783-6cf1d8db",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701205746-d3a7f6d9",
+      "status": "success",
+      "request_id": "req-1776701205746-vogzpx",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T16:06:45.783Z"
+    },
+    {
+      "audit_id": "audit-1776701205738-f3c252ac",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701205697-b2d6229e",
+      "status": "success",
+      "request_id": "req-1776701205695-1vm2vx",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T16:06:45.738Z"
+    },
+    {
+      "audit_id": "audit-1776701195468-7375d454",
+      "actor_id": "user-1776701195379-83afa72a",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776701195379-83afa72a",
+      "status": "success",
+      "request_id": "req-1776701195431-ky7vu7",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T16:06:35.468Z"
+    },
+    {
+      "audit_id": "audit-1776701195427-d60e2dc2",
+      "actor_id": "user-1776701195379-83afa72a",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776701195379-83afa72a",
+      "status": "success",
+      "request_id": "req-1776701195426-mtwz03",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776701195418-9328de4e"
+      },
+      "created_at": "2026-04-20T16:06:35.427Z"
+    },
+    {
+      "audit_id": "audit-1776701195419-db7d486a",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701195379-83afa72a",
+      "status": "success",
+      "request_id": "req-1776701195378-l3549o",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T16:06:35.419Z"
+    },
+    {
+      "audit_id": "audit-1776701188741-ea32a61b",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776701188741-99c0ae45",
+      "status": "success",
+      "request_id": "req-1776701188739-hrgmg8",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T16:06:28.741Z"
+    },
+    {
+      "audit_id": "audit-1776701154905-221909e0",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776701154905-d0a67ae2",
+      "status": "success",
+      "request_id": "req-1776701154904-0dnta0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776701154899-3b16d111",
+        "user_id": "user-1776701154817-21df4f17",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T16:05:54.905Z"
+    },
+    {
+      "audit_id": "audit-1776701154899-a3391f14",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776701154899-3b16d111",
+      "status": "success",
+      "request_id": "req-1776701154898-6p03wz",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-03d5",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T16:05:54.899Z"
+    },
+    {
+      "audit_id": "audit-1776701154895-9c6164a0",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701154858-2b987cf1",
+      "status": "success",
+      "request_id": "req-1776701154857-hf6cuf",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T16:05:54.895Z"
+    },
+    {
+      "audit_id": "audit-1776701154854-28901eb6",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701154817-21df4f17",
+      "status": "success",
+      "request_id": "req-1776701154816-wtklcs",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T16:05:54.854Z"
+    },
+    {
+      "audit_id": "audit-1776701154812-4340a89e",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701154769-bc50745d",
+      "status": "success",
+      "request_id": "req-1776701154768-o6bjx4",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T16:05:54.812Z"
+    },
+    {
+      "audit_id": "audit-1776701143721-1443a449",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776701143719-wpygsv",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T16:05:43.721Z"
+    },
+    {
+      "audit_id": "audit-1776701143715-d81ce0f2",
+      "actor_id": "user-1776701143602-8f9ca07f",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776701143713-8d5ec65c",
+      "status": "success",
+      "request_id": "req-1776701143712-67eouv",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776701143696-1749b827"
+      },
+      "created_at": "2026-04-20T16:05:43.715Z"
+    },
+    {
+      "audit_id": "audit-1776701143701-d2cf042f",
+      "actor_id": "user-1776701143602-8f9ca07f",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776701143700-529f2664",
+      "status": "success",
+      "request_id": "req-1776701143699-lbwpcp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776701143696-1749b827",
+        "user_id": "user-1776701143652-bf8730bc",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T16:05:43.701Z"
+    },
+    {
+      "audit_id": "audit-1776701143696-f70570d4",
+      "actor_id": "user-1776701143602-8f9ca07f",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776701143696-1749b827",
+      "status": "success",
+      "request_id": "req-1776701143695-ixicxz",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-98ff",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T16:05:43.696Z"
+    },
+    {
+      "audit_id": "audit-1776701143690-ca2af115",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701143652-bf8730bc",
+      "status": "success",
+      "request_id": "req-1776701143651-ndy78g",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T16:05:43.690Z"
+    },
+    {
+      "audit_id": "audit-1776701143643-4bbe0371",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701143602-8f9ca07f",
+      "status": "success",
+      "request_id": "req-1776701143601-j444fb",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T16:05:43.643Z"
+    },
+    {
+      "audit_id": "audit-1776701133590-a3efac94",
+      "actor_id": "user-1776701133483-c39721ec",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776701133483-c39721ec",
+      "status": "success",
+      "request_id": "req-1776701133537-0nwgbo",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T16:05:33.590Z"
+    },
+    {
+      "audit_id": "audit-1776701133534-b6c74236",
+      "actor_id": "user-1776701133483-c39721ec",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776701133483-c39721ec",
+      "status": "success",
+      "request_id": "req-1776701133532-d7jlc4",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776701133524-9e0d43ec"
+      },
+      "created_at": "2026-04-20T16:05:33.534Z"
+    },
+    {
+      "audit_id": "audit-1776701133525-b45b25ce",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701133483-c39721ec",
+      "status": "success",
+      "request_id": "req-1776701133481-w7djoe",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T16:05:33.525Z"
+    },
+    {
+      "audit_id": "audit-1776701126845-dc3295ee",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776701126845-2d0541cb",
+      "status": "success",
+      "request_id": "req-1776701126843-0vmemd",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T16:05:26.845Z"
+    },
+    {
+      "audit_id": "audit-1776701092943-e68da6a5",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776701092942-7c5e8855",
+      "status": "success",
+      "request_id": "req-1776701092942-s6q7as",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776701092937-d940152c",
+        "user_id": "user-1776701092851-5833b8a3",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T16:04:52.943Z"
+    },
+    {
+      "audit_id": "audit-1776701092938-9e98b54f",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776701092937-d940152c",
+      "status": "success",
+      "request_id": "req-1776701092937-at6jrv",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-584a",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T16:04:52.938Z"
+    },
+    {
+      "audit_id": "audit-1776701092933-03ed2b25",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701092894-b408f12b",
+      "status": "success",
+      "request_id": "req-1776701092893-i8qwhp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T16:04:52.933Z"
+    },
+    {
+      "audit_id": "audit-1776701092890-a0002de7",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701092851-5833b8a3",
+      "status": "success",
+      "request_id": "req-1776701092851-skynfa",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T16:04:52.890Z"
+    },
+    {
+      "audit_id": "audit-1776701092844-c2af10af",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776701092802-38df5ff5",
+      "status": "success",
+      "request_id": "req-1776701092799-qgk7b5",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T16:04:52.844Z"
+    },
+    {
+      "audit_id": "audit-1776699544149-3abf23a3",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776699544147-vb4mub",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T15:39:04.149Z"
+    },
+    {
+      "audit_id": "audit-1776699544143-35a3f586",
+      "actor_id": "user-1776699544028-060fbe84",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776699544142-85174e7d",
+      "status": "success",
+      "request_id": "req-1776699544141-g8vor5",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776699544124-0c95b288"
+      },
+      "created_at": "2026-04-20T15:39:04.143Z"
+    },
+    {
+      "audit_id": "audit-1776699544129-8d5f58b6",
+      "actor_id": "user-1776699544028-060fbe84",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776699544129-91a4afba",
+      "status": "success",
+      "request_id": "req-1776699544128-a2n73z",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776699544124-0c95b288",
+        "user_id": "user-1776699544080-b73452f1",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T15:39:04.129Z"
+    },
+    {
+      "audit_id": "audit-1776699544125-0b637a84",
+      "actor_id": "user-1776699544028-060fbe84",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776699544124-0c95b288",
+      "status": "success",
+      "request_id": "req-1776699544123-06j37z",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-18d8",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T15:39:04.125Z"
+    },
+    {
+      "audit_id": "audit-1776699544118-2a8eb996",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776699544080-b73452f1",
+      "status": "success",
+      "request_id": "req-1776699544079-ckq2ub",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T15:39:04.118Z"
+    },
+    {
+      "audit_id": "audit-1776699544071-a75e3797",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776699544028-060fbe84",
+      "status": "success",
+      "request_id": "req-1776699544026-qao783",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T15:39:04.071Z"
+    },
+    {
+      "audit_id": "audit-1776699533807-eecd8130",
+      "actor_id": "user-1776699533717-8a4f4873",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776699533717-8a4f4873",
+      "status": "success",
+      "request_id": "req-1776699533769-7xne3i",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T15:38:53.807Z"
+    },
+    {
+      "audit_id": "audit-1776699533767-26b0e9f2",
+      "actor_id": "user-1776699533717-8a4f4873",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776699533717-8a4f4873",
+      "status": "success",
+      "request_id": "req-1776699533766-ueo2vr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776699533757-e9de3919"
+      },
+      "created_at": "2026-04-20T15:38:53.767Z"
+    },
+    {
+      "audit_id": "audit-1776699533758-010fe02a",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776699533717-8a4f4873",
+      "status": "success",
+      "request_id": "req-1776699533716-6sjsbn",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T15:38:53.758Z"
+    },
+    {
+      "audit_id": "audit-1776699527076-1ab85a6e",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776699527075-f92656ef",
+      "status": "success",
+      "request_id": "req-1776699527074-twmfqh",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T15:38:47.076Z"
+    },
+    {
+      "audit_id": "audit-1776699493174-72aa94d5",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776699493173-7acd6184",
+      "status": "success",
+      "request_id": "req-1776699493172-dww9sj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776699493168-9ec52134",
+        "user_id": "user-1776699493085-642e7f42",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T15:38:13.174Z"
+    },
+    {
+      "audit_id": "audit-1776699493169-da73fa5b",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776699493168-9ec52134",
+      "status": "success",
+      "request_id": "req-1776699493168-kcem3a",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-58e3",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T15:38:13.169Z"
+    },
+    {
+      "audit_id": "audit-1776699493165-945d6c3c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776699493126-3c80e06d",
+      "status": "success",
+      "request_id": "req-1776699493126-wg4ipj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T15:38:13.165Z"
+    },
+    {
+      "audit_id": "audit-1776699493123-ec9ee409",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776699493085-642e7f42",
+      "status": "success",
+      "request_id": "req-1776699493084-jqbrde",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T15:38:13.123Z"
+    },
+    {
+      "audit_id": "audit-1776699493079-4965bf61",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776699493037-8b7e608d",
+      "status": "success",
+      "request_id": "req-1776699493036-15zzm4",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T15:38:13.079Z"
+    },
+    {
+      "audit_id": "audit-1776697328625-820194f9",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776697328623-mkubcr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T15:02:08.625Z"
+    },
+    {
+      "audit_id": "audit-1776697328620-5e6ddf04",
+      "actor_id": "user-1776697328500-fade03bc",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697328619-fea5478d",
+      "status": "success",
+      "request_id": "req-1776697328617-4uxj68",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776697328600-785e7d5a"
+      },
+      "created_at": "2026-04-20T15:02:08.620Z"
+    },
+    {
+      "audit_id": "audit-1776697328605-ba2ecd22",
+      "actor_id": "user-1776697328500-fade03bc",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697328605-3f31f411",
+      "status": "success",
+      "request_id": "req-1776697328604-2uigjf",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697328600-785e7d5a",
+        "user_id": "user-1776697328551-14e279c0",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T15:02:08.605Z"
+    },
+    {
+      "audit_id": "audit-1776697328600-23835bd1",
+      "actor_id": "user-1776697328500-fade03bc",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697328600-785e7d5a",
+      "status": "success",
+      "request_id": "req-1776697328599-twlcpb",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-84fe",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T15:02:08.600Z"
+    },
+    {
+      "audit_id": "audit-1776697328593-c0423a9b",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697328551-14e279c0",
+      "status": "success",
+      "request_id": "req-1776697328551-rivzq1",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T15:02:08.593Z"
+    },
+    {
+      "audit_id": "audit-1776697328544-65edd3b9",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697328500-fade03bc",
+      "status": "success",
+      "request_id": "req-1776697328497-2atkyi",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T15:02:08.544Z"
+    },
+    {
+      "audit_id": "audit-1776697318274-d28effcb",
+      "actor_id": "user-1776697318182-4f04eb56",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776697318182-4f04eb56",
+      "status": "success",
+      "request_id": "req-1776697318236-finmdf",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T15:01:58.274Z"
+    },
+    {
+      "audit_id": "audit-1776697318233-9d92c3d3",
+      "actor_id": "user-1776697318182-4f04eb56",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776697318182-4f04eb56",
+      "status": "success",
+      "request_id": "req-1776697318232-61op79",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776697318223-951fad03"
+      },
+      "created_at": "2026-04-20T15:01:58.233Z"
+    },
+    {
+      "audit_id": "audit-1776697318224-709c438c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697318182-4f04eb56",
+      "status": "success",
+      "request_id": "req-1776697318180-n0wrw3",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T15:01:58.224Z"
+    },
+    {
+      "audit_id": "audit-1776697311535-4801beef",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697311535-b9ff51af",
+      "status": "success",
+      "request_id": "req-1776697311534-iuvbkd",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T15:01:51.535Z"
+    },
+    {
+      "audit_id": "audit-1776697277335-c19e6e30",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697277334-3c1f7e7a",
+      "status": "success",
+      "request_id": "req-1776697277333-wa9pnp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697277327-175aed77",
+        "user_id": "user-1776697277230-b9c81324",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T15:01:17.335Z"
+    },
+    {
+      "audit_id": "audit-1776697277327-e4a4a1de",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697277327-175aed77",
+      "status": "success",
+      "request_id": "req-1776697277326-zhhp6m",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-a701",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T15:01:17.327Z"
+    },
+    {
+      "audit_id": "audit-1776697277322-5098f488",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697277277-83af2b2b",
+      "status": "success",
+      "request_id": "req-1776697277276-wq7bgx",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T15:01:17.322Z"
+    },
+    {
+      "audit_id": "audit-1776697277273-feaf9eda",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697277230-b9c81324",
+      "status": "success",
+      "request_id": "req-1776697277230-erxwbe",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T15:01:17.273Z"
+    },
+    {
+      "audit_id": "audit-1776697277225-42850b8f",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697277181-bc292e4c",
+      "status": "success",
+      "request_id": "req-1776697277180-dxxvf8",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T15:01:17.225Z"
+    },
+    {
+      "audit_id": "audit-1776697207122-284ed858",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776697207121-c4q672",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T15:00:07.122Z"
+    },
+    {
+      "audit_id": "audit-1776697207117-5270abc4",
+      "actor_id": "user-1776697207004-690d6cf1",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697207116-1e26ceea",
+      "status": "success",
+      "request_id": "req-1776697207114-oh1d04",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776697207097-b5c21d8b"
+      },
+      "created_at": "2026-04-20T15:00:07.117Z"
+    },
+    {
+      "audit_id": "audit-1776697207102-a749f1fb",
+      "actor_id": "user-1776697207004-690d6cf1",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697207101-184c5d3d",
+      "status": "success",
+      "request_id": "req-1776697207101-9dozbb",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697207097-b5c21d8b",
+        "user_id": "user-1776697207054-d0545d0c",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T15:00:07.102Z"
+    },
+    {
+      "audit_id": "audit-1776697207098-c44c4ce7",
+      "actor_id": "user-1776697207004-690d6cf1",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697207097-b5c21d8b",
+      "status": "success",
+      "request_id": "req-1776697207097-0w3t1o",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-4c69",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T15:00:07.098Z"
+    },
+    {
+      "audit_id": "audit-1776697207092-e50c3ab1",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697207054-d0545d0c",
+      "status": "success",
+      "request_id": "req-1776697207053-exyte2",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T15:00:07.092Z"
+    },
+    {
+      "audit_id": "audit-1776697207045-73600f8f",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697207004-690d6cf1",
+      "status": "success",
+      "request_id": "req-1776697207002-hvgpts",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T15:00:07.045Z"
+    },
+    {
+      "audit_id": "audit-1776697196963-adcb7ae7",
+      "actor_id": "user-1776697196867-a8847a68",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776697196867-a8847a68",
+      "status": "success",
+      "request_id": "req-1776697196925-i05kql",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:59:56.963Z"
+    },
+    {
+      "audit_id": "audit-1776697196921-295a15c6",
+      "actor_id": "user-1776697196867-a8847a68",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776697196867-a8847a68",
+      "status": "success",
+      "request_id": "req-1776697196920-82cdbk",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776697196912-22bf62c9"
+      },
+      "created_at": "2026-04-20T14:59:56.921Z"
+    },
+    {
+      "audit_id": "audit-1776697196913-5cac4419",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697196867-a8847a68",
+      "status": "success",
+      "request_id": "req-1776697196862-mqjutq",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:59:56.913Z"
+    },
+    {
+      "audit_id": "audit-1776697190204-725d888a",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697190203-208f751d",
+      "status": "success",
+      "request_id": "req-1776697190202-3d820y",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T14:59:50.204Z"
+    },
+    {
+      "audit_id": "audit-1776697155413-8e1bd441",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697155413-62d21d71",
+      "status": "success",
+      "request_id": "req-1776697155412-sp9nz4",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697155407-beb5bc6f",
+        "user_id": "user-1776697155302-6df73ab3",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T14:59:15.413Z"
+    },
+    {
+      "audit_id": "audit-1776697155407-166f059e",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697155407-beb5bc6f",
+      "status": "success",
+      "request_id": "req-1776697155406-etyds8",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-15b4",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T14:59:15.407Z"
+    },
+    {
+      "audit_id": "audit-1776697155401-e05aee45",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697155354-d82904e5",
+      "status": "success",
+      "request_id": "req-1776697155354-mfac7t",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T14:59:15.401Z"
+    },
+    {
+      "audit_id": "audit-1776697155350-35d6aee3",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697155302-6df73ab3",
+      "status": "success",
+      "request_id": "req-1776697155301-k8rrzv",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T14:59:15.350Z"
+    },
+    {
+      "audit_id": "audit-1776697155296-bb85b8e3",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697155246-ea650861",
+      "status": "success",
+      "request_id": "req-1776697155244-bgtwao",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T14:59:15.296Z"
+    },
+    {
+      "audit_id": "audit-1776697140835-d8bbf41d",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776697140832-jci0g3",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T14:59:00.835Z"
+    },
+    {
+      "audit_id": "audit-1776697140829-5ffeeb91",
+      "actor_id": "user-1776697140687-009d537b",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697140827-12626563",
+      "status": "success",
+      "request_id": "req-1776697140826-iqtx6e",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776697140804-4e7322a6"
+      },
+      "created_at": "2026-04-20T14:59:00.829Z"
+    },
+    {
+      "audit_id": "audit-1776697140810-54e5cb09",
+      "actor_id": "user-1776697140687-009d537b",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697140809-5a9219e0",
+      "status": "success",
+      "request_id": "req-1776697140809-jj0cux",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697140804-4e7322a6",
+        "user_id": "user-1776697140750-c6607e00",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T14:59:00.810Z"
+    },
+    {
+      "audit_id": "audit-1776697140805-2062aafb",
+      "actor_id": "user-1776697140687-009d537b",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697140804-4e7322a6",
+      "status": "success",
+      "request_id": "req-1776697140804-erz4ft",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-c836",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T14:59:00.805Z"
+    },
+    {
+      "audit_id": "audit-1776697140796-3040f3d9",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697140750-c6607e00",
+      "status": "success",
+      "request_id": "req-1776697140750-hvt27f",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T14:59:00.796Z"
+    },
+    {
+      "audit_id": "audit-1776697140739-6ad0f30c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697140687-009d537b",
+      "status": "success",
+      "request_id": "req-1776697140685-3shlpn",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T14:59:00.739Z"
+    },
+    {
+      "audit_id": "audit-1776697130448-ff9341af",
+      "actor_id": "user-1776697130334-e97b563e",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776697130334-e97b563e",
+      "status": "success",
+      "request_id": "req-1776697130399-xnefl7",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:58:50.448Z"
+    },
+    {
+      "audit_id": "audit-1776697130396-9720fd6f",
+      "actor_id": "user-1776697130334-e97b563e",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776697130334-e97b563e",
+      "status": "success",
+      "request_id": "req-1776697130395-a3kuyl",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776697130384-1193f544"
+      },
+      "created_at": "2026-04-20T14:58:50.396Z"
+    },
+    {
+      "audit_id": "audit-1776697130386-a87fbba0",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697130334-e97b563e",
+      "status": "success",
+      "request_id": "req-1776697130333-txc518",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:58:50.386Z"
+    },
+    {
+      "audit_id": "audit-1776697123677-5de08568",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697123676-c81d8113",
+      "status": "success",
+      "request_id": "req-1776697123674-4rtlzr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T14:58:43.677Z"
+    },
+    {
+      "audit_id": "audit-1776697089247-d2c39451",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697089246-7a1530d5",
+      "status": "success",
+      "request_id": "req-1776697089245-i03ich",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697089240-a09cd62c",
+        "user_id": "user-1776697089135-05462c0a",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T14:58:09.247Z"
+    },
+    {
+      "audit_id": "audit-1776697089241-90a0c9af",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697089240-a09cd62c",
+      "status": "success",
+      "request_id": "req-1776697089239-xe8krb",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-5260",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T14:58:09.241Z"
+    },
+    {
+      "audit_id": "audit-1776697089235-5b808247",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697089187-4c2c07aa",
+      "status": "success",
+      "request_id": "req-1776697089187-i50sy0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T14:58:09.235Z"
+    },
+    {
+      "audit_id": "audit-1776697089182-19cfb138",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697089135-05462c0a",
+      "status": "success",
+      "request_id": "req-1776697089134-py41hr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T14:58:09.182Z"
+    },
+    {
+      "audit_id": "audit-1776697089130-b8c85476",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697089089-49ddf020",
+      "status": "success",
+      "request_id": "req-1776697089087-q4lx8x",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T14:58:09.130Z"
+    },
+    {
+      "audit_id": "audit-1776697028629-4bcf89ca",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "billing.webhook.processed",
+      "target_type": "webhook_event",
+      "target_id": null,
+      "status": "success",
+      "request_id": "req-1776697028627-t0islj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "event_type": "checkout.session.completed"
+      },
+      "created_at": "2026-04-20T14:57:08.629Z"
+    },
+    {
+      "audit_id": "audit-1776697028623-60e6cd32",
+      "actor_id": "user-1776697028478-0e2767ad",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776697028620-5a3e0f67",
+      "status": "success",
+      "request_id": "req-1776697028619-n1rpnw",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "stripe",
+        "plan_id": "pro",
+        "org_id": "org-1776697028596-5eecb419"
+      },
+      "created_at": "2026-04-20T14:57:08.623Z"
+    },
+    {
+      "audit_id": "audit-1776697028601-ec126d74",
+      "actor_id": "user-1776697028478-0e2767ad",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776697028601-6f463a01",
+      "status": "success",
+      "request_id": "req-1776697028600-82bnn8",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776697028596-5eecb419",
+        "user_id": "user-1776697028538-28800cb8",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T14:57:08.601Z"
+    },
+    {
+      "audit_id": "audit-1776697028596-56f73f85",
+      "actor_id": "user-1776697028478-0e2767ad",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776697028596-5eecb419",
+      "status": "success",
+      "request_id": "req-1776697028595-35z5ud",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-a16e",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T14:57:08.596Z"
+    },
+    {
+      "audit_id": "audit-1776697028586-6641df34",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697028538-28800cb8",
+      "status": "success",
+      "request_id": "req-1776697028537-ha52n5",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T14:57:08.586Z"
+    },
+    {
+      "audit_id": "audit-1776697028528-416b0760",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776697028478-0e2767ad",
+      "status": "success",
+      "request_id": "req-1776697028476-iww1nq",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T14:57:08.528Z"
+    },
+    {
+      "audit_id": "audit-1776696922274-9a8059d1",
+      "actor_id": "user-1776696922167-245cf508",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776696922274-d833fe8f",
+      "status": "success",
+      "request_id": "req-1776696922273-nz4otp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776696922269-bd4ba386",
+        "user_id": "user-1776696922219-2bab286f",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T14:55:22.274Z"
+    },
+    {
+      "audit_id": "audit-1776696922270-35fa828f",
+      "actor_id": "user-1776696922167-245cf508",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776696922269-bd4ba386",
+      "status": "success",
+      "request_id": "req-1776696922268-gjjrq6",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-3d10",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T14:55:22.270Z"
+    },
+    {
+      "audit_id": "audit-1776696922262-85105a84",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696922219-2bab286f",
+      "status": "success",
+      "request_id": "req-1776696922218-mogeip",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T14:55:22.262Z"
+    },
+    {
+      "audit_id": "audit-1776696922210-769ea667",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696922167-245cf508",
+      "status": "success",
+      "request_id": "req-1776696922166-ngxw2a",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T14:55:22.210Z"
+    },
+    {
+      "audit_id": "audit-1776696911943-8a6ad3c0",
+      "actor_id": "user-1776696911838-8a3c5b4d",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776696911838-8a3c5b4d",
+      "status": "success",
+      "request_id": "req-1776696911896-ltxwho",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:55:11.943Z"
+    },
+    {
+      "audit_id": "audit-1776696911892-70546ca8",
+      "actor_id": "user-1776696911838-8a3c5b4d",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776696911838-8a3c5b4d",
+      "status": "success",
+      "request_id": "req-1776696911891-mwb1dm",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776696911882-16c7ac2c"
+      },
+      "created_at": "2026-04-20T14:55:11.892Z"
+    },
+    {
+      "audit_id": "audit-1776696911883-708d4251",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696911838-8a3c5b4d",
+      "status": "success",
+      "request_id": "req-1776696911836-f2hvbp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:55:11.883Z"
+    },
+    {
+      "audit_id": "audit-1776696905183-a329a8a6",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776696905183-327c0275",
+      "status": "success",
+      "request_id": "req-1776696905182-rai4dz",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T14:55:05.183Z"
+    },
+    {
+      "audit_id": "audit-1776696871483-baa3eaa0",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776696871482-6a90ce8a",
+      "status": "success",
+      "request_id": "req-1776696871481-i1eeza",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776696871476-2577d931",
+        "user_id": "user-1776696871371-5e981231",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T14:54:31.483Z"
+    },
+    {
+      "audit_id": "audit-1776696871476-afa35144",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776696871476-2577d931",
+      "status": "success",
+      "request_id": "req-1776696871475-2j1g93",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-88d6",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T14:54:31.476Z"
+    },
+    {
+      "audit_id": "audit-1776696871472-ac71d5d2",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696871424-a012adf9",
+      "status": "success",
+      "request_id": "req-1776696871424-f8o9xw",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T14:54:31.472Z"
+    },
+    {
+      "audit_id": "audit-1776696871421-30e65b1d",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696871371-5e981231",
+      "status": "success",
+      "request_id": "req-1776696871370-5zk4o1",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T14:54:31.421Z"
+    },
+    {
+      "audit_id": "audit-1776696871366-6cc32ed8",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696871321-cb920a21",
+      "status": "success",
+      "request_id": "req-1776696871320-mcjnby",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T14:54:31.366Z"
+    },
+    {
+      "audit_id": "audit-1776696861468-a70e7933",
+      "actor_id": "user-1776696861358-41fe1ad3",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776696861467-f93d687d",
+      "status": "success",
+      "request_id": "req-1776696861467-s2ns2z",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776696861461-57b9d4b9",
+        "user_id": "user-1776696861412-c8bf8228",
+        "role": "member"
+      },
+      "created_at": "2026-04-20T14:54:21.468Z"
+    },
+    {
+      "audit_id": "audit-1776696861462-003ee749",
+      "actor_id": "user-1776696861358-41fe1ad3",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776696861461-57b9d4b9",
+      "status": "success",
+      "request_id": "req-1776696861461-6qi55r",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "pass2-org-b893",
+        "name": "Pass2 Org"
+      },
+      "created_at": "2026-04-20T14:54:21.462Z"
+    },
+    {
+      "audit_id": "audit-1776696861455-66053140",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696861412-c8bf8228",
+      "status": "success",
+      "request_id": "req-1776696861411-9on5lp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "member2@example.com"
+      },
+      "created_at": "2026-04-20T14:54:21.455Z"
+    },
+    {
+      "audit_id": "audit-1776696861403-3485ac93",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696861358-41fe1ad3",
+      "status": "success",
+      "request_id": "req-1776696861357-5tlvfi",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner2@example.com"
+      },
+      "created_at": "2026-04-20T14:54:21.403Z"
+    },
+    {
+      "audit_id": "audit-1776696850725-0b41faaa",
+      "actor_id": "user-1776696850614-fcb43ada",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776696850614-fcb43ada",
+      "status": "success",
+      "request_id": "req-1776696850677-mjaa07",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:54:10.725Z"
+    },
+    {
+      "audit_id": "audit-1776696850674-9588151f",
+      "actor_id": "user-1776696850614-fcb43ada",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776696850614-fcb43ada",
+      "status": "success",
+      "request_id": "req-1776696850673-lax0ld",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776696850662-99b07671"
+      },
+      "created_at": "2026-04-20T14:54:10.674Z"
+    },
+    {
+      "audit_id": "audit-1776696850664-c25b3783",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696850614-fcb43ada",
+      "status": "success",
+      "request_id": "req-1776696850612-frwfif",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-20T14:54:10.664Z"
+    },
+    {
+      "audit_id": "audit-1776696843942-3839e013",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776696843941-7dcd2caa",
+      "status": "success",
+      "request_id": "req-1776696843939-aqs349",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T14:54:03.942Z"
+    },
+    {
+      "audit_id": "audit-1776696807558-75be877d",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776696807558-3f3a1266",
+      "status": "success",
+      "request_id": "req-1776696807557-ybqj4l",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776696807550-7a29fd52",
+        "user_id": "user-1776696807436-7dd7d0bc",
+        "role": "admin"
+      },
+      "created_at": "2026-04-20T14:53:27.558Z"
+    },
+    {
+      "audit_id": "audit-1776696807551-f84163b7",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776696807550-7a29fd52",
+      "status": "success",
+      "request_id": "req-1776696807548-kk7dmo",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-3c58",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-20T14:53:27.551Z"
+    },
+    {
+      "audit_id": "audit-1776696807544-410c361b",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696807492-62c72665",
+      "status": "success",
+      "request_id": "req-1776696807492-tjjm4r",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-20T14:53:27.544Z"
+    },
+    {
+      "audit_id": "audit-1776696807488-821f9c2a",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696807436-7dd7d0bc",
+      "status": "success",
+      "request_id": "req-1776696807436-auorp8",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-20T14:53:27.488Z"
+    },
+    {
+      "audit_id": "audit-1776696807429-6ea3e748",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776696807359-e3ba0f41",
+      "status": "success",
+      "request_id": "req-1776696807357-ohtbl0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-20T14:53:27.429Z"
+    },
+    {
+      "audit_id": "audit-1776696768847-b2dd1e86",
+      "actor_id": "idem-user",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776696768845-0ab9c715",
+      "status": "success",
+      "request_id": "req-1776696768839-fxp7aw",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-20T14:52:48.847Z"
+    },
+    {
+      "audit_id": "audit-1776643691288-55977ee3",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.login.failed",
+      "target_type": "user",
+      "target_id": "dustin82895@gmail.com",
+      "status": "rejected",
+      "request_id": "req-1776643691288-o10zgc",
+      "ip": "::1",
+      "metadata_json": {
+        "email": "dustin82895@gmail.com"
+      },
+      "created_at": "2026-04-20T00:08:11.288Z"
+    },
+    {
+      "audit_id": "audit-1776643685129-8ecca763",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.login.failed",
+      "target_type": "user",
+      "target_id": "dustin82895@gmail.com",
+      "status": "rejected",
+      "request_id": "req-1776643685125-8gr5rf",
+      "ip": "::1",
+      "metadata_json": {
+        "email": "dustin82895@gmail.com"
+      },
+      "created_at": "2026-04-20T00:08:05.129Z"
+    },
+    {
+      "audit_id": "audit-1776392449159-3883d7aa",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1776392449158-aa38c162",
+      "status": "success",
+      "request_id": "req-1776392449157-a31w1x",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1776392449151-7ecf3037",
+        "user_id": "user-1776392449015-8388fe96",
+        "role": "admin"
+      },
+      "created_at": "2026-04-17T02:20:49.159Z"
+    },
+    {
+      "audit_id": "audit-1776392449151-5cd11533",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1776392449151-7ecf3037",
+      "status": "success",
+      "request_id": "req-1776392449149-tb3uf4",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-06dd",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-17T02:20:49.151Z"
+    },
+    {
+      "audit_id": "audit-1776392449145-b576e7e0",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776392449093-1288cf4f",
+      "status": "success",
+      "request_id": "req-1776392449093-3brgn0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-17T02:20:49.145Z"
+    },
+    {
+      "audit_id": "audit-1776392449087-a2e5c94e",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776392449015-8388fe96",
+      "status": "success",
+      "request_id": "req-1776392449014-5jjoou",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-17T02:20:49.087Z"
+    },
+    {
+      "audit_id": "audit-1776392449009-efd1238b",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776392448939-53ac186f",
+      "status": "success",
+      "request_id": "req-1776392448937-fbmlqy",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-17T02:20:49.009Z"
+    },
+    {
+      "audit_id": "audit-1776392445131-e9f0335e",
+      "actor_id": "user-1776392444958-c05c9fc0",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1776392444958-c05c9fc0",
+      "status": "success",
+      "request_id": "req-1776392445051-q1uvdu",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-17T02:20:45.131Z"
+    },
+    {
+      "audit_id": "audit-1776392445046-2e490098",
+      "actor_id": "user-1776392444958-c05c9fc0",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1776392444958-c05c9fc0",
+      "status": "success",
+      "request_id": "req-1776392445045-w1goj0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1776392445033-2dbb9ecd"
+      },
+      "created_at": "2026-04-17T02:20:45.046Z"
+    },
+    {
+      "audit_id": "audit-1776392445034-01d514e1",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1776392444958-c05c9fc0",
+      "status": "success",
+      "request_id": "req-1776392444956-xdvj1b",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-17T02:20:45.034Z"
+    },
+    {
+      "audit_id": "audit-1776392375689-8f28f55e",
+      "actor_id": "idem-user",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1776392375688-8e02d394",
+      "status": "success",
+      "request_id": "req-1776392375684-gv5z7c",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-17T02:19:35.689Z"
+    }
+  ]
+}

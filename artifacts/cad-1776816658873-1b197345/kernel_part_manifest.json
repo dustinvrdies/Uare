@@ -1,0 +1,150 @@
+{
+  "parts": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "name": "Main control PCB",
+      "kind": "electrical_pcb",
+      "dimensions_mm": {
+        "x": 80,
+        "y": 50,
+        "z": 1.6,
+        "width": 100,
+        "depth": 80,
+        "thickness": 1.6
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.8
+      },
+      "bbox_mm": {
+        "x": 80,
+        "y": 50,
+        "z": 1.6
+      }
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "name": "Microcontroller module",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 14,
+        "y": 14,
+        "z": 1.7
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 2.45
+      },
+      "bbox_mm": {
+        "x": 14,
+        "y": 14,
+        "z": 1.7
+      }
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "name": "Power regulator",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 6.5,
+        "y": 7,
+        "z": 1.8
+      },
+      "transform_mm": {
+        "x": -17.6,
+        "y": 0.0,
+        "z": 2.5
+      },
+      "bbox_mm": {
+        "x": 6.5,
+        "y": 7,
+        "z": 1.8
+      }
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "name": "Sensor module",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 6,
+        "y": 6,
+        "z": 1.4
+      },
+      "transform_mm": {
+        "x": 14.399999999999999,
+        "y": 0.0,
+        "z": 2.3
+      },
+      "bbox_mm": {
+        "x": 6,
+        "y": 6,
+        "z": 1.4
+      }
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "name": "I/O connector",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 20,
+        "y": 5,
+        "z": 8
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 21.0,
+        "z": 5.6
+      },
+      "bbox_mm": {
+        "x": 20,
+        "y": 5,
+        "z": 8
+      }
+    },
+    {
+      "id": "part-09c260b81c0a",
+      "name": "Main bracket body",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 140,
+        "y": 55,
+        "z": 35
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 17.5
+      },
+      "bbox_mm": {
+        "x": 140,
+        "y": 55,
+        "z": 35
+      }
+    },
+    {
+      "id": "part-dac26cf6105e",
+      "name": "Mounting plate",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 100.8,
+        "y": 55,
+        "z": 4,
+        "width": 100,
+        "depth": 80,
+        "thickness": 5
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 37.0
+      },
+      "bbox_mm": {
+        "x": 100.8,
+        "y": 55,
+        "z": 4
+      }
+    }
+  ]
+}

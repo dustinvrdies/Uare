@@ -1,0 +1,7 @@
+* UARE generated circuit
+V1 VIN 0 DC 12
+RREG VIN VREG 0.5
+RMCU VREG MCU_VCC 2
+RSNS MCU_VCC SENS_VCC 5
+.op
+.end

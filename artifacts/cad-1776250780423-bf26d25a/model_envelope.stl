@@ -1,0 +1,86 @@
+solid cad-1776250780423-bf26d25a
+facet normal 1 0 0
+  outer loop
+    vertex 60 -12.4905 -6.654
+    vertex 60 -12.4905 6.654
+    vertex 60 12.4905 6.654
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 60 -12.4905 -6.654
+    vertex 60 12.4905 6.654
+    vertex 60 12.4905 -6.654
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -60 -12.4905 -6.654
+    vertex -60 12.4905 6.654
+    vertex -60 -12.4905 6.654
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -60 -12.4905 -6.654
+    vertex -60 12.4905 -6.654
+    vertex -60 12.4905 6.654
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -60 12.4905 -6.654
+    vertex 60 12.4905 -6.654
+    vertex 60 12.4905 6.654
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -60 12.4905 -6.654
+    vertex 60 12.4905 6.654
+    vertex -60 12.4905 6.654
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -60 -12.4905 -6.654
+    vertex -60 -12.4905 6.654
+    vertex 60 -12.4905 6.654
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -60 -12.4905 -6.654
+    vertex 60 -12.4905 6.654
+    vertex 60 -12.4905 -6.654
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -60 -12.4905 6.654
+    vertex -60 12.4905 6.654
+    vertex 60 12.4905 6.654
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -60 -12.4905 6.654
+    vertex 60 12.4905 6.654
+    vertex 60 -12.4905 6.654
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -60 -12.4905 -6.654
+    vertex 60 -12.4905 -6.654
+    vertex 60 12.4905 -6.654
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -60 -12.4905 -6.654
+    vertex 60 12.4905 -6.654
+    vertex -60 12.4905 -6.654
+  endloop
+endfacet
+endsolid cad-1776250780423-bf26d25a

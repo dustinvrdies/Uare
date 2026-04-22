@@ -1,0 +1,287 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-21T01:38:22.141Z",
+  "part_count": 9,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Centrifugal Pump Assembly — 50 kW / 200 m³/h",
+      "children": [
+        "imp001",
+        "csg001",
+        "shf001",
+        "slp001",
+        "brg001",
+        "brg002",
+        "brk001",
+        "cpl001",
+        "bst001"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "imp001",
+      "label": "Impeller — 316L Investment Cast",
+      "kind": "mechanical",
+      "material": "316L stainless",
+      "process": "casting",
+      "dimensions_mm": {
+        "outer_diameter": 320,
+        "inlet_diameter": 180,
+        "width": 52,
+        "num_blades": 5,
+        "x": 52,
+        "y": 320,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "csg001",
+      "label": "Pump Casing — Volute, Cast Iron",
+      "kind": "mechanical",
+      "material": "cast_iron",
+      "process": "casting",
+      "dimensions_mm": {
+        "width": 480,
+        "height": 420,
+        "depth": 340,
+        "discharge_nozzle_dn": 150,
+        "suction_nozzle_dn": 200,
+        "x": 480,
+        "y": 340,
+        "z": 420
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 84
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "shf001",
+      "label": "Pump Shaft — 316L Stainless",
+      "kind": "mechanical",
+      "material": "316L stainless",
+      "process": "turning",
+      "dimensions_mm": {
+        "diameter": 55,
+        "length": 420,
+        "coupling_end_diameter": 50,
+        "impeller_end_diameter": 38,
+        "x": 55,
+        "y": 55,
+        "z": 420
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 84
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "slp001",
+      "label": "Mechanical Seal — John Crane Type 1",
+      "kind": "mechanical",
+      "material": "silicon carbide",
+      "process": "cnc",
+      "dimensions_mm": {
+        "shaft_diameter": 55,
+        "oc_diameter": 95,
+        "length": 68,
+        "x": 50,
+        "y": 50,
+        "z": 68
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 60
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 13.600000000000001
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "brg001",
+      "label": "Inboard Bearing — 6312-2RS",
+      "kind": "mechanical",
+      "material": "4340 steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "inner_diameter": 60,
+        "outer_diameter": 130,
+        "width": 31,
+        "x": 31,
+        "y": 130,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 80
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "brg002",
+      "label": "Outboard Bearing — 6309-2RS",
+      "kind": "mechanical",
+      "material": "4340 steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "inner_diameter": 45,
+        "outer_diameter": 100,
+        "width": 25,
+        "x": 25,
+        "y": 100,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 200
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "brk001",
+      "label": "Bearing Housing — Cast Iron",
+      "kind": "mechanical",
+      "material": "cast_iron",
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 220,
+        "height": 200,
+        "depth": 280,
+        "x": 220,
+        "y": 280,
+        "z": 200
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 140
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 40
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "cpl001",
+      "label": "Flexible Coupling — Jaw Type",
+      "kind": "mechanical",
+      "material": "7075-t6 aluminium",
+      "process": "cnc",
+      "dimensions_mm": {
+        "diameter": 120,
+        "length": 80,
+        "bore": 50,
+        "x": 120,
+        "y": 120,
+        "z": 80
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 330
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 16
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    },
+    {
+      "id": "bst001",
+      "label": "Baseplate — Welded Steel",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 900,
+        "height": 50,
+        "depth": 600,
+        "x": 900,
+        "y": 600,
+        "z": 50
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": -200,
+        "z": 200
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 900,
+    "y": 600,
+    "z": 420
+  }
+}

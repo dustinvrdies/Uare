@@ -1,0 +1,17 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "rib_count": 1,
+      "bracket_height_mm": 22
+    }
+  },
+  "script": "print(\"cad\")",
+  "project_id": "proj-branch-policy",
+  "workflow_run_id": "wf-1776099180269-066e9ed8",
+  "workflow_step": "cad"
+}

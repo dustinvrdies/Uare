@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "rod-1",
+      "name": "HyperConRod",
+      "kind": "mechanical",
+      "type": "con_rod",
+      "dims": {
+        "ctc": 155,
+        "bigEndD": 52,
+        "smallEndD": 24,
+        "thickness": 22
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "pt-clutch_disc",
+    "name": "Test-clutch_disc",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

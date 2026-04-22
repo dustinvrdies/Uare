@@ -1,0 +1,29 @@
+{
+  "projects": [
+    {
+      "name": "Shared Org Project",
+      "slug": "shared-org-project",
+      "description": null,
+      "owner_id": "user-1776697207004-690d6cf1",
+      "org_id": "org-1776697207097-b5c21d8b",
+      "status": "active",
+      "id": "proj-1776697207106-84ece9",
+      "updated_at": "2026-04-20T15:00:07.106Z",
+      "created_at": "2026-04-20T15:00:07.106Z"
+    }
+  ],
+  "audit": [
+    {
+      "id": "audit-1776697207106-9t1d0f",
+      "created_at": "2026-04-20T15:00:07.106Z",
+      "project_id": "proj-1776697207106-84ece9",
+      "owner_id": "user-1776697207004-690d6cf1",
+      "actor_id": "user-1776697207004-690d6cf1",
+      "action": "project.created",
+      "payload": {
+        "name": "Shared Org Project",
+        "org_id": "org-1776697207097-b5c21d8b"
+      }
+    }
+  ]
+}

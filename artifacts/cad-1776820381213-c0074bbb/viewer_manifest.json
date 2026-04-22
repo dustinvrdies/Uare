@@ -1,0 +1,52 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T01:13:01.214Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "piston-1"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "piston-1",
+      "label": "HyperPiston",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "diameter": 86,
+        "height": 70,
+        "pin_diameter": 22,
+        "ring_count": 3,
+        "x": 86,
+        "y": 86,
+        "z": 70
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 35
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 14
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 86,
+    "y": 86,
+    "z": 105
+  }
+}

@@ -1,0 +1,8 @@
+id,name,kind,material,process,footprint,quantity
+"pcb-5da6c0f545ef","Main control PCB","electrical_pcb","FR4","pcb_fab","","1"
+"cmp-d3d126c2bb1f","Microcontroller module","electrical_component","","","QFP-64","1"
+"cmp-21a9756a2bfe","Power regulator","electrical_component","","","SOT-223","1"
+"cmp-2fc03be5f18a","Sensor module","electrical_component","","","LGA-16","1"
+"cmp-4dc37f61dd2c","I/O connector","electrical_component","","","HEADER-8","1"
+"part-9817c6de2674","Main bracket body","mechanical","aluminum_6061","cnc","","1"
+"part-8b7f47357478","Mounting plate","mechanical","aluminum_6061","cnc","","1"

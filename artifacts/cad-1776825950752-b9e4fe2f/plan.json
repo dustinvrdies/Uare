@@ -1,0 +1,24 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "f-washer",
+      "name": "Test-washer",
+      "type": "washer",
+      "dims": {
+        "outer_diameter": 16,
+        "inner_diameter": 8.4,
+        "thickness": 1.6
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "parts": [
+    {
+      "id": "part-turbocharger",
+      "name": "Regression-turbocharger",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "compressor_diameter": 96.0,
+        "turbine_diameter": 88.0,
+        "length": 170.0,
+        "shaft_diameter": 14.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 158.1,
+        "y": 96.0,
+        "z": 96.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 577611.1803836017,
+        "surface_area_mm2": 66696.7397655324,
+        "mass_proxy_kg": 4.534247766011274,
+        "bbox_fill_ratio": 0.39642520088787764,
+        "thin_wall_proxy_mm": 17.320522184866977,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.006964604568593317,
+          "iy": 0.012926993017845743,
+          "iz": 0.012926993017845743
+        },
+        "center_mm": {
+          "x": -0.8499999999999943,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

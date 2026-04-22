@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:39:34.946Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "pt-clutch_disc",
+      "name": "Test-clutch_disc",
+      "kind": "mechanical",
+      "shape": "clutch_disc",
+      "dimensions_mm": {
+        "outer_diameter": 240,
+        "inner_diameter": 130,
+        "thickness": 8,
+        "hub_diameter": 26,
+        "x": 240,
+        "y": 240,
+        "z": 30
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-clutch_disc"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 240,
+    "y": 240,
+    "z": 30
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

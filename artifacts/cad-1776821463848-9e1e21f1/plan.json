@@ -1,0 +1,27 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "eb-1",
+      "name": "V4Block",
+      "kind": "mechanical",
+      "type": "engine_block",
+      "dims": {
+        "width": 480,
+        "height": 360,
+        "depth": 230,
+        "bore": 86,
+        "cylinders": 4
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

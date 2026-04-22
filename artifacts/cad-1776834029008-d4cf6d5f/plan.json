@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-timing_chain",
+      "name": "Regression-timing_chain",
+      "type": "timing_chain",
+      "kind": "mechanical",
+      "dims": {
+        "pitch": 9.525,
+        "link_count": 96,
+        "width": 18,
+        "roller_diameter": 6.2
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

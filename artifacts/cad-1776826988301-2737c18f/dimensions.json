@@ -1,0 +1,27 @@
+{
+  "assembly_bbox_mm": {
+    "x": 360,
+    "y": 140,
+    "z": 120
+  },
+  "part_dimensions": [
+    {
+      "id": "v-intake_manifold",
+      "label": "V-intake_manifold",
+      "dimensions_mm": {
+        "width": 360,
+        "height": 120,
+        "depth": 140,
+        "runners": 4,
+        "x": 360,
+        "y": 140,
+        "z": 120
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

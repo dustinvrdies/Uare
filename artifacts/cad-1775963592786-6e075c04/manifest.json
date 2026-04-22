@@ -1,0 +1,106 @@
+{
+  "execution_id": "cad-1775963592786-6e075c04",
+  "project_id": "proj-physics-mid",
+  "status": "completed",
+  "deterministic": true,
+  "engine": "cadquery",
+  "created_at": "2026-04-12T03:13:12.788Z",
+  "actor_id": "tester",
+  "plan_signature": "459956a183c45dbf965a59ff0ef3d5a1ce006aebf1eced7c9bd8315ac2ed0db1",
+  "manufacturable": false,
+  "ready_for_execution": true,
+  "recipe": {
+    "parameters": {
+      "bracket_length_mm": 100,
+      "bracket_width_mm": 40,
+      "bracket_height_mm": 25,
+      "bolt_hole_diameter_mm": 6
+    }
+  },
+  "kernel_execution": {
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "CAD kernel disabled"
+  },
+  "execution_target": "in_process",
+  "artifacts": [
+    {
+      "type": "plan",
+      "filename": "plan.json",
+      "url": "/cad/artifacts/cad-1775963592786-6e075c04/plan.json",
+      "mirrored": false
+    },
+    {
+      "type": "recipe",
+      "filename": "recipe.json",
+      "url": "/cad/artifacts/cad-1775963592786-6e075c04/recipe.json",
+      "mirrored": false
+    },
+    {
+      "type": "cadquery_script",
+      "filename": "cadquery_script.py",
+      "url": "/cad/artifacts/cad-1775963592786-6e075c04/cadquery_script.py",
+      "mirrored": false
+    },
+    {
+      "type": "svg_preview",
+      "filename": "model_preview.svg",
+      "url": "/cad/artifacts/cad-1775963592786-6e075c04/model_preview.svg",
+      "mirrored": false
+    },
+    {
+      "type": "stl_envelope",
+      "filename": "model_envelope.stl",
+      "url": "/cad/artifacts/cad-1775963592786-6e075c04/model_envelope.stl",
+      "mirrored": false
+    },
+    {
+      "type": "html_preview",
+      "filename": "preview.html",
+      "url": "/cad/artifacts/cad-1775963592786-6e075c04/preview.html",
+      "mirrored": false
+    }
+  ],
+  "execution_summary": {
+    "estimated_stock_volume_mm3": 100000,
+    "estimated_part_volume_mm3": 28000,
+    "estimated_mass_g": 75.6,
+    "estimated_material_cost_usd": 1.51,
+    "estimated_stock_footprint_mm2": 4000,
+    "estimated_surface_area_mm2": 4200,
+    "estimated_cut_path_mm": 380,
+    "material_waste_ratio": 0.72,
+    "process": "cnc",
+    "material_name": null
+  },
+  "notes": [
+    "Artifacts are deterministic for the same engineering inputs.",
+    "SVG preview and STL envelope are generated server-side.",
+    "Kernel execution not completed; fallback artifacts still generated."
+  ],
+  "validation": {
+    "valid": true,
+    "missing": [],
+    "kernel_present": false,
+    "artifact_count": 6
+  },
+  "geometry_comparison": {
+    "comparable": false,
+    "fallback_present": true,
+    "kernel_present": false,
+    "estimated_envelope_volume_mm3": 100000,
+    "estimated_feature_adjusted_volume_mm3": 97879.425,
+    "comparison_status": "insufficient_kernel_artifacts",
+    "notes": [
+      "Estimated feature-adjusted volume subtracts nominal hole volumes from the envelope.",
+      "True geometric diffing still requires parsing kernel-generated solids."
+    ]
+  },
+  "artifact_promotion": {
+    "storage_mode": "local-disk",
+    "promoted_artifact_count": 0,
+    "artifact_count": 6,
+    "promoted_at": "2026-04-12T03:13:12.790Z"
+  }
+}

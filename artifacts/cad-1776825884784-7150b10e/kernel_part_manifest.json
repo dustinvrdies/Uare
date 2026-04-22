@@ -1,0 +1,40 @@
+{
+  "parts": [
+    {
+      "id": "f-nut_hex",
+      "name": "Test-nut_hex",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "across_flats": 13.0,
+        "thickness": 8.0,
+        "thread_diameter": 8.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 13.0,
+        "y": 11.258330249197705,
+        "z": 8.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 476.02589977792735,
+        "mass_proxy_kg": 0.00373680331325673,
+        "center_mm": {
+          "x": 4.440892098500626e-16,
+          "y": -8.881784197001252e-16,
+          "z": 4.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

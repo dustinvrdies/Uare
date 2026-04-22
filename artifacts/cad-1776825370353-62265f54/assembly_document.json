@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:36:10.353Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "pt-oil_pump",
+      "name": "Test-oil_pump",
+      "kind": "mechanical",
+      "shape": "box",
+      "dimensions_mm": {
+        "outer_diameter": 110,
+        "thickness": 36,
+        "inner_rotor_diameter": 46,
+        "outer_rotor_diameter": 72,
+        "x": 110,
+        "y": 110,
+        "z": 30
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      },
+      "_original_shape": "oil_pump"
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-oil_pump"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 110,
+    "y": 110,
+    "z": 30
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

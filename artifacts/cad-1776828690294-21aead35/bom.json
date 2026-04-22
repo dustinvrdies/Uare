@@ -1,0 +1,20 @@
+[
+  {
+    "id": "p-eb",
+    "name": "HeavyBlock",
+    "kind": "mechanical",
+    "material": "titanium_ti6al4v",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "p-pcb",
+    "name": "MainController",
+    "kind": "electrical_pcb",
+    "material": "fr4",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

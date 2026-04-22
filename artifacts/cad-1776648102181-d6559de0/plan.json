@@ -1,0 +1,20 @@
+{
+  "engine": "cadquery",
+  "execution_target": "in_process",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "bracket_length_mm": 120,
+      "bracket_width_mm": 40,
+      "bracket_height_mm": 25,
+      "bolt_hole_diameter_mm": 6
+    }
+  },
+  "script": "print(\"enki-generated-cad\")",
+  "project_id": "uare-enki-default",
+  "workflow_run_id": "wf-1776648102179-af392052",
+  "workflow_step": "cad"
+}

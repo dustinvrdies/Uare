@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-water_pump",
+      "name": "Regression-water_pump",
+      "type": "water_pump",
+      "kind": "mechanical",
+      "dims": {
+        "impeller_diameter": 72,
+        "body_diameter": 90,
+        "length": 120,
+        "hub_diameter": 24
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

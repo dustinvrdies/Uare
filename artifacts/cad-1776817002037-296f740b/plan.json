@@ -1,0 +1,68 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-fusion-style-1",
+      "name": "FusionStyleBracket",
+      "kind": "mechanical",
+      "shape": "plate",
+      "dims": {
+        "x": 120,
+        "y": 80,
+        "z": 12
+      },
+      "position": [
+        0,
+        0,
+        6
+      ],
+      "feature_timeline": [
+        {
+          "order": 1,
+          "type": "hole_pattern",
+          "pattern": "circular",
+          "count": 6,
+          "diameter": 6,
+          "depth": 20,
+          "pcd": 70
+        },
+        {
+          "order": 2,
+          "type": "pocket",
+          "x": 0,
+          "y": 0,
+          "width": 30,
+          "height": 18,
+          "depth": 4
+        },
+        {
+          "order": 3,
+          "type": "slot",
+          "x": 20,
+          "y": 0,
+          "angle": 0,
+          "width": 6,
+          "length": 20,
+          "depth": 4
+        },
+        {
+          "order": 4,
+          "type": "fillet",
+          "edges": "|Z",
+          "radius": 1.5
+        },
+        {
+          "order": 5,
+          "type": "chamfer",
+          "edges": "|X",
+          "size": 0.8
+        }
+      ]
+    }
+  ],
+  "script": "print(\"feature timeline user flow\")"
+}

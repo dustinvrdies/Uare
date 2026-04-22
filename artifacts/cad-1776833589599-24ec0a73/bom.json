@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-timing_chain",
+    "name": "Regression-timing_chain",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

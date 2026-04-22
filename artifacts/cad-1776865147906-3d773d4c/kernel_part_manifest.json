@@ -1,0 +1,398 @@
+{
+  "parts": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "name": "Main control PCB",
+      "kind": "electrical_pcb",
+      "dimensions_mm": {
+        "x": 80.0,
+        "y": 50.0,
+        "z": 1.6,
+        "w": 80.0,
+        "width": 80.0,
+        "d": 50.0,
+        "depth": 50.0,
+        "h": 1.6,
+        "height": 1.6,
+        "length": 1.6,
+        "L": 1.6,
+        "diameter": 50.0,
+        "dia": 50.0,
+        "outer_diameter": 50.0,
+        "outerD": 50.0,
+        "thickness": 1.6
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.8
+      },
+      "bbox_mm": {
+        "x": 80.0,
+        "y": 50.0,
+        "z": 1.6
+      },
+      "kernel_metrics": {
+        "material": "FR4",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 6374.264072981794,
+        "surface_area_mm2": 8448.169908772761,
+        "mass_proxy_kg": 0.017210512997050845,
+        "bbox_fill_ratio": 0.9959787614034054,
+        "thin_wall_proxy_mm": 1.5090283793564856,
+        "inertia_proxy_kg_m2": {
+          "ix": 3.5891951171582976e-06,
+          "iy": 9.182611841199822e-06,
+          "iz": 1.2764463806146045e-05
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.8
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "name": "Microcontroller module",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 14.0,
+        "y": 14.0,
+        "z": 1.7,
+        "w": 14.0,
+        "width": 14.0,
+        "d": 14.0,
+        "depth": 14.0,
+        "h": 1.7,
+        "height": 1.7,
+        "length": 1.7,
+        "L": 1.7,
+        "diameter": 14.0,
+        "dia": 14.0,
+        "outer_diameter": 14.0,
+        "outerD": 14.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 2.45
+      },
+      "bbox_mm": {
+        "x": 14.0,
+        "y": 14.0,
+        "z": 1.7000000000000002
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 333.2000000000001,
+        "surface_area_mm2": 487.1999999999999,
+        "mass_proxy_kg": 0.0008996400000000003,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 1.3678160919540236,
+        "inertia_proxy_kg_m2": {
+          "ix": 1.4910783300000006e-08,
+          "iy": 1.4910783300000006e-08,
+          "iz": 2.9388240000000012e-08
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 2.45
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "name": "Power regulator",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 6.5,
+        "y": 7.0,
+        "z": 1.8,
+        "w": 6.5,
+        "width": 6.5,
+        "d": 7.0,
+        "depth": 7.0,
+        "h": 1.8,
+        "height": 1.8,
+        "length": 1.8,
+        "L": 1.8,
+        "diameter": 7.0,
+        "dia": 7.0,
+        "outer_diameter": 7.0,
+        "outerD": 7.0
+      },
+      "transform_mm": {
+        "x": -17.6,
+        "y": 0.0,
+        "z": 2.5
+      },
+      "bbox_mm": {
+        "x": 6.5,
+        "y": 7.0,
+        "z": 1.8000000000000003
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 81.89999999999999,
+        "surface_area_mm2": 139.6,
+        "mass_proxy_kg": 0.00022113,
+        "bbox_fill_ratio": 0.9999999999999998,
+        "thin_wall_proxy_mm": 1.173352435530086,
+        "inertia_proxy_kg_m2": {
+          "ix": 9.626526e-10,
+          "iy": 8.382669750000002e-10,
+          "iz": 1.6815093750000003e-09
+        },
+        "center_mm": {
+          "x": -17.6,
+          "y": 0.0,
+          "z": 2.5
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "name": "Sensor module",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 6.0,
+        "y": 6.0,
+        "z": 1.4,
+        "w": 6.0,
+        "width": 6.0,
+        "d": 6.0,
+        "depth": 6.0,
+        "h": 1.4,
+        "height": 1.4,
+        "length": 1.4,
+        "L": 1.4,
+        "diameter": 6.0,
+        "dia": 6.0,
+        "outer_diameter": 6.0,
+        "outerD": 6.0
+      },
+      "transform_mm": {
+        "x": 14.399999999999999,
+        "y": 0.0,
+        "z": 2.3
+      },
+      "bbox_mm": {
+        "x": 6.0,
+        "y": 6.0,
+        "z": 1.4000000000000001
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 50.400000000000006,
+        "surface_area_mm2": 105.6,
+        "mass_proxy_kg": 0.00013608,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 0.9545454545454547,
+        "inertia_proxy_kg_m2": {
+          "ix": 4.304664000000001e-10,
+          "iy": 4.304664000000001e-10,
+          "iz": 8.164800000000001e-10
+        },
+        "center_mm": {
+          "x": 14.399999999999999,
+          "y": 0.0,
+          "z": 2.3
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "name": "I/O connector",
+      "kind": "electrical_component",
+      "dimensions_mm": {
+        "x": 20.0,
+        "y": 5.0,
+        "z": 8.0,
+        "w": 20.0,
+        "width": 20.0,
+        "d": 5.0,
+        "depth": 5.0,
+        "h": 8.0,
+        "height": 8.0,
+        "length": 8.0,
+        "L": 8.0,
+        "diameter": 5.0,
+        "dia": 5.0,
+        "outer_diameter": 5.0,
+        "outerD": 5.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 21.0,
+        "z": 5.6
+      },
+      "bbox_mm": {
+        "x": 20.0,
+        "y": 5.0,
+        "z": 8.0
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 800.0,
+        "surface_area_mm2": 600.0,
+        "mass_proxy_kg": 0.00216,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 2.6666666666666665,
+        "inertia_proxy_kg_m2": {
+          "ix": 1.6019999999999997e-08,
+          "iy": 8.352e-08,
+          "iz": 7.65e-08
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 21.0,
+          "z": 5.6
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "part-a958758b37ee",
+      "name": "Main bracket body",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 120.0,
+        "y": 40.0,
+        "z": 30.0,
+        "w": 120.0,
+        "width": 120.0,
+        "d": 40.0,
+        "depth": 40.0,
+        "h": 30.0,
+        "height": 30.0,
+        "length": 30.0,
+        "L": 30.0,
+        "diameter": 40.0,
+        "dia": 40.0,
+        "outer_diameter": 40.0,
+        "outerD": 40.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 15.0
+      },
+      "bbox_mm": {
+        "x": 120.0,
+        "y": 40.0,
+        "z": 30.0
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 144000.0,
+        "surface_area_mm2": 19200.0,
+        "mass_proxy_kg": 0.38880000000000003,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 15.0,
+        "inertia_proxy_kg_m2": {
+          "ix": 8.1e-05,
+          "iy": 0.0004957200000000001,
+          "iz": 0.0005184
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 15.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "part-8b7f47357478",
+      "name": "Mounting plate",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 86.39999999999999,
+        "y": 40.0,
+        "z": 4.0,
+        "w": 86.39999999999999,
+        "width": 86.39999999999999,
+        "d": 40.0,
+        "depth": 40.0,
+        "h": 4.0,
+        "height": 4.0,
+        "length": 4.0,
+        "L": 4.0,
+        "diameter": 40.0,
+        "dia": 40.0,
+        "outer_diameter": 40.0,
+        "outerD": 40.0,
+        "thickness": 5.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 32.0
+      },
+      "bbox_mm": {
+        "x": 86.39999999999999,
+        "y": 40.0,
+        "z": 4.0
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 13824.0,
+        "surface_area_mm2": 7923.199999999999,
+        "mass_proxy_kg": 0.0373248,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 3.489499192245558,
+        "inertia_proxy_kg_m2": {
+          "ix": 5.0264064e-06,
+          "iy": 2.3268777983999998e-05,
+          "iz": 2.8195651583999996e-05
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 32.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

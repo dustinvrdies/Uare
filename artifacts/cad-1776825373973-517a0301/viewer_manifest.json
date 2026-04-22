@@ -1,0 +1,52 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:36:13.973Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-water_pump"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "pt-water_pump",
+      "label": "Test-water_pump",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "impeller_diameter": 72,
+        "body_diameter": 90,
+        "length": 120,
+        "hub_diameter": 24,
+        "x": 50,
+        "y": 50,
+        "z": 120
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 24
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 50,
+    "y": 50,
+    "z": 120
+  }
+}

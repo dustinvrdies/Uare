@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "test-turbocharger"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "test-turbocharger",
+      "label": "Part-turbocharger",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 34
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

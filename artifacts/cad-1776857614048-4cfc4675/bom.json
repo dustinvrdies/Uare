@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-cylinder_head",
+    "name": "Regression-cylinder_head",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

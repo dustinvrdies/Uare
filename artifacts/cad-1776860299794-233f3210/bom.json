@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-con_rod",
+    "name": "Regression-con_rod",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

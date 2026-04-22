@@ -1,0 +1,238 @@
+{
+  "execution_id": "cad-1776825937694-90c4071d",
+  "project_id": null,
+  "status": "completed",
+  "deterministic": true,
+  "engine": "cadquery",
+  "created_at": "2026-04-22T02:46:44.160Z",
+  "actor_id": "user-demo",
+  "plan_signature": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "manufacturable": false,
+  "ready_for_execution": true,
+  "recipe": null,
+  "kernel_execution": {
+    "attempted": true,
+    "ok": true,
+    "skipped": false,
+    "repaired": false,
+    "reason": null
+  },
+  "execution_target": "in_process",
+  "artifacts": [
+    {
+      "type": "plan",
+      "filename": "plan.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/plan.json",
+      "mirrored": false
+    },
+    {
+      "type": "recipe",
+      "filename": "recipe.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/recipe.json",
+      "mirrored": false
+    },
+    {
+      "type": "cadquery_script",
+      "filename": "cadquery_script.py",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/cadquery_script.py",
+      "mirrored": false
+    },
+    {
+      "type": "assembly_document",
+      "filename": "assembly_document.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/assembly_document.json",
+      "mirrored": false
+    },
+    {
+      "type": "viewer_manifest",
+      "filename": "viewer_manifest.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/viewer_manifest.json",
+      "mirrored": false
+    },
+    {
+      "type": "bom_json",
+      "filename": "bom.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/bom.json",
+      "mirrored": false
+    },
+    {
+      "type": "bom_csv",
+      "filename": "bom.csv",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/bom.csv",
+      "mirrored": false
+    },
+    {
+      "type": "dimensions",
+      "filename": "dimensions.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/dimensions.json",
+      "mirrored": false
+    },
+    {
+      "type": "features",
+      "filename": "features.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/features.json",
+      "mirrored": false
+    },
+    {
+      "type": "kicad_pcb",
+      "filename": "pcb_layout.kicad_pcb",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/pcb_layout.kicad_pcb",
+      "mirrored": false
+    },
+    {
+      "type": "kicad_schematic",
+      "filename": "schematic.kicad_sch",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/schematic.kicad_sch",
+      "mirrored": false
+    },
+    {
+      "type": "footprints",
+      "filename": "footprints.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/footprints.json",
+      "mirrored": false
+    },
+    {
+      "type": "easyeda_project",
+      "filename": "easyeda_project.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/easyeda_project.json",
+      "mirrored": false
+    },
+    {
+      "type": "netlist",
+      "filename": "netlist.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/netlist.json",
+      "mirrored": false
+    },
+    {
+      "type": "wiring",
+      "filename": "wiring_routes.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/wiring_routes.json",
+      "mirrored": false
+    },
+    {
+      "type": "simulation_report",
+      "filename": "simulation_report.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/simulation_report.json",
+      "mirrored": false
+    },
+    {
+      "type": "assembly_instructions",
+      "filename": "assembly_instructions.md",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/assembly_instructions.md",
+      "mirrored": false
+    },
+    {
+      "type": "gerber_top_copper",
+      "filename": "board_top_copper.gbr",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/board_top_copper.gbr",
+      "mirrored": false
+    },
+    {
+      "type": "gerber_outline",
+      "filename": "board_outline.gbr",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/board_outline.gbr",
+      "mirrored": false
+    },
+    {
+      "type": "drill_file",
+      "filename": "board_drill.drl",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/board_drill.drl",
+      "mirrored": false
+    },
+    {
+      "type": "svg_preview",
+      "filename": "model_preview.svg",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/model_preview.svg",
+      "mirrored": false
+    },
+    {
+      "type": "stl_envelope",
+      "filename": "model_envelope.stl",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/model_envelope.stl",
+      "mirrored": false
+    },
+    {
+      "type": "obj_mesh",
+      "filename": "model_mesh.obj",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/model_mesh.obj",
+      "mirrored": false
+    },
+    {
+      "type": "glb_mesh",
+      "filename": "model_mesh.glb",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/model_mesh.glb",
+      "mirrored": false
+    },
+    {
+      "type": "step_exchange",
+      "filename": "model_step.step",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/model_step.step",
+      "mirrored": false
+    },
+    {
+      "type": "step",
+      "filename": "assembly.step",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/assembly.step",
+      "mirrored": false
+    },
+    {
+      "type": "stl_kernel",
+      "filename": "assembly_kernel.stl",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/assembly_kernel.stl",
+      "mirrored": false
+    },
+    {
+      "type": "kernel_part_manifest",
+      "filename": "kernel_part_manifest.json",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/kernel_part_manifest.json",
+      "mirrored": false
+    },
+    {
+      "type": "html_preview",
+      "filename": "preview.html",
+      "url": "/cad/artifacts/cad-1776825937694-90c4071d/preview.html",
+      "mirrored": false
+    }
+  ],
+  "execution_summary": {
+    "estimated_stock_volume_mm3": 144000,
+    "estimated_part_volume_mm3": 40320,
+    "estimated_mass_g": 108.86,
+    "estimated_material_cost_usd": 2.18,
+    "estimated_stock_footprint_mm2": 4800,
+    "estimated_surface_area_mm2": 5376,
+    "estimated_cut_path_mm": 440,
+    "material_waste_ratio": 0.72,
+    "process": "cnc",
+    "material_name": null
+  },
+  "notes": [
+    "Artifacts are deterministic for the same engineering inputs.",
+    "SVG preview, STL, OBJ, GLB, and STEP envelopes are generated server-side.",
+    "CadQuery kernel execution succeeded for this run."
+  ],
+  "validation": {
+    "valid": true,
+    "missing": [],
+    "kernel_present": true,
+    "artifact_count": 29
+  },
+  "geometry_comparison": {
+    "comparable": true,
+    "fallback_present": true,
+    "kernel_present": true,
+    "estimated_envelope_volume_mm3": 144000,
+    "estimated_feature_adjusted_volume_mm3": 139476.107,
+    "comparison_status": "ready_for_kernel_geometry_comparison",
+    "notes": [
+      "Estimated feature-adjusted volume subtracts nominal hole volumes from the envelope.",
+      "True geometric diffing still requires parsing kernel-generated solids."
+    ]
+  },
+  "artifact_promotion": {
+    "storage_mode": "local-disk",
+    "promoted_artifact_count": 0,
+    "artifact_count": 29,
+    "promoted_at": "2026-04-22T02:46:44.200Z"
+  }
+}

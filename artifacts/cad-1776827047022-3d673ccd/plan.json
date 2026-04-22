@@ -1,0 +1,25 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "v-turbocharger",
+      "name": "V-turbocharger",
+      "type": "turbocharger",
+      "dims": {
+        "compressor_diameter": 96,
+        "turbine_diameter": 88,
+        "length": 170,
+        "shaft_diameter": 14
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

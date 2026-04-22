@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-04-22T05:19:12.473Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "part-dowel_pin",
+      "name": "Regression-dowel_pin",
+      "domains": [
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    }
+  ]
+}

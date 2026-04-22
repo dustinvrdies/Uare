@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UARE — AI Engineering Workstation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/lab/styles.css" />
+</head>
+<body>
+  <canvas id="ambient-bg" aria-hidden="true"></canvas>
+
+  <div id="app-shell">
+
+    <!-- ── Top Bar ── -->
+    <header id="topbar">
+      <div class="brand">
+        <div class="brand-mark">U</div>
+        <div>
+          <span class="brand-name">UARE</span>
+          <span class="brand-sub">AI Engineering Workstation</span>
+        </div>
+      </div>
+      <div id="tb-center">
+        <span id="assembly-name-display">No assembly loaded</span>
+        <span id="assembly-part-count" class="chip hidden"></span>
+        <div id="enki-live" class="live-indicator hidden">
+          <span class="pulse-dot"></span>
+          <span id="enki-live-msg">Working&hellip;</span>
+        </div>
+      </div>
+      <div id="tb-actions">
+        <button class="tb-btn" id="btn-tree" title="Toggle assembly tree">&#9776; Tree</button>
+        <button class="tb-btn" id="btn-export-step" title="Export STEP file">&darr; STEP</button>
+        <button class="tb-btn" id="btn-export-obj" title="Export OBJ file">&darr; OBJ</button>
+        <button class="tb-btn" id="btn-export-stl" title="Export STL file">&darr; STL</button>
+        <button class="tb-btn accent" id="btn-new">&#65291; New Design</button>
+      </div>
+    </header>
+
+    <!-- ── Main Split ── -->
+    <div id="split">
+
+      <!-- LEFT: Enki Chat Panel -->
+      <section id="chat-panel" aria-label="Enki AI Chat">
+        <div id="chat-head">
+          <div class="enki-av-wrap">
+            <div class="enki-av">E</div>
+            <span class="enki-dot"></span>
+          </div>
+          <div>
+            <div class="enki-name-lbl">Enki</div>
+            <div id="enki-status-lbl" class="enki-sub">Engineering AI &middot; Ready</div>
+          </div>
+          <button class="tb-btn ghost sm" id="btn-clear">Clear</button>
+        </div>
+
+        <div id="chat-msgs" role="log" aria-live="polite"></div>
+
+        <div id="suggestions-row"></div>
+
+        <div id="chat-input-area">
+          <textarea id="chat-input" rows="3"
+            placeholder="Describe your design&hellip; e.g. &quot;Design a turbocharged 4-cylinder engine with forged steel pistons, cast aluminum block, and dual overhead cams&quot;"
+            aria-label="Message Enki"></textarea>
+          <div id="chat-footer">
+            <span class="hint-text"><kbd>Enter</kbd> send &nbsp;&middot;&nbsp; <kbd>Shift+Enter</kbd> newline</span>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="icon-btn" id="btn-voice" title="Voice input" aria-label="Voice input">&#127908;</button>
+              <button id="send-btn" aria-label="Send message">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: 3D Viewport -->
+      <section id="viewport-panel" aria-label="3D CAD Viewport">
+
+        <!-- Assembly Tree slide-in -->
+        <aside id="asm-tree" class="side-panel collapsed" aria-label="Assembly Tree">
+          <div class="side-panel-head">
+            <span>Assembly Tree</span>
+            <button class="tb-btn ghost sm" id="btn-tree-close">&#10005;</button>
+          </div>
+          <div id="asm-tree-content"></div>
+          <div id="asm-bom"></div>
+        </aside>
+
+        <!-- Part properties slide-in -->
+        <aside id="part-props" class="side-panel right-panel collapsed" aria-label="Part Properties">
+          <div class="side-panel-head">
+            <span id="part-props-title">Part Properties</span>
+            <button class="tb-btn ghost sm" id="btn-props-close">&#10005;</button>
+          </div>
+          <div id="part-props-content"></div>
+        </aside>
+
+        <!-- 3D Canvas -->
+        <canvas id="cad-canvas"></canvas>
+
+        <!-- Viewport overlay controls -->
+        <div id="vp-controls" aria-label="Viewport controls">
+          <div class="vp-btn-group">
+            <button class="vp-btn" data-vp="fit" title="Fit to view">&#10148;</button>
+            <button class="vp-btn" data-vp="front" title="Front view">F</button>
+            <button class="vp-btn" data-vp="top" title="Top view">T</button>
+            <button class="vp-btn" data-vp="iso" title="Isometric view">ISO</button>
+          </div>
+          <div class="vp-btn-group">
+            <button class="vp-btn active" data-mode="solid">Solid</button>
+            <button class="vp-btn" data-mode="wire">Wire</button>
+            <button class="vp-btn" data-mode="xray">X-Ray</button>
+          </div>
+          <button class="vp-btn explode-btn" id="btn-explode">&#128165; Explode</button>
+        </div>
+
+        <!-- Enki action status overlay (shows during generation) -->
+        <div id="action-overlay" class="hidden" aria-live="polite">
+          <div class="action-ring"></div>
+          <span id="action-text">Generating geometry&hellip;</span>
+          <div id="action-progress-bar"><div id="action-progress-fill"></div></div>
+        </div>
+
+        <!-- Coordinate HUD -->
+        <div id="coord-hud" aria-label="Coordinates">
+          <span id="hud-x">X 0.00</span>
+          <span id="hud-y">Y 0.00</span>
+          <span id="hud-z">Z 0.00</span>
+          <span id="hud-scale">1:1</span>
+        </div>
+
+        <!-- Empty state -->
+        <div id="viewport-empty">
+          <div class="empty-icon">&#9672;</div>
+          <h3>Canvas is empty</h3>
+          <p>Tell Enki what you want to design and a fully parametric 3D assembly will appear here.</p>
+        </div>
+      </section>
+
+    </div><!-- /split -->
+
+    <!-- ── Bottom Simulation Bar ── -->
+    <footer id="sim-bar" aria-label="Simulation controls">
+      <div id="sim-left">
+        <span id="sim-status" class="sim-badge idle">&#9679; Idle</span>
+        <button class="sim-btn primary" id="btn-sim-run" title="Run physics simulation">&#9654; Run Physics</button>
+        <button class="sim-btn" id="btn-sim-pause" disabled title="Pause simulation">&#9646;&#9646; Pause</button>
+        <button class="sim-btn" id="btn-sim-reset" disabled title="Reset simulation">&#8635; Reset</button>
+        <div class="sim-sep"></div>
+        <button class="sim-btn" id="btn-fea" title="Run Finite Element Analysis">&#9889; FEA</button>
+        <button class="sim-btn" id="btn-stress" title="Stress heatmap">&#127777; Stress Map</button>
+        <button class="sim-btn" id="btn-thermal" title="Thermal analysis">&#128293; Thermal</button>
+      </div>
+      <div id="sim-metrics">
+        <div class="metric"><span class="m-label">Parts</span><span class="m-val" id="m-parts">0</span></div>
+        <div class="metric"><span class="m-label">Mass</span><span class="m-val" id="m-mass">0 kg</span></div>
+        <div class="metric"><span class="m-label">Sim Time</span><span class="m-val" id="m-simtime">0.0 s</span></div>
+        <div class="metric"><span class="m-label">FPS</span><span class="m-val" id="m-fps">&ndash;</span></div>
+        <div class="metric"><span class="m-label">&sigma; max</span><span class="m-val" id="m-stress">&ndash; MPa</span></div>
+        <div class="metric"><span class="m-label">Safety</span><span class="m-val" id="m-safety">&ndash;</span></div>
+      </div>
+      <div id="sim-result-text"></div>
+    </footer>
+
+  </div><!-- /app-shell -->
+
+  <!-- Error diagnostic overlay -->
+  <div id="_err_overlay" style="display:none;position:fixed;inset:0;background:#0a0010;color:#ff4d6a;font:14px monospace;padding:24px;z-index:99999;overflow:auto;white-space:pre-wrap">
+    <button onclick="navigator.clipboard.writeText(document.getElementById('_err_text').textContent).then(function(){this.textContent='Copied!';}.bind(this))" style="position:sticky;top:0;left:0;background:#ff4d6a;color:#000;border:none;padding:8px 16px;font:bold 13px monospace;cursor:pointer;margin-bottom:16px;display:block">COPY ERRORS</button>
+    <pre id="_err_text"></pre>
+  </div>
+  <script>
+    window._errLog = [];
+    function _showErr(){
+      var overlay=document.getElementById('_err_overlay');
+      var pre=document.getElementById('_err_text');
+      var txt=window._errLog.join('\n\n');
+      pre.textContent=txt;
+      overlay.style.display='block';
+      // Also POST to server so it shows in server logs
+      try{fetch('/api/client-error',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({errors:txt})});}catch(e){}
+    }
+    window.onerror = function(msg,src,line,col,err){
+      window._errLog.push('ERROR: '+msg+'\n  at '+src+':'+line+':'+col+'\n'+(err&&err.stack?err.stack:''));
+      _showErr();
+    };
+    window.onunhandledrejection = function(e){
+      window._errLog.push('UNHANDLED REJECTION: '+(e.reason&&e.reason.stack?e.reason.stack:String(e.reason)));
+      _showErr();
+    };
+  </script>
+
+  <!-- Scripts: load order matters -->
+  <script src="/lab/three.min.js"></script>
+  <script src="/lab/cannon-es.js"></script>
+  <script src="/lab/cad-engine.js"></script>
+  <script src="/lab/sim-engine.js"></script>
+  <script src="/lab/enki.js"></script>
+  <script type="module" src="/lab/app.js"></script>
+</body>
+</html>

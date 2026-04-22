@@ -1,0 +1,97 @@
+{
+  "head": {
+    "docType": "EasyEDA",
+    "editorVersion": "UARE-1.0"
+  },
+  "components": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "designator": "U1",
+      "title": "Main control PCB",
+      "package": "GENERIC",
+      "x": 0,
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "designator": "U2",
+      "title": "Microcontroller module",
+      "package": "QFP-64",
+      "x": 0,
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "designator": "U3",
+      "title": "Power regulator",
+      "package": "SOT-223",
+      "x": -17.6,
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "designator": "U4",
+      "title": "Sensor module",
+      "package": "LGA-16",
+      "x": 14.399999999999999,
+      "y": 0,
+      "rotation": 0
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "designator": "U5",
+      "title": "I/O connector",
+      "package": "HEADER-8",
+      "x": 0,
+      "y": 21,
+      "rotation": 0
+    }
+  ],
+  "nets": [
+    {
+      "net": "VIN",
+      "nodes": [
+        "input_vin",
+        "regulator.in"
+      ],
+      "nominal_voltage_v": 12
+    },
+    {
+      "net": "VCC_5V",
+      "nodes": [
+        "regulator.out",
+        "mcu.vcc"
+      ],
+      "nominal_voltage_v": 5
+    },
+    {
+      "net": "I2C_SCL",
+      "nodes": [
+        "mcu.scl",
+        "sensor.scl"
+      ],
+      "nominal_voltage_v": 3.3
+    },
+    {
+      "net": "I2C_SDA",
+      "nodes": [
+        "mcu.sda",
+        "sensor.sda"
+      ],
+      "nominal_voltage_v": 3.3
+    },
+    {
+      "net": "GND",
+      "nodes": [
+        "input_gnd",
+        "regulator.gnd",
+        "mcu.gnd",
+        "sensor.gnd"
+      ],
+      "nominal_voltage_v": 0
+    }
+  ]
+}

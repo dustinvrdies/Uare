@@ -1,0 +1,7 @@
+{
+  "parameters": {
+    "bracket_length_mm": 120,
+    "bracket_width_mm": 40,
+    "bracket_height_mm": 30
+  }
+}

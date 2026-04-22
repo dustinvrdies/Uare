@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "id": "pt-timing_chain",
+      "name": "Test-timing_chain",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "pitch": 9.525,
+        "link_count": 96.0,
+        "width": 18.0,
+        "roller_diameter": 6.2
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 297.9205599264582,
+        "y": 309.0625599264582,
+        "z": 14.4
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "assembly_bbox_mm": {
+    "x": 50,
+    "y": 20,
+    "z": 175.5
+  },
+  "part_dimensions": [
+    {
+      "id": "rod-test",
+      "label": "ConRodFinal",
+      "dimensions_mm": {
+        "ctc": 140,
+        "bigEndD": 50,
+        "smallEndD": 21,
+        "thickness": 20,
+        "x": 50,
+        "y": 20,
+        "z": 175.5
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

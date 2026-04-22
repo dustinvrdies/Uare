@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-04-22T04:40:46.636Z",
+  "parts": [
+    {
+      "id": "part-nut_hex",
+      "name": "Regression-nut_hex",
+      "material": "steel",
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": true,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": false,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850,
+        "volume_mm3": 476.02589977792735,
+        "surface_area_mm2": 632.0684047742286,
+        "mass_proxy_kg": 0.00373680331325673,
+        "bbox_fill_ratio": 0.40655870026334334,
+        "thin_wall_proxy_mm": 1.5062480458834553,
+        "inertia_proxy_kg_m2": {
+          "ix": 5.939960266697679e-8,
+          "iy": 7.25562643324015e-8,
+          "iz": 9.209663165797319e-8
+        },
+        "center_mm": {
+          "x": 4.440892098500626e-16,
+          "y": -8.881784197001252e-16,
+          "z": 4
+        }
+      }
+    }
+  ]
+}

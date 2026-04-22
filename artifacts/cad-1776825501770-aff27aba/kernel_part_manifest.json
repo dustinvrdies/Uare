@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "id": "pt-clutch_disc",
+      "name": "Test-clutch_disc",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "outer_diameter": 240.0,
+        "inner_diameter": 130.0,
+        "thickness": 8.0,
+        "hub_diameter": 26.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 240.0,
+        "y": 240.0,
+        "z": 15.2
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

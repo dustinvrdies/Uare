@@ -1,0 +1,46 @@
+{
+  "parts": [
+    {
+      "id": "p1",
+      "name": "PlateFromType",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 120.0,
+        "y": 80.0,
+        "z": 12.0,
+        "w": 120.0,
+        "width": 120.0,
+        "d": 80.0,
+        "depth": 80.0,
+        "h": 12.0,
+        "height": 12.0,
+        "length": 12.0,
+        "L": 12.0,
+        "diameter": 80.0,
+        "dia": 80.0,
+        "outer_diameter": 80.0,
+        "outerD": 80.0,
+        "thickness": 5.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 6.0
+      },
+      "bbox_mm": {
+        "x": 120.0,
+        "y": 80.0,
+        "z": 12.0
+      },
+      "feature_report": {
+        "requested": 1,
+        "applied": [
+          {
+            "type": "hole_pattern"
+          }
+        ],
+        "failed": []
+      }
+    }
+  ]
+}

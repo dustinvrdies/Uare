@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "ch-1",
+      "name": "V4Head",
+      "type": "cylinder_head",
+      "dims": {
+        "width": 390,
+        "height": 90,
+        "depth": 225,
+        "bore": 86,
+        "cylinders": 4
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

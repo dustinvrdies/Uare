@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-water_pump",
+    "name": "Regression-water_pump",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

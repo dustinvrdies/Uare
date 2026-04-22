@@ -1,0 +1,23 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "f-dowel_pin",
+      "name": "Test-dowel_pin",
+      "type": "dowel_pin",
+      "dims": {
+        "diameter": 8,
+        "length": 20
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

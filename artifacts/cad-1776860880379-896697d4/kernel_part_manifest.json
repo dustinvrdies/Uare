@@ -1,0 +1,64 @@
+{
+  "parts": [
+    {
+      "id": "part-clutch_disc",
+      "name": "Regression-clutch_disc",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "outer_diameter": 240.0,
+        "inner_diameter": 130.0,
+        "thickness": 8.0,
+        "hub_diameter": 26.0,
+        "x": 240.0,
+        "y": 240.0,
+        "z": 30.0,
+        "w": 240.0,
+        "width": 240.0,
+        "d": 240.0,
+        "depth": 240.0,
+        "h": 30.0,
+        "height": 30.0,
+        "length": 30.0,
+        "L": 30.0,
+        "diameter": 240.0,
+        "dia": 240.0,
+        "outerD": 240.0,
+        "innerD": 130.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 240.0,
+        "y": 240.0,
+        "z": 30.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 1728000.0,
+        "surface_area_mm2": 144000.0,
+        "mass_proxy_kg": 13.564800000000002,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 24.0,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.0661284,
+          "iy": 0.0661284,
+          "iz": 0.13022208000000002
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

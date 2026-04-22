@@ -1,0 +1,10 @@
+{
+  "parameters": {
+    "bracket_length_mm": 140,
+    "bracket_width_mm": 55,
+    "bracket_height_mm": 35,
+    "bolt_hole_diameter_mm": 10,
+    "material_name": "aluminum_6061",
+    "process": "cnc"
+  }
+}

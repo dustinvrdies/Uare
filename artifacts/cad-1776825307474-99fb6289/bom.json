@@ -1,0 +1,11 @@
+[
+  {
+    "id": "cr-final",
+    "name": "con_rod",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "pcb-5da6c0f545ef",
+    "name": "Main control PCB",
+    "kind": "electrical_pcb",
+    "material": "FR4",
+    "process": "pcb_fab",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "cmp-d3d126c2bb1f",
+    "name": "Microcontroller module",
+    "kind": "electrical_component",
+    "material": null,
+    "process": null,
+    "footprint": "QFP-64",
+    "quantity": 1
+  },
+  {
+    "id": "cmp-21a9756a2bfe",
+    "name": "Power regulator",
+    "kind": "electrical_component",
+    "material": null,
+    "process": null,
+    "footprint": "SOT-223",
+    "quantity": 1
+  },
+  {
+    "id": "cmp-2fc03be5f18a",
+    "name": "Sensor module",
+    "kind": "electrical_component",
+    "material": null,
+    "process": null,
+    "footprint": "LGA-16",
+    "quantity": 1
+  },
+  {
+    "id": "cmp-4dc37f61dd2c",
+    "name": "I/O connector",
+    "kind": "electrical_component",
+    "material": null,
+    "process": null,
+    "footprint": "HEADER-8",
+    "quantity": 1
+  },
+  {
+    "id": "part-a958758b37ee",
+    "name": "Main bracket body",
+    "kind": "mechanical",
+    "material": "aluminum_6061",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "part-8b7f47357478",
+    "name": "Mounting plate",
+    "kind": "mechanical",
+    "material": "aluminum_6061",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

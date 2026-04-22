@@ -1,0 +1,120 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T04:12:59.083Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-engine_block"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "part-engine_block",
+      "label": "Regression-engine_block",
+      "kind": "mechanical",
+      "material": "steel",
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "mechanical",
+          "propulsion",
+          "aerospace",
+          "plasma"
+        ]
+      },
+      "appearance": {
+        "base_color_hex": "#8f9399",
+        "finish": "passivated",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 465,
+        "y": 220,
+        "z": 340
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 68
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null,
+      "engineering_profile": {
+        "domains": [
+          "mechanical",
+          "propulsion",
+          "aerospace",
+          "plasma"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "fluid"
+        ],
+        "reactions": {
+          "vacuum_compatible": true,
+          "seawater_compatible": true,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": true,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "AS9100",
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      }
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 465,
+    "y": 220,
+    "z": 340
+  },
+  "engineering_domains": [
+    "mechanical",
+    "propulsion",
+    "aerospace",
+    "plasma"
+  ]
+}

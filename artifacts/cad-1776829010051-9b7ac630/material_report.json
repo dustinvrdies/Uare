@@ -1,0 +1,169 @@
+{
+  "generated_at": "2026-04-22T03:37:29.372Z",
+  "parts": [
+    {
+      "id": "p-eb",
+      "name": "HeavyBlock",
+      "material": "titanium_ti6al4v",
+      "material_profile": {
+        "name": "titanium_ti6al4v",
+        "family": "titanium",
+        "density_kg_m3": 4430,
+        "youngs_modulus_gpa": 113.8,
+        "yield_strength_mpa": 880,
+        "ultimate_strength_mpa": 950,
+        "thermal_conductivity_w_mk": 6.7,
+        "electrical_conductivity_ms_m": 0.58,
+        "max_service_temp_c": 400,
+        "relative_magnetic_permeability": 1,
+        "finish": "bead_blast",
+        "color_hex": "#8e9499",
+        "domain_tags": [
+          "aerospace",
+          "aviation",
+          "submersible",
+          "nuclear"
+        ],
+        "requested_material": "titanium_ti6al4v",
+        "resolved_domains": [
+          "mechanical",
+          "propulsion",
+          "aerospace"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": true,
+        "seawater_compatible": false,
+        "cryogenic_ready": true,
+        "oxidizer_resistance": false,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "titanium_ti6al4v",
+        "density_kg_m3": 4500,
+        "volume_mm3": 14466408.072649151,
+        "surface_area_mm2": 1391817.0903778153,
+        "mass_proxy_kg": 65.09883632692119,
+        "bbox_fill_ratio": 0.47806495458274906,
+        "thin_wall_proxy_mm": 20.78780059917525,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.7372315189521754,
+          "iy": 1.6476658694993047,
+          "iz": 1.4355649635842933
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 0,
+          "z": -5.100000049999991
+        }
+      }
+    },
+    {
+      "id": "p-pcb",
+      "name": "MainController",
+      "material": "fr4",
+      "material_profile": {
+        "name": "fr4",
+        "family": "laminate",
+        "density_kg_m3": 1850,
+        "youngs_modulus_gpa": 22,
+        "yield_strength_mpa": 300,
+        "ultimate_strength_mpa": 420,
+        "thermal_conductivity_w_mk": 0.3,
+        "electrical_conductivity_ms_m": 0,
+        "max_service_temp_c": 130,
+        "relative_magnetic_permeability": 1,
+        "finish": "laminated",
+        "color_hex": "#2f7d47",
+        "domain_tags": [
+          "electronics"
+        ],
+        "requested_material": "fr4",
+        "resolved_domains": [
+          "electronics"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        },
+        {
+          "material": "silicon",
+          "family": "semiconductor",
+          "density_kg_m3": 2330,
+          "yield_strength_mpa": 7000,
+          "color_hex": "#5c6670"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": false,
+        "radiation_tolerant": false,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "fr4",
+        "density_kg_m3": 2700,
+        "volume_mm3": 15334.264072981743,
+        "surface_area_mm2": 19872.16990877276,
+        "mass_proxy_kg": 0.0414025129970507,
+        "bbox_fill_ratio": 0.9983244839180858,
+        "thin_wall_proxy_mm": 1.5432903546393577,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.000022090172801199745,
+          "iy": 0.00004969184813256688,
+          "iz": 0.00007176435586155455
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 0,
+          "z": 110
+        }
+      }
+    }
+  ]
+}

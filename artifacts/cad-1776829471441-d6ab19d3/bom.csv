@@ -1,0 +1,3 @@
+id,name,kind,material,process,footprint,quantity
+"p-eb","V4Block","mechanical","steel","cnc","","1"
+"p-pcb","Controller","electrical_pcb","steel","cnc","","1"

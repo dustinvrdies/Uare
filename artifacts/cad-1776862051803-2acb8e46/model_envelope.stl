@@ -1,0 +1,86 @@
+solid cad-1776862051803-2acb8e46
+facet normal 1 0 0
+  outer loop
+    vertex 9 -30 -30
+    vertex 9 -30 30
+    vertex 9 30 30
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 9 -30 -30
+    vertex 9 30 30
+    vertex 9 30 -30
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -9 -30 -30
+    vertex -9 30 30
+    vertex -9 -30 30
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -9 -30 -30
+    vertex -9 30 -30
+    vertex -9 30 30
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -9 30 -30
+    vertex 9 30 -30
+    vertex 9 30 30
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -9 30 -30
+    vertex 9 30 30
+    vertex -9 30 30
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -9 -30 -30
+    vertex -9 -30 30
+    vertex 9 -30 30
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -9 -30 -30
+    vertex 9 -30 30
+    vertex 9 -30 -30
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -9 -30 30
+    vertex -9 30 30
+    vertex 9 30 30
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -9 -30 30
+    vertex 9 30 30
+    vertex 9 -30 30
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -9 -30 -30
+    vertex 9 -30 -30
+    vertex 9 30 -30
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -9 -30 -30
+    vertex 9 30 -30
+    vertex -9 30 -30
+  endloop
+endfacet
+endsolid cad-1776862051803-2acb8e46

@@ -1,0 +1,68 @@
+{
+  "users": [
+    {
+      "user_id": "idem-user",
+      "email": "idem-user@local.dev",
+      "full_name": null,
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": null,
+      "created_at": "2026-04-17T02:19:35.687Z",
+      "updated_at": "2026-04-17T02:19:35.687Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "subscription_id": "sub-idem-user",
+      "user_id": "idem-user",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T02:19:35.687Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T02:19:35.687Z",
+      "updated_at": "2026-04-17T02:19:35.687Z",
+      "metadata_json": {}
+    }
+  ],
+  "usage": [],
+  "checkoutSessions": [
+    {
+      "checkout_session_id": "chk-1776392375688-8e02d394",
+      "user_id": "idem-user",
+      "plan_id": "pro",
+      "status": "pending",
+      "provider": "mock",
+      "checkout_url": "/billing/mock-checkout/pro?user_id=idem-user",
+      "provider_session_id": null,
+      "metadata_json": {
+        "created_by": "idem-user",
+        "org_id": null
+      },
+      "created_at": "2026-04-17T02:19:35.688Z"
+    }
+  ],
+  "authSessions": [],
+  "orgs": [
+    {
+      "org_id": "org-1776392375687-ee89a4a3",
+      "slug": "idem-user-ea69",
+      "name": "idem-user Workspace",
+      "owner_user_id": "idem-user",
+      "created_at": "2026-04-17T02:19:35.687Z",
+      "updated_at": "2026-04-17T02:19:35.687Z"
+    }
+  ],
+  "memberships": [
+    {
+      "membership_id": "mem-1776392375687-ae128155",
+      "org_id": "org-1776392375687-ee89a4a3",
+      "user_id": "idem-user",
+      "role": "owner",
+      "invited_by": "idem-user",
+      "created_at": "2026-04-17T02:19:35.687Z",
+      "updated_at": "2026-04-17T02:19:35.687Z"
+    }
+  ],
+  "webhookEvents": []
+}

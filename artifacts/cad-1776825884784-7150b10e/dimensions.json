@@ -1,0 +1,26 @@
+{
+  "assembly_bbox_mm": {
+    "x": 50,
+    "y": 50,
+    "z": 30
+  },
+  "part_dimensions": [
+    {
+      "id": "f-nut_hex",
+      "label": "Test-nut_hex",
+      "dimensions_mm": {
+        "across_flats": 13,
+        "thickness": 8,
+        "thread_diameter": 8,
+        "x": 50,
+        "y": 50,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

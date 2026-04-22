@@ -1,0 +1,7 @@
+(kicad_pcb (version 20240108) (generator UARE))
+  (general (thickness 1.6))
+  (footprint "UARE:GENERIC" (layer "F.Cu") (at 0.00 0.00)
+    (property "Reference" "U1")
+    (property "Value" "MainController")
+  )
+)

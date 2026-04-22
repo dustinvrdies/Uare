@@ -1,0 +1,19 @@
+{
+  "engine": "heuristic",
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "net_count": 5,
+    "supply_nets": 3,
+    "nominal_voltage_range_v": [
+      12,
+      5,
+      3.3,
+      3.3,
+      0
+    ]
+  },
+  "netlist_filename": "circuit.spice",
+  "raw_output_filename": null
+}

@@ -1,0 +1,63 @@
+{
+  "parts": [
+    {
+      "id": "part-oil_pump",
+      "name": "Regression-oil_pump",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "outer_diameter": 110.0,
+        "thickness": 36.0,
+        "inner_rotor_diameter": 46.0,
+        "outer_rotor_diameter": 72.0,
+        "x": 110.0,
+        "y": 110.0,
+        "z": 30.0,
+        "w": 110.0,
+        "width": 110.0,
+        "d": 110.0,
+        "depth": 110.0,
+        "h": 30.0,
+        "height": 30.0,
+        "length": 30.0,
+        "L": 30.0,
+        "diameter": 110.0,
+        "dia": 110.0,
+        "outerD": 110.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 110.0,
+        "y": 110.0,
+        "z": 30.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 363000.0,
+        "surface_area_mm2": 37400.0,
+        "mass_proxy_kg": 2.8495500000000002,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 19.41176470588235,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.0030870125000000003,
+          "iy": 0.0030870125000000003,
+          "iz": 0.005746592500000001
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

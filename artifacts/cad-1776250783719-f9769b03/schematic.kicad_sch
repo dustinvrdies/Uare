@@ -1,0 +1,7 @@
+(kicad_sch (version 20240108) (generator UARE))
+  (symbol (lib_id "UARE:GENERIC") (property "Reference" "U1") (property "Value" "Main_control_PCB"))
+  (symbol (lib_id "UARE:QFP_64") (property "Reference" "U2") (property "Value" "Microcontroller_module"))
+  (symbol (lib_id "UARE:SOT_223") (property "Reference" "U3") (property "Value" "Power_regulator"))
+  (symbol (lib_id "UARE:LGA_16") (property "Reference" "U4") (property "Value" "Sensor_module"))
+  (symbol (lib_id "UARE:HEADER_8") (property "Reference" "U5") (property "Value" "I_O_connector"))
+)

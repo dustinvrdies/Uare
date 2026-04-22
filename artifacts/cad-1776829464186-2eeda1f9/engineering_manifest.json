@@ -1,0 +1,698 @@
+{
+  "generated_at": "2026-04-22T03:44:24.224Z",
+  "platform_target": "engineering_grade",
+  "capability_scope": {
+    "parametric_geometry": true,
+    "material_profiles": true,
+    "simulation_metadata": true,
+    "ai_design_exploration": true,
+    "cross_domain_ready": true
+  },
+  "domains": [
+    "mechanical",
+    "electronics"
+  ],
+  "execution_intent": {
+    "engine": "cadquery",
+    "ready_for_execution": true,
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "name": "Main control PCB",
+      "type": "pcb",
+      "kind": "electrical_pcb",
+      "material": "FR4",
+      "material_profile": {
+        "name": "fr4",
+        "family": "laminate",
+        "density_kg_m3": 1850,
+        "youngs_modulus_gpa": 22,
+        "yield_strength_mpa": 300,
+        "ultimate_strength_mpa": 420,
+        "thermal_conductivity_w_mk": 0.3,
+        "electrical_conductivity_ms_m": 0,
+        "max_service_temp_c": 130,
+        "relative_magnetic_permeability": 1,
+        "finish": "laminated",
+        "color_hex": "#2f7d47",
+        "domain_tags": [
+          "electronics"
+        ],
+        "requested_material": "FR4",
+        "resolved_domains": [
+          "mechanical",
+          "electronics"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        },
+        {
+          "material": "silicon",
+          "family": "semiconductor",
+          "density_kg_m3": 2330,
+          "yield_strength_mpa": 7000,
+          "color_hex": "#5c6670"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#2f7d47",
+        "finish": "laminated",
+        "opacity": 0.96,
+        "roughness": 0.72,
+        "metallic": 0.08
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical",
+          "electronics"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "signal_integrity"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "IPC",
+          "DFM"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 80,
+        "y": 50,
+        "z": 1.6
+      }
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "name": "Microcontroller module",
+      "type": "box",
+      "kind": "electrical_component",
+      "material_profile": {
+        "name": "aluminum_6061",
+        "family": "aluminum",
+        "density_kg_m3": 2700,
+        "youngs_modulus_gpa": 68.9,
+        "yield_strength_mpa": 276,
+        "ultimate_strength_mpa": 310,
+        "thermal_conductivity_w_mk": 167,
+        "electrical_conductivity_ms_m": 25,
+        "max_service_temp_c": 150,
+        "relative_magnetic_permeability": 1,
+        "finish": "machined",
+        "color_hex": "#b7bcc5",
+        "domain_tags": [
+          "general",
+          "aerospace",
+          "robotics",
+          "electronics"
+        ],
+        "requested_material": "aluminum_6061",
+        "resolved_domains": [
+          "mechanical",
+          "electronics"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#b7bcc5",
+        "finish": "machined",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical",
+          "electronics"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "signal_integrity"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "IPC",
+          "DFM"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 14,
+        "y": 14,
+        "z": 1.7
+      }
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "name": "Power regulator",
+      "type": "box",
+      "kind": "electrical_component",
+      "material_profile": {
+        "name": "aluminum_6061",
+        "family": "aluminum",
+        "density_kg_m3": 2700,
+        "youngs_modulus_gpa": 68.9,
+        "yield_strength_mpa": 276,
+        "ultimate_strength_mpa": 310,
+        "thermal_conductivity_w_mk": 167,
+        "electrical_conductivity_ms_m": 25,
+        "max_service_temp_c": 150,
+        "relative_magnetic_permeability": 1,
+        "finish": "machined",
+        "color_hex": "#b7bcc5",
+        "domain_tags": [
+          "general",
+          "aerospace",
+          "robotics",
+          "electronics"
+        ],
+        "requested_material": "aluminum_6061",
+        "resolved_domains": [
+          "mechanical",
+          "electronics"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#b7bcc5",
+        "finish": "machined",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical",
+          "electronics"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "signal_integrity"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "IPC",
+          "DFM"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 6.5,
+        "y": 7,
+        "z": 1.8
+      }
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "name": "Sensor module",
+      "type": "box",
+      "kind": "electrical_component",
+      "material_profile": {
+        "name": "aluminum_6061",
+        "family": "aluminum",
+        "density_kg_m3": 2700,
+        "youngs_modulus_gpa": 68.9,
+        "yield_strength_mpa": 276,
+        "ultimate_strength_mpa": 310,
+        "thermal_conductivity_w_mk": 167,
+        "electrical_conductivity_ms_m": 25,
+        "max_service_temp_c": 150,
+        "relative_magnetic_permeability": 1,
+        "finish": "machined",
+        "color_hex": "#b7bcc5",
+        "domain_tags": [
+          "general",
+          "aerospace",
+          "robotics",
+          "electronics"
+        ],
+        "requested_material": "aluminum_6061",
+        "resolved_domains": [
+          "mechanical",
+          "electronics"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#b7bcc5",
+        "finish": "machined",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical",
+          "electronics"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "signal_integrity"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "IPC",
+          "DFM"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 6,
+        "y": 6,
+        "z": 1.4
+      }
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "name": "I/O connector",
+      "type": "box",
+      "kind": "electrical_component",
+      "material_profile": {
+        "name": "aluminum_6061",
+        "family": "aluminum",
+        "density_kg_m3": 2700,
+        "youngs_modulus_gpa": 68.9,
+        "yield_strength_mpa": 276,
+        "ultimate_strength_mpa": 310,
+        "thermal_conductivity_w_mk": 167,
+        "electrical_conductivity_ms_m": 25,
+        "max_service_temp_c": 150,
+        "relative_magnetic_permeability": 1,
+        "finish": "machined",
+        "color_hex": "#b7bcc5",
+        "domain_tags": [
+          "general",
+          "aerospace",
+          "robotics",
+          "electronics"
+        ],
+        "requested_material": "aluminum_6061",
+        "resolved_domains": [
+          "mechanical",
+          "electronics"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#b7bcc5",
+        "finish": "machined",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical",
+          "electronics"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "signal_integrity"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "IPC",
+          "DFM"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 20,
+        "y": 5,
+        "z": 8
+      }
+    },
+    {
+      "id": "part-a958758b37ee",
+      "name": "Main bracket body",
+      "type": "box",
+      "kind": "mechanical",
+      "material": "aluminum_6061",
+      "material_profile": {
+        "name": "aluminum_6061",
+        "family": "aluminum",
+        "density_kg_m3": 2700,
+        "youngs_modulus_gpa": 68.9,
+        "yield_strength_mpa": 276,
+        "ultimate_strength_mpa": 310,
+        "thermal_conductivity_w_mk": 167,
+        "electrical_conductivity_ms_m": 25,
+        "max_service_temp_c": 150,
+        "relative_magnetic_permeability": 1,
+        "finish": "machined",
+        "color_hex": "#b7bcc5",
+        "domain_tags": [
+          "general",
+          "aerospace",
+          "robotics",
+          "electronics"
+        ],
+        "requested_material": "aluminum_6061",
+        "resolved_domains": [
+          "mechanical"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#b7bcc5",
+        "finish": "machined",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 120,
+        "y": 40,
+        "z": 30
+      }
+    },
+    {
+      "id": "part-8b7f47357478",
+      "name": "Mounting plate",
+      "type": "plate",
+      "kind": "mechanical",
+      "material": "aluminum_6061",
+      "material_profile": {
+        "name": "aluminum_6061",
+        "family": "aluminum",
+        "density_kg_m3": 2700,
+        "youngs_modulus_gpa": 68.9,
+        "yield_strength_mpa": 276,
+        "ultimate_strength_mpa": 310,
+        "thermal_conductivity_w_mk": 167,
+        "electrical_conductivity_ms_m": 25,
+        "max_service_temp_c": 150,
+        "relative_magnetic_permeability": 1,
+        "finish": "machined",
+        "color_hex": "#b7bcc5",
+        "domain_tags": [
+          "general",
+          "aerospace",
+          "robotics",
+          "electronics"
+        ],
+        "requested_material": "aluminum_6061",
+        "resolved_domains": [
+          "mechanical"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        },
+        {
+          "material": "copper_c110",
+          "family": "copper",
+          "density_kg_m3": 8960,
+          "yield_strength_mpa": 69,
+          "color_hex": "#c97b49"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#b7bcc5",
+        "finish": "machined",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "mechanical"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      },
+      "kernel_metrics": null,
+      "bbox_mm": {
+        "x": 86.39999999999999,
+        "y": 40,
+        "z": 4
+      }
+    }
+  ]
+}

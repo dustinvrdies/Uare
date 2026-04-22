@@ -1,0 +1,86 @@
+solid cad-1776861777348-81844c73
+facet normal 1 0 0
+  outer loop
+    vertex 190 -39 -110
+    vertex 190 -39 110
+    vertex 190 39 110
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 190 -39 -110
+    vertex 190 39 110
+    vertex 190 39 -110
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -190 -39 -110
+    vertex -190 39 110
+    vertex -190 -39 110
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -190 -39 -110
+    vertex -190 39 -110
+    vertex -190 39 110
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -190 39 -110
+    vertex 190 39 -110
+    vertex 190 39 110
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -190 39 -110
+    vertex 190 39 110
+    vertex -190 39 110
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -190 -39 -110
+    vertex -190 -39 110
+    vertex 190 -39 110
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -190 -39 -110
+    vertex 190 -39 110
+    vertex 190 -39 -110
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -190 -39 110
+    vertex -190 39 110
+    vertex 190 39 110
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -190 -39 110
+    vertex 190 39 110
+    vertex 190 -39 110
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -190 -39 -110
+    vertex 190 -39 -110
+    vertex 190 39 -110
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -190 -39 -110
+    vertex 190 39 -110
+    vertex -190 39 -110
+  endloop
+endfacet
+endsolid cad-1776861777348-81844c73

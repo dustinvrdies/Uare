@@ -1,0 +1,11 @@
+[
+  {
+    "id": "v-exhaust_manifold",
+    "name": "V-exhaust_manifold",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

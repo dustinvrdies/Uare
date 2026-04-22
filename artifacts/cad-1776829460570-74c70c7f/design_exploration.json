@@ -1,0 +1,133 @@
+{
+  "generated_at": "2026-04-22T03:44:20.611Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "pcb-5da6c0f545ef",
+      "name": "Main control PCB",
+      "domains": [
+        "mechanical",
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-d3d126c2bb1f",
+      "name": "Microcontroller module",
+      "domains": [
+        "mechanical",
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-21a9756a2bfe",
+      "name": "Power regulator",
+      "domains": [
+        "mechanical",
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-2fc03be5f18a",
+      "name": "Sensor module",
+      "domains": [
+        "mechanical",
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "cmp-4dc37f61dd2c",
+      "name": "I/O connector",
+      "domains": [
+        "mechanical",
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    },
+    {
+      "id": "part-a958758b37ee",
+      "name": "Main bracket body",
+      "domains": [
+        "mechanical"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "part-8b7f47357478",
+      "name": "Mounting plate",
+      "domains": [
+        "mechanical"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    }
+  ]
+}

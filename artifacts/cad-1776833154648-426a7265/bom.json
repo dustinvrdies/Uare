@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-washer",
+    "name": "Regression-washer",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

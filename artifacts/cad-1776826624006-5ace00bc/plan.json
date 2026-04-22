@@ -1,0 +1,25 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "test-water_pump",
+      "name": "Part-water_pump",
+      "type": "water_pump",
+      "dims": {
+        "impeller_diameter": 72,
+        "body_diameter": 90,
+        "length": 120,
+        "hub_diameter": 24
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

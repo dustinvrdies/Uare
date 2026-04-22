@@ -1,0 +1,189 @@
+{
+  "users": [
+    {
+      "user_id": "user-1776696871424-a012adf9",
+      "email": "admin@example.com",
+      "full_name": "Admin",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "b2b9630f2ba2f4da5e7dda596783499e:52502a1f6f926a2a65bc44c7060a846550479a0cc153c3ef9f505a2b6083d737d3c411f615dae7f040d556885b7be1b1bbb238b938c62920ff99b5e625b6b3ed",
+      "created_at": "2026-04-20T14:54:31.470Z",
+      "updated_at": "2026-04-20T14:54:31.470Z"
+    },
+    {
+      "user_id": "user-1776696871371-5e981231",
+      "email": "b@example.com",
+      "full_name": "Beta",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "e8f2072e5d22e7111188c69c21f55867:d646a60a70d79fcf3e7f0705e6e894ad12fe9561c51f879e9cc567596b220a2e6fc0bccf4ef500d0b1c7e5b92c45a67e9c8e603bc186410def7b0b5ae194cf5a",
+      "created_at": "2026-04-20T14:54:31.418Z",
+      "updated_at": "2026-04-20T14:54:31.418Z"
+    },
+    {
+      "user_id": "user-1776696871321-cb920a21",
+      "email": "a@example.com",
+      "full_name": "Alpha",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "d3cf0eaf0e397508b7bd8ee29357ab5c:e181a143ca24ebd90282ebd6fa966e715a452073e8e82dc49e2cc840c80c8e5095a9c58cf82a884d38905da19aff3b4dc0b02bde2ccb4ac9e262734b5d33d9ab",
+      "created_at": "2026-04-20T14:54:31.362Z",
+      "updated_at": "2026-04-20T14:54:31.362Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "subscription_id": "sub-user-1776696871424-a012adf9",
+      "user_id": "user-1776696871424-a012adf9",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-20T14:54:31.470Z",
+      "current_period_end": null,
+      "created_at": "2026-04-20T14:54:31.470Z",
+      "updated_at": "2026-04-20T14:54:31.470Z",
+      "metadata_json": {}
+    },
+    {
+      "subscription_id": "sub-user-1776696871371-5e981231",
+      "user_id": "user-1776696871371-5e981231",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-20T14:54:31.418Z",
+      "current_period_end": null,
+      "created_at": "2026-04-20T14:54:31.418Z",
+      "updated_at": "2026-04-20T14:54:31.418Z",
+      "metadata_json": {}
+    },
+    {
+      "subscription_id": "sub-user-1776696871321-cb920a21",
+      "user_id": "user-1776696871321-cb920a21",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-20T14:54:31.362Z",
+      "current_period_end": null,
+      "created_at": "2026-04-20T14:54:31.362Z",
+      "updated_at": "2026-04-20T14:54:31.362Z",
+      "metadata_json": {}
+    }
+  ],
+  "usage": [],
+  "checkoutSessions": [],
+  "authSessions": [
+    {
+      "session_id": "sess-1776696871471-5f86ee65",
+      "user_id": "user-1776696871424-a012adf9",
+      "expires_at": "2026-05-04T14:54:31.471Z",
+      "created_at": "2026-04-20T14:54:31.471Z",
+      "updated_at": "2026-04-20T14:54:31.471Z",
+      "metadata_json": {
+        "source": "register"
+      }
+    },
+    {
+      "session_id": "sess-1776696871420-f98bb782",
+      "user_id": "user-1776696871371-5e981231",
+      "expires_at": "2026-05-04T14:54:31.420Z",
+      "created_at": "2026-04-20T14:54:31.420Z",
+      "updated_at": "2026-04-20T14:54:31.420Z",
+      "metadata_json": {
+        "source": "register"
+      }
+    },
+    {
+      "session_id": "sess-1776696871364-a2db3872",
+      "user_id": "user-1776696871321-cb920a21",
+      "expires_at": "2026-05-04T14:54:31.364Z",
+      "created_at": "2026-04-20T14:54:31.364Z",
+      "updated_at": "2026-04-20T14:54:31.364Z",
+      "metadata_json": {
+        "source": "register"
+      }
+    }
+  ],
+  "orgs": [
+    {
+      "org_id": "org-1776696871476-2577d931",
+      "slug": "skunkworks-88d6",
+      "name": "Skunkworks",
+      "owner_user_id": "user-admin",
+      "billing_email": null,
+      "created_at": "2026-04-20T14:54:31.476Z",
+      "updated_at": "2026-04-20T14:54:31.476Z"
+    },
+    {
+      "org_id": "org-1776696871471-50dde939",
+      "slug": "admin-77d0",
+      "name": "Admin's Workspace",
+      "owner_user_id": "user-1776696871424-a012adf9",
+      "created_at": "2026-04-20T14:54:31.471Z",
+      "updated_at": "2026-04-20T14:54:31.471Z"
+    },
+    {
+      "org_id": "org-1776696871419-ba6ba19c",
+      "slug": "b-7f32",
+      "name": "Beta's Workspace",
+      "owner_user_id": "user-1776696871371-5e981231",
+      "created_at": "2026-04-20T14:54:31.419Z",
+      "updated_at": "2026-04-20T14:54:31.419Z"
+    },
+    {
+      "org_id": "org-1776696871363-2e962ef7",
+      "slug": "a-39c8",
+      "name": "Alpha's Workspace",
+      "owner_user_id": "user-1776696871321-cb920a21",
+      "created_at": "2026-04-20T14:54:31.363Z",
+      "updated_at": "2026-04-20T14:54:31.363Z"
+    }
+  ],
+  "memberships": [
+    {
+      "membership_id": "mem-1776696871482-6a90ce8a",
+      "org_id": "org-1776696871476-2577d931",
+      "user_id": "user-1776696871371-5e981231",
+      "role": "admin",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-20T14:54:31.482Z",
+      "updated_at": "2026-04-20T14:54:31.482Z"
+    },
+    {
+      "membership_id": "mem-1776696871476-85153e51",
+      "org_id": "org-1776696871476-2577d931",
+      "user_id": "user-admin",
+      "role": "owner",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-20T14:54:31.476Z",
+      "updated_at": "2026-04-20T14:54:31.476Z"
+    },
+    {
+      "membership_id": "mem-1776696871471-1af38a7b",
+      "org_id": "org-1776696871471-50dde939",
+      "user_id": "user-1776696871424-a012adf9",
+      "role": "owner",
+      "invited_by": "user-1776696871424-a012adf9",
+      "created_at": "2026-04-20T14:54:31.471Z",
+      "updated_at": "2026-04-20T14:54:31.471Z"
+    },
+    {
+      "membership_id": "mem-1776696871419-47dd0905",
+      "org_id": "org-1776696871419-ba6ba19c",
+      "user_id": "user-1776696871371-5e981231",
+      "role": "owner",
+      "invited_by": "user-1776696871371-5e981231",
+      "created_at": "2026-04-20T14:54:31.419Z",
+      "updated_at": "2026-04-20T14:54:31.419Z"
+    },
+    {
+      "membership_id": "mem-1776696871363-a2487f6a",
+      "org_id": "org-1776696871363-2e962ef7",
+      "user_id": "user-1776696871321-cb920a21",
+      "role": "owner",
+      "invited_by": "user-1776696871321-cb920a21",
+      "created_at": "2026-04-20T14:54:31.363Z",
+      "updated_at": "2026-04-20T14:54:31.363Z"
+    }
+  ],
+  "webhookEvents": []
+}

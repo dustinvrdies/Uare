@@ -1,0 +1,53 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T03:03:37.808Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "v-exhaust_manifold"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "v-exhaust_manifold",
+      "label": "V-exhaust_manifold",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 340,
+        "height": 110,
+        "depth": 120,
+        "runners": 4,
+        "runner_diameter": 32,
+        "x": 340,
+        "y": 120,
+        "z": 110
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 22
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 340,
+    "y": 120,
+    "z": 110
+  }
+}

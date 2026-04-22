@@ -1,0 +1,27 @@
+{
+  "assembly_bbox_mm": {
+    "x": 110,
+    "y": 110,
+    "z": 30
+  },
+  "part_dimensions": [
+    {
+      "id": "part-oil_pump",
+      "label": "Regression-oil_pump",
+      "dimensions_mm": {
+        "outer_diameter": 110,
+        "thickness": 36,
+        "inner_rotor_diameter": 46,
+        "outer_rotor_diameter": 72,
+        "x": 110,
+        "y": 110,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

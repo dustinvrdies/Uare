@@ -1,0 +1,3 @@
+id,name,kind,material,process,footprint,quantity
+"metrics-engine-block","Metrics-EngineBlock","mechanical","steel","cnc","","1"
+"metrics-pcb","Metrics-PCB","electrical_pcb","steel","cnc","","1"

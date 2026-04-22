@@ -1,0 +1,11 @@
+[
+  {
+    "id": "piston-1",
+    "name": "HyperPiston",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

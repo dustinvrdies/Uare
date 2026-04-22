@@ -1,0 +1,11 @@
+[
+  {
+    "id": "pt-engine_block",
+    "name": "Test-engine_block",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

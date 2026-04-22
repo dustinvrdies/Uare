@@ -1,0 +1,11 @@
+[
+  {
+    "id": "v-nut_hex",
+    "name": "V-nut_hex",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

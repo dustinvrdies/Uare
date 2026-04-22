@@ -1,0 +1,25 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "v-intake_manifold",
+      "name": "V-intake_manifold",
+      "type": "intake_manifold",
+      "dims": {
+        "width": 360,
+        "height": 120,
+        "depth": 140,
+        "runners": 4
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

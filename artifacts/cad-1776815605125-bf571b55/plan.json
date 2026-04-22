@@ -1,0 +1,18 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {
+      "bracket_length_mm": 120,
+      "bracket_width_mm": 40,
+      "bracket_height_mm": 30,
+      "bolt_hole_diameter_mm": 8,
+      "material_name": "aluminum_6061",
+      "process": "cnc"
+    }
+  },
+  "script": "print(\"cad user flow\")"
+}

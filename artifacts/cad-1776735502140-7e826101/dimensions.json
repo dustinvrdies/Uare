@@ -1,0 +1,166 @@
+{
+  "assembly_bbox_mm": {
+    "x": 900,
+    "y": 600,
+    "z": 420
+  },
+  "part_dimensions": [
+    {
+      "id": "imp001",
+      "label": "Impeller — 316L Investment Cast",
+      "dimensions_mm": {
+        "outer_diameter": 320,
+        "inlet_diameter": 180,
+        "width": 52,
+        "num_blades": 5,
+        "x": 52,
+        "y": 320,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "csg001",
+      "label": "Pump Casing — Volute, Cast Iron",
+      "dimensions_mm": {
+        "width": 480,
+        "height": 420,
+        "depth": 340,
+        "discharge_nozzle_dn": 150,
+        "suction_nozzle_dn": 200,
+        "x": 480,
+        "y": 340,
+        "z": 420
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "shf001",
+      "label": "Pump Shaft — 316L Stainless",
+      "dimensions_mm": {
+        "diameter": 55,
+        "length": 420,
+        "coupling_end_diameter": 50,
+        "impeller_end_diameter": 38,
+        "x": 55,
+        "y": 55,
+        "z": 420
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "slp001",
+      "label": "Mechanical Seal — John Crane Type 1",
+      "dimensions_mm": {
+        "shaft_diameter": 55,
+        "oc_diameter": 95,
+        "length": 68,
+        "x": 50,
+        "y": 50,
+        "z": 68
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 60
+      }
+    },
+    {
+      "id": "brg001",
+      "label": "Inboard Bearing — 6312-2RS",
+      "dimensions_mm": {
+        "inner_diameter": 60,
+        "outer_diameter": 130,
+        "width": 31,
+        "x": 31,
+        "y": 130,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 80
+      }
+    },
+    {
+      "id": "brg002",
+      "label": "Outboard Bearing — 6309-2RS",
+      "dimensions_mm": {
+        "inner_diameter": 45,
+        "outer_diameter": 100,
+        "width": 25,
+        "x": 25,
+        "y": 100,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 200
+      }
+    },
+    {
+      "id": "brk001",
+      "label": "Bearing Housing — Cast Iron",
+      "dimensions_mm": {
+        "width": 220,
+        "height": 200,
+        "depth": 280,
+        "x": 220,
+        "y": 280,
+        "z": 200
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 140
+      }
+    },
+    {
+      "id": "cpl001",
+      "label": "Flexible Coupling — Jaw Type",
+      "dimensions_mm": {
+        "diameter": 120,
+        "length": 80,
+        "bore": 50,
+        "x": 120,
+        "y": 120,
+        "z": 80
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 330
+      }
+    },
+    {
+      "id": "bst001",
+      "label": "Baseplate — Welded Steel",
+      "dimensions_mm": {
+        "width": 900,
+        "height": 50,
+        "depth": 600,
+        "x": 900,
+        "y": 600,
+        "z": 50
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": -200,
+        "z": 200
+      }
+    }
+  ]
+}

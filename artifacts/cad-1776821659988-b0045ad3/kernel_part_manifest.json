@@ -1,0 +1,45 @@
+{
+  "parts": [
+    {
+      "id": "ch-1",
+      "name": "V4Head",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 390.0,
+        "height": 90.0,
+        "depth": 225.0,
+        "bore": 86.0,
+        "cylinders": 4.0,
+        "x": 390.0,
+        "y": 225.0,
+        "z": 90.0,
+        "w": 390.0,
+        "d": 225.0,
+        "h": 90.0,
+        "length": 90.0,
+        "L": 90.0,
+        "diameter": 225.0,
+        "dia": 225.0,
+        "outer_diameter": 225.0,
+        "outerD": 225.0,
+        "inner_diameter": 86.0,
+        "innerD": 86.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 390.0,
+        "y": 225.0,
+        "z": 90.0
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

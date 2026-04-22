@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-dowel_pin"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "part-dowel_pin",
+      "label": "Regression-dowel_pin",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

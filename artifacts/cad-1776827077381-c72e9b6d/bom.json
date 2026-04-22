@@ -1,0 +1,11 @@
+[
+  {
+    "id": "v-oil_pump",
+    "name": "V-oil_pump",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

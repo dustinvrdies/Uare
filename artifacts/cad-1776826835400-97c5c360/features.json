@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "v-nut_hex"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "v-nut_hex",
+      "label": "V-nut_hex",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

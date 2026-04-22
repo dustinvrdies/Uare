@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "p1"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "p1",
+      "label": "PlateFromType",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 2.4000000000000004
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

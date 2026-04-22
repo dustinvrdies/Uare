@@ -1,0 +1,34 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "p1",
+      "name": "PlateFromType",
+      "kind": "mechanical",
+      "type": "plate",
+      "dims": {
+        "x": 120,
+        "y": 80,
+        "z": 12
+      },
+      "position": [
+        0,
+        0,
+        6
+      ],
+      "feature_timeline": [
+        {
+          "type": "hole_pattern",
+          "pattern": "circular",
+          "count": 4,
+          "diameter": 6,
+          "pcd": 60
+        }
+      ]
+    }
+  ]
+}

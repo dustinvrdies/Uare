@@ -1,0 +1,27 @@
+{
+  "assembly_bbox_mm": {
+    "x": 50,
+    "y": 50,
+    "z": 120
+  },
+  "part_dimensions": [
+    {
+      "id": "pt-water_pump",
+      "label": "Test-water_pump",
+      "dimensions_mm": {
+        "impeller_diameter": 72,
+        "body_diameter": 90,
+        "length": 120,
+        "hub_diameter": 24,
+        "x": 50,
+        "y": 50,
+        "z": 120
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

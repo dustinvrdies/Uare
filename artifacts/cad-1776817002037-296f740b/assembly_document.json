@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T00:16:42.037Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "part-fusion-style-1",
+      "name": "FusionStyleBracket",
+      "kind": "mechanical",
+      "shape": "plate",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 12
+      },
+      "feature_timeline": [
+        {
+          "order": 1,
+          "type": "hole_pattern",
+          "pattern": "circular",
+          "count": 6,
+          "diameter": 6,
+          "depth": 20,
+          "pcd": 70
+        },
+        {
+          "order": 2,
+          "type": "pocket",
+          "x": 0,
+          "y": 0,
+          "width": 30,
+          "height": 18,
+          "depth": 4
+        },
+        {
+          "order": 3,
+          "type": "slot",
+          "x": 20,
+          "y": 0,
+          "angle": 0,
+          "width": 6,
+          "length": 20,
+          "depth": 4
+        },
+        {
+          "order": 4,
+          "type": "fillet",
+          "edges": "|Z",
+          "radius": 1.5
+        },
+        {
+          "order": 5,
+          "type": "chamfer",
+          "edges": "|X",
+          "size": 0.8
+        }
+      ],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 2.4000000000000004
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-fusion-style-1"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 120,
+    "y": 80,
+    "z": 18
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

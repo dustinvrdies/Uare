@@ -1,0 +1,416 @@
+{
+  "users": [
+    {
+      "user_id": "product-owner",
+      "email": "product-owner@local.dev",
+      "full_name": null,
+      "role": "owner",
+      "plan_id": "studio",
+      "password_digest": null,
+      "created_at": "2026-04-17T01:27:47.921Z",
+      "updated_at": "2026-04-17T01:28:30.244Z"
+    },
+    {
+      "user_id": "user-1776389269797-d894318a",
+      "email": "owner@example.com",
+      "full_name": "Owner User",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "c3c83b7f7eec52407d2eb97a46955628:1e3827401b46b62e3a057f89dfd718754b1f1896bc469e6246ccb1849b49b3fbe5fe1b466c50ce6c60af892b3f970ff40adcbe2b1505e851572c686645c6942c",
+      "created_at": "2026-04-17T01:27:49.864Z",
+      "updated_at": "2026-04-17T01:27:49.874Z"
+    },
+    {
+      "user_id": "user-1776389257224-718f6a82",
+      "email": "admin@example.com",
+      "full_name": "Admin",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "1d7eb1d75f2d95ce16fcddc1ef936cb4:cae0682e3d4320b1405634eead464aeb52db009d4e673f545b9ad6101b356b9937554aa6241db8e81425fe21ad7aa9a735ae6a4be6c8c3568f36ca51e272e0a3",
+      "created_at": "2026-04-17T01:27:37.273Z",
+      "updated_at": "2026-04-17T01:27:37.273Z"
+    },
+    {
+      "user_id": "user-1776389257152-56f9cff9",
+      "email": "b@example.com",
+      "full_name": "Beta",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "a7575ebeac86202508b0e7fb7d64707e:2b26eb8fabd9b37f8a4e7ded4438e4c25bb6c85f163656832cb6f75829da221864b3f070e50b054e17fed525ca542b26c490a32414726368c741a14d69dca65a",
+      "created_at": "2026-04-17T01:27:37.217Z",
+      "updated_at": "2026-04-17T01:27:37.217Z"
+    },
+    {
+      "user_id": "user-1776389257077-96bf9f33",
+      "email": "a@example.com",
+      "full_name": "Alpha",
+      "role": "owner",
+      "plan_id": "free",
+      "password_digest": "bbe2670f0a2a6e9c49bc476d1b7d88f8:981c244da80829d1feb642f13548c1b0fa51188c1e23283dfcb83b435a6884e5737467cfd40dca9a1e67528d8146b371a869012450dc6289bb1285b36738ec88",
+      "created_at": "2026-04-17T01:27:37.145Z",
+      "updated_at": "2026-04-17T01:27:37.145Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "subscription_id": "sub-product-owner",
+      "user_id": "product-owner",
+      "plan_id": "studio",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T01:27:47.921Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T01:27:47.921Z",
+      "updated_at": "2026-04-17T01:28:30.241Z",
+      "metadata_json": {
+        "source": "mock-webhook"
+      }
+    },
+    {
+      "subscription_id": "sub-user-1776389269797-d894318a",
+      "user_id": "user-1776389269797-d894318a",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T01:27:49.865Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T01:27:49.865Z",
+      "updated_at": "2026-04-17T01:27:49.865Z",
+      "metadata_json": {}
+    },
+    {
+      "subscription_id": "sub-user-1776389257224-718f6a82",
+      "user_id": "user-1776389257224-718f6a82",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T01:27:37.273Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T01:27:37.273Z",
+      "updated_at": "2026-04-17T01:27:37.273Z",
+      "metadata_json": {}
+    },
+    {
+      "subscription_id": "sub-user-1776389257152-56f9cff9",
+      "user_id": "user-1776389257152-56f9cff9",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T01:27:37.217Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T01:27:37.217Z",
+      "updated_at": "2026-04-17T01:27:37.217Z",
+      "metadata_json": {}
+    },
+    {
+      "subscription_id": "sub-user-1776389257077-96bf9f33",
+      "user_id": "user-1776389257077-96bf9f33",
+      "plan_id": "free",
+      "status": "active",
+      "billing_provider": "mock",
+      "current_period_start": "2026-04-17T01:27:37.145Z",
+      "current_period_end": null,
+      "created_at": "2026-04-17T01:27:37.145Z",
+      "updated_at": "2026-04-17T01:27:37.145Z",
+      "metadata_json": {}
+    }
+  ],
+  "usage": [],
+  "checkoutSessions": [
+    {
+      "checkout_session_id": "chk-1776389310235-1751a24a",
+      "user_id": "product-owner",
+      "plan_id": "pro",
+      "status": "pending",
+      "provider": "mock",
+      "checkout_url": "/billing/mock-checkout/pro?user_id=product-owner",
+      "provider_session_id": null,
+      "metadata_json": {
+        "created_by": "product-owner",
+        "org_id": null
+      },
+      "created_at": "2026-04-17T01:28:30.235Z"
+    },
+    {
+      "checkout_session_id": "chk-1776389267945-76e9e99d",
+      "user_id": "product-owner",
+      "plan_id": "pro",
+      "status": "pending",
+      "provider": "mock",
+      "checkout_url": "/billing/mock-checkout/pro?user_id=product-owner",
+      "provider_session_id": null,
+      "metadata_json": {
+        "created_by": "product-owner",
+        "org_id": null
+      },
+      "created_at": "2026-04-17T01:27:47.945Z"
+    }
+  ],
+  "authSessions": [
+    {
+      "session_id": "sess-1776389269965-82be1ae0",
+      "user_id": "user-1776389269797-d894318a",
+      "expires_at": "2026-05-01T01:27:49.965Z",
+      "created_at": "2026-04-17T01:27:49.965Z",
+      "updated_at": "2026-04-17T01:27:49.965Z",
+      "metadata_json": {
+        "source": "login"
+      }
+    },
+    {
+      "session_id": "sess-1776389257274-fba61068",
+      "user_id": "user-1776389257224-718f6a82",
+      "expires_at": "2026-05-01T01:27:37.274Z",
+      "created_at": "2026-04-17T01:27:37.274Z",
+      "updated_at": "2026-04-17T01:27:37.274Z",
+      "metadata_json": {
+        "source": "register"
+      }
+    },
+    {
+      "session_id": "sess-1776389257218-cee50106",
+      "user_id": "user-1776389257152-56f9cff9",
+      "expires_at": "2026-05-01T01:27:37.218Z",
+      "created_at": "2026-04-17T01:27:37.218Z",
+      "updated_at": "2026-04-17T01:27:37.218Z",
+      "metadata_json": {
+        "source": "register"
+      }
+    },
+    {
+      "session_id": "sess-1776389257147-1e659d22",
+      "user_id": "user-1776389257077-96bf9f33",
+      "expires_at": "2026-05-01T01:27:37.147Z",
+      "created_at": "2026-04-17T01:27:37.147Z",
+      "updated_at": "2026-04-17T01:27:37.147Z",
+      "metadata_json": {
+        "source": "register"
+      }
+    }
+  ],
+  "orgs": [
+    {
+      "org_id": "org-1776389580849-74a97574",
+      "slug": "skunkworks-bc75",
+      "name": "Skunkworks",
+      "owner_user_id": "user-admin",
+      "billing_email": null,
+      "created_at": "2026-04-17T01:33:00.849Z",
+      "updated_at": "2026-04-17T01:33:00.849Z"
+    },
+    {
+      "org_id": "org-1776389552489-14d40f66",
+      "slug": "skunkworks-5ece",
+      "name": "Skunkworks",
+      "owner_user_id": "user-admin",
+      "billing_email": null,
+      "created_at": "2026-04-17T01:32:32.489Z",
+      "updated_at": "2026-04-17T01:32:32.489Z"
+    },
+    {
+      "org_id": "org-1776389366500-c5e69eda",
+      "slug": "skunkworks-1323",
+      "name": "Skunkworks",
+      "owner_user_id": "user-admin",
+      "billing_email": null,
+      "created_at": "2026-04-17T01:29:26.500Z",
+      "updated_at": "2026-04-17T01:29:26.500Z"
+    },
+    {
+      "org_id": "org-1776389299946-92c70da5",
+      "slug": "skunkworks-19d0",
+      "name": "Skunkworks",
+      "owner_user_id": "user-admin",
+      "billing_email": null,
+      "created_at": "2026-04-17T01:28:19.946Z",
+      "updated_at": "2026-04-17T01:28:19.946Z"
+    },
+    {
+      "org_id": "org-1776389269866-877907ca",
+      "slug": "owner-73b1",
+      "name": "Owner User's Workspace",
+      "owner_user_id": "user-1776389269797-d894318a",
+      "created_at": "2026-04-17T01:27:49.866Z",
+      "updated_at": "2026-04-17T01:27:49.866Z"
+    },
+    {
+      "org_id": "org-1776389267922-867e28fa",
+      "slug": "product-owner-503c",
+      "name": "product-owner Workspace",
+      "owner_user_id": "product-owner",
+      "created_at": "2026-04-17T01:27:47.922Z",
+      "updated_at": "2026-04-17T01:27:47.922Z"
+    },
+    {
+      "org_id": "org-1776389257280-8e9d1189",
+      "slug": "skunkworks-bd1e",
+      "name": "Skunkworks",
+      "owner_user_id": "user-admin",
+      "billing_email": null,
+      "created_at": "2026-04-17T01:27:37.280Z",
+      "updated_at": "2026-04-17T01:27:37.280Z"
+    },
+    {
+      "org_id": "org-1776389257274-1788e330",
+      "slug": "admin-43ba",
+      "name": "Admin's Workspace",
+      "owner_user_id": "user-1776389257224-718f6a82",
+      "created_at": "2026-04-17T01:27:37.274Z",
+      "updated_at": "2026-04-17T01:27:37.274Z"
+    },
+    {
+      "org_id": "org-1776389257218-c35b9a43",
+      "slug": "b-6346",
+      "name": "Beta's Workspace",
+      "owner_user_id": "user-1776389257152-56f9cff9",
+      "created_at": "2026-04-17T01:27:37.218Z",
+      "updated_at": "2026-04-17T01:27:37.218Z"
+    },
+    {
+      "org_id": "org-1776389257146-93bd407c",
+      "slug": "a-c11d",
+      "name": "Alpha's Workspace",
+      "owner_user_id": "user-1776389257077-96bf9f33",
+      "created_at": "2026-04-17T01:27:37.146Z",
+      "updated_at": "2026-04-17T01:27:37.146Z"
+    }
+  ],
+  "memberships": [
+    {
+      "membership_id": "mem-1776389580890-9894c574",
+      "org_id": "org-1776389580849-74a97574",
+      "user_id": "user-1776389257152-56f9cff9",
+      "role": "admin",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:33:00.890Z",
+      "updated_at": "2026-04-17T01:33:00.890Z"
+    },
+    {
+      "membership_id": "mem-1776389580849-ce5c2a0d",
+      "org_id": "org-1776389580849-74a97574",
+      "user_id": "user-admin",
+      "role": "owner",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:33:00.849Z",
+      "updated_at": "2026-04-17T01:33:00.849Z"
+    },
+    {
+      "membership_id": "mem-1776389552497-3455237e",
+      "org_id": "org-1776389552489-14d40f66",
+      "user_id": "user-1776389257152-56f9cff9",
+      "role": "admin",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:32:32.497Z",
+      "updated_at": "2026-04-17T01:32:32.497Z"
+    },
+    {
+      "membership_id": "mem-1776389552489-a44153dc",
+      "org_id": "org-1776389552489-14d40f66",
+      "user_id": "user-admin",
+      "role": "owner",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:32:32.489Z",
+      "updated_at": "2026-04-17T01:32:32.489Z"
+    },
+    {
+      "membership_id": "mem-1776389366509-c2ddf098",
+      "org_id": "org-1776389366500-c5e69eda",
+      "user_id": "user-1776389257152-56f9cff9",
+      "role": "admin",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:29:26.509Z",
+      "updated_at": "2026-04-17T01:29:26.509Z"
+    },
+    {
+      "membership_id": "mem-1776389366501-abf574fa",
+      "org_id": "org-1776389366500-c5e69eda",
+      "user_id": "user-admin",
+      "role": "owner",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:29:26.501Z",
+      "updated_at": "2026-04-17T01:29:26.501Z"
+    },
+    {
+      "membership_id": "mem-1776389299953-cedb7f65",
+      "org_id": "org-1776389299946-92c70da5",
+      "user_id": "user-1776389257152-56f9cff9",
+      "role": "admin",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:28:19.953Z",
+      "updated_at": "2026-04-17T01:28:19.953Z"
+    },
+    {
+      "membership_id": "mem-1776389299946-2e54154a",
+      "org_id": "org-1776389299946-92c70da5",
+      "user_id": "user-admin",
+      "role": "owner",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:28:19.946Z",
+      "updated_at": "2026-04-17T01:28:19.946Z"
+    },
+    {
+      "membership_id": "mem-1776389269866-64e67320",
+      "org_id": "org-1776389269866-877907ca",
+      "user_id": "user-1776389269797-d894318a",
+      "role": "owner",
+      "invited_by": "user-1776389269797-d894318a",
+      "created_at": "2026-04-17T01:27:49.866Z",
+      "updated_at": "2026-04-17T01:27:49.866Z"
+    },
+    {
+      "membership_id": "mem-1776389267922-50cd5f0d",
+      "org_id": "org-1776389267922-867e28fa",
+      "user_id": "product-owner",
+      "role": "owner",
+      "invited_by": "product-owner",
+      "created_at": "2026-04-17T01:27:47.922Z",
+      "updated_at": "2026-04-17T01:27:47.922Z"
+    },
+    {
+      "membership_id": "mem-1776389257287-b04e767f",
+      "org_id": "org-1776389257280-8e9d1189",
+      "user_id": "user-1776389257152-56f9cff9",
+      "role": "admin",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:27:37.287Z",
+      "updated_at": "2026-04-17T01:27:37.287Z"
+    },
+    {
+      "membership_id": "mem-1776389257280-b6a2e10a",
+      "org_id": "org-1776389257280-8e9d1189",
+      "user_id": "user-admin",
+      "role": "owner",
+      "invited_by": "user-admin",
+      "created_at": "2026-04-17T01:27:37.280Z",
+      "updated_at": "2026-04-17T01:27:37.280Z"
+    },
+    {
+      "membership_id": "mem-1776389257274-8c039bb0",
+      "org_id": "org-1776389257274-1788e330",
+      "user_id": "user-1776389257224-718f6a82",
+      "role": "owner",
+      "invited_by": "user-1776389257224-718f6a82",
+      "created_at": "2026-04-17T01:27:37.274Z",
+      "updated_at": "2026-04-17T01:27:37.274Z"
+    },
+    {
+      "membership_id": "mem-1776389257218-2ef9111d",
+      "org_id": "org-1776389257218-c35b9a43",
+      "user_id": "user-1776389257152-56f9cff9",
+      "role": "owner",
+      "invited_by": "user-1776389257152-56f9cff9",
+      "created_at": "2026-04-17T01:27:37.218Z",
+      "updated_at": "2026-04-17T01:27:37.218Z"
+    },
+    {
+      "membership_id": "mem-1776389257146-4e3aec39",
+      "org_id": "org-1776389257146-93bd407c",
+      "user_id": "user-1776389257077-96bf9f33",
+      "role": "owner",
+      "invited_by": "user-1776389257077-96bf9f33",
+      "created_at": "2026-04-17T01:27:37.146Z",
+      "updated_at": "2026-04-17T01:27:37.146Z"
+    }
+  ],
+  "webhookEvents": []
+}

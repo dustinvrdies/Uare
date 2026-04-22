@@ -1,0 +1,11 @@
+[
+  {
+    "id": "p1",
+    "name": "PlateFromType",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

@@ -1,0 +1,52 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:38:33.642Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-clutch_disc"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "pt-clutch_disc",
+      "label": "Test-clutch_disc",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "outer_diameter": 240,
+        "inner_diameter": 130,
+        "thickness": 8,
+        "hub_diameter": 26,
+        "x": 240,
+        "y": 240,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 240,
+    "y": 240,
+    "z": 30
+  }
+}

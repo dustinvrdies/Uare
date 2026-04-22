@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-fusion-style-1"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "part-fusion-style-1",
+      "label": "FusionStyleBracket",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 2.4000000000000004
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-cylinder_head"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "pt-cylinder_head",
+      "label": "Test-cylinder_head",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 15.600000000000001
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

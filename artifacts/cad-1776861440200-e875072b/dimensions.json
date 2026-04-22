@@ -1,0 +1,28 @@
+{
+  "assembly_bbox_mm": {
+    "x": 380,
+    "y": 220,
+    "z": 78
+  },
+  "part_dimensions": [
+    {
+      "id": "part-cylinder_head",
+      "label": "Regression-cylinder_head",
+      "dimensions_mm": {
+        "width": 380,
+        "height": 78,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 380,
+        "y": 220,
+        "z": 78
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

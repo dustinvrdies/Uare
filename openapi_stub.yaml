@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: Uare Custom Backend Stub
+  version: 0.1.0
+paths:
+  /projects/list:
+    post:
+      summary: List projects for actor
+      responses:
+        '200':
+          description: OK
+  /projects/save:
+    post:
+      summary: Save project for actor
+      responses:
+        '200':
+          description: OK

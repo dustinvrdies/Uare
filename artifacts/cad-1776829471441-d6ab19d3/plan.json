@@ -1,0 +1,42 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "p-eb",
+      "name": "V4Block",
+      "type": "engine_block",
+      "dims": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "p-pcb",
+      "name": "Controller",
+      "kind": "electrical_pcb",
+      "type": "pcb",
+      "dims": {
+        "x": 120,
+        "y": 80,
+        "z": 1.6
+      },
+      "position": [
+        0,
+        0,
+        100
+      ]
+    }
+  ]
+}

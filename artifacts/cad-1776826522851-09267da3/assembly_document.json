@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:55:22.851Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "test-exhaust_manifold",
+      "name": "Part-exhaust_manifold",
+      "kind": "mechanical",
+      "shape": "exhaust_manifold",
+      "dimensions_mm": {
+        "width": 340,
+        "height": 110,
+        "depth": 120,
+        "runners": 4,
+        "runner_diameter": 32,
+        "x": 340,
+        "y": 120,
+        "z": 110
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 22
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "test-exhaust_manifold"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 340,
+    "y": 120,
+    "z": 110
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T01:33:45.877Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "eb-1"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "eb-1",
+      "label": "V4Block",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 480,
+        "height": 360,
+        "depth": 230,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 480,
+        "y": 230,
+        "z": 360
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 72
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 480,
+    "y": 230,
+    "z": 360
+  }
+}

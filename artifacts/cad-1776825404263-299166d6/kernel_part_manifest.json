@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "id": "test-turbocharger",
+      "name": "Part-turbocharger",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "compressor_diameter": 96.0,
+        "turbine_diameter": 88.0,
+        "length": 170.0,
+        "shaft_diameter": 14.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 158.1,
+        "y": 96.0,
+        "z": 96.0
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

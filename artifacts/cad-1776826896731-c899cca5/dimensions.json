@@ -1,0 +1,25 @@
+{
+  "assembly_bbox_mm": {
+    "x": 8,
+    "y": 8,
+    "z": 20
+  },
+  "part_dimensions": [
+    {
+      "id": "v-dowel_pin",
+      "label": "V-dowel_pin",
+      "dimensions_mm": {
+        "diameter": 8,
+        "length": 20,
+        "x": 8,
+        "y": 8,
+        "z": 20
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

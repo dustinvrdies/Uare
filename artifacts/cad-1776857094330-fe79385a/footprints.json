@@ -1,0 +1,14 @@
+[
+  {
+    "part_id": "metrics-pcb",
+    "footprint": "GENERIC",
+    "details": {
+      "pads": 4,
+      "body_mm": {
+        "x": 10,
+        "y": 10
+      },
+      "pitch_mm": 2.54
+    }
+  }
+]

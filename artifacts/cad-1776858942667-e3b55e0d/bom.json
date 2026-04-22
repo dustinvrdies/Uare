@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-clutch_disc",
+    "name": "Regression-clutch_disc",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

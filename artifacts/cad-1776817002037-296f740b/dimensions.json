@@ -1,0 +1,23 @@
+{
+  "assembly_bbox_mm": {
+    "x": 120,
+    "y": 80,
+    "z": 18
+  },
+  "part_dimensions": [
+    {
+      "id": "part-fusion-style-1",
+      "label": "FusionStyleBracket",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 12
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    }
+  ]
+}

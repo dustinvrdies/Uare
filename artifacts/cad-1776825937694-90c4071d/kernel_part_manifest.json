@@ -1,0 +1,40 @@
+{
+  "parts": [
+    {
+      "id": "f-washer",
+      "name": "Test-washer",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "outer_diameter": 16.0,
+        "inner_diameter": 8.4,
+        "thickness": 1.6
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 16.0,
+        "y": 16.0,
+        "z": 1.6
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 233.03077667267644,
+        "mass_proxy_kg": 0.0018292915968805101,
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.8
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

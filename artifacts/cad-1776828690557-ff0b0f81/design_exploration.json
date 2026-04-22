@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-04-22T03:32:28.471Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "p-eb",
+      "name": "HeavyBlock",
+      "domains": [
+        "general"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "p-pcb",
+      "name": "MainController",
+      "domains": [
+        "electronics"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal",
+        "thermal",
+        "signal_integrity"
+      ]
+    }
+  ]
+}

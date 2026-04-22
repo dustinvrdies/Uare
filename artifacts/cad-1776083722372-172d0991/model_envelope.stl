@@ -1,0 +1,86 @@
+solid cad-1776083722372-172d0991
+facet normal 1 0 0
+  outer loop
+    vertex 35 -21 -12
+    vertex 35 -21 12
+    vertex 35 21 12
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 35 -21 -12
+    vertex 35 21 12
+    vertex 35 21 -12
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -35 -21 -12
+    vertex -35 21 12
+    vertex -35 -21 12
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -35 -21 -12
+    vertex -35 21 -12
+    vertex -35 21 12
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -35 21 -12
+    vertex 35 21 -12
+    vertex 35 21 12
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -35 21 -12
+    vertex 35 21 12
+    vertex -35 21 12
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -35 -21 -12
+    vertex -35 -21 12
+    vertex 35 -21 12
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -35 -21 -12
+    vertex 35 -21 12
+    vertex 35 -21 -12
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -35 -21 12
+    vertex -35 21 12
+    vertex 35 21 12
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -35 -21 12
+    vertex 35 21 12
+    vertex 35 -21 12
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -35 -21 -12
+    vertex 35 -21 -12
+    vertex 35 21 -12
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -35 -21 -12
+    vertex 35 21 -12
+    vertex -35 21 -12
+  endloop
+endfacet
+endsolid cad-1776083722372-172d0991

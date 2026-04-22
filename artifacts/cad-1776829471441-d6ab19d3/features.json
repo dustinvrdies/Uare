@@ -1,0 +1,38 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "p-eb",
+        "p-pcb"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "p-eb",
+      "label": "V4Block",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 68
+      }
+    },
+    {
+      "id": "p-pcb",
+      "label": "Controller",
+      "kind": "electrical_pcb",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0.32000000000000006
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-04-22T11:41:12.576Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "part-washer",
+      "name": "Regression-washer",
+      "domains": [
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    }
+  ]
+}

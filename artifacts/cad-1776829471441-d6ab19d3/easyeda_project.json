@@ -1,0 +1,18 @@
+{
+  "head": {
+    "docType": "EasyEDA",
+    "editorVersion": "UARE-1.0"
+  },
+  "components": [
+    {
+      "id": "p-pcb",
+      "designator": "U1",
+      "title": "Controller",
+      "package": "GENERIC",
+      "x": 0,
+      "y": 0,
+      "rotation": 0
+    }
+  ],
+  "nets": []
+}

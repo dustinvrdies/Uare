@@ -1,0 +1,226 @@
+{
+  "execution_id": "cad-1776699571831-3796218b",
+  "project_id": "proj-mutation",
+  "status": "completed",
+  "deterministic": true,
+  "engine": "cadquery",
+  "created_at": "2026-04-20T15:39:31.852Z",
+  "actor_id": "tester",
+  "plan_signature": "1271ac0a3f0f07c5beb3b248669b4c7f9815c2ee1521c092ff6378813c3f6fed",
+  "manufacturable": false,
+  "ready_for_execution": true,
+  "recipe": {
+    "parameters": {
+      "bracket_length_mm": 120,
+      "bracket_width_mm": 24,
+      "bracket_height_mm": 12,
+      "bolt_hole_diameter_mm": 7
+    }
+  },
+  "kernel_execution": {
+    "attempted": false,
+    "ok": false,
+    "skipped": true,
+    "reason": "CAD kernel disabled"
+  },
+  "execution_target": "in_process",
+  "artifacts": [
+    {
+      "type": "plan",
+      "filename": "plan.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/plan.json",
+      "mirrored": false
+    },
+    {
+      "type": "recipe",
+      "filename": "recipe.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/recipe.json",
+      "mirrored": false
+    },
+    {
+      "type": "cadquery_script",
+      "filename": "cadquery_script.py",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/cadquery_script.py",
+      "mirrored": false
+    },
+    {
+      "type": "assembly_document",
+      "filename": "assembly_document.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/assembly_document.json",
+      "mirrored": false
+    },
+    {
+      "type": "viewer_manifest",
+      "filename": "viewer_manifest.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/viewer_manifest.json",
+      "mirrored": false
+    },
+    {
+      "type": "bom_json",
+      "filename": "bom.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/bom.json",
+      "mirrored": false
+    },
+    {
+      "type": "bom_csv",
+      "filename": "bom.csv",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/bom.csv",
+      "mirrored": false
+    },
+    {
+      "type": "dimensions",
+      "filename": "dimensions.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/dimensions.json",
+      "mirrored": false
+    },
+    {
+      "type": "features",
+      "filename": "features.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/features.json",
+      "mirrored": false
+    },
+    {
+      "type": "kicad_pcb",
+      "filename": "pcb_layout.kicad_pcb",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/pcb_layout.kicad_pcb",
+      "mirrored": false
+    },
+    {
+      "type": "kicad_schematic",
+      "filename": "schematic.kicad_sch",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/schematic.kicad_sch",
+      "mirrored": false
+    },
+    {
+      "type": "footprints",
+      "filename": "footprints.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/footprints.json",
+      "mirrored": false
+    },
+    {
+      "type": "easyeda_project",
+      "filename": "easyeda_project.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/easyeda_project.json",
+      "mirrored": false
+    },
+    {
+      "type": "netlist",
+      "filename": "netlist.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/netlist.json",
+      "mirrored": false
+    },
+    {
+      "type": "wiring",
+      "filename": "wiring_routes.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/wiring_routes.json",
+      "mirrored": false
+    },
+    {
+      "type": "simulation_report",
+      "filename": "simulation_report.json",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/simulation_report.json",
+      "mirrored": false
+    },
+    {
+      "type": "assembly_instructions",
+      "filename": "assembly_instructions.md",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/assembly_instructions.md",
+      "mirrored": false
+    },
+    {
+      "type": "gerber_top_copper",
+      "filename": "board_top_copper.gbr",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/board_top_copper.gbr",
+      "mirrored": false
+    },
+    {
+      "type": "gerber_outline",
+      "filename": "board_outline.gbr",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/board_outline.gbr",
+      "mirrored": false
+    },
+    {
+      "type": "drill_file",
+      "filename": "board_drill.drl",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/board_drill.drl",
+      "mirrored": false
+    },
+    {
+      "type": "svg_preview",
+      "filename": "model_preview.svg",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/model_preview.svg",
+      "mirrored": false
+    },
+    {
+      "type": "stl_envelope",
+      "filename": "model_envelope.stl",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/model_envelope.stl",
+      "mirrored": false
+    },
+    {
+      "type": "obj_mesh",
+      "filename": "model_mesh.obj",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/model_mesh.obj",
+      "mirrored": false
+    },
+    {
+      "type": "glb_mesh",
+      "filename": "model_mesh.glb",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/model_mesh.glb",
+      "mirrored": false
+    },
+    {
+      "type": "step_exchange",
+      "filename": "model_step.step",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/model_step.step",
+      "mirrored": false
+    },
+    {
+      "type": "html_preview",
+      "filename": "preview.html",
+      "url": "/cad/artifacts/cad-1776699571831-3796218b/preview.html",
+      "mirrored": false
+    }
+  ],
+  "execution_summary": {
+    "estimated_stock_volume_mm3": 34560,
+    "estimated_part_volume_mm3": 11980.8,
+    "estimated_mass_g": 32.35,
+    "estimated_material_cost_usd": 0.65,
+    "estimated_stock_footprint_mm2": 2880,
+    "estimated_surface_area_mm2": 3194.88,
+    "estimated_cut_path_mm": 336,
+    "material_waste_ratio": 0.6533,
+    "process": "cnc",
+    "material_name": null
+  },
+  "notes": [
+    "Artifacts are deterministic for the same engineering inputs.",
+    "SVG preview, STL, OBJ, GLB, and STEP envelopes are generated server-side.",
+    "Kernel execution not completed; fallback artifacts still generated."
+  ],
+  "validation": {
+    "valid": true,
+    "missing": [],
+    "kernel_present": false,
+    "artifact_count": 26
+  },
+  "geometry_comparison": {
+    "comparable": false,
+    "fallback_present": true,
+    "kernel_present": false,
+    "estimated_envelope_volume_mm3": 34560,
+    "estimated_feature_adjusted_volume_mm3": 33174.558,
+    "comparison_status": "insufficient_kernel_artifacts",
+    "notes": [
+      "Estimated feature-adjusted volume subtracts nominal hole volumes from the envelope.",
+      "True geometric diffing still requires parsing kernel-generated solids."
+    ]
+  },
+  "artifact_promotion": {
+    "storage_mode": "local-disk",
+    "promoted_artifact_count": 0,
+    "artifact_count": 26,
+    "promoted_at": "2026-04-20T15:39:31.853Z"
+  }
+}

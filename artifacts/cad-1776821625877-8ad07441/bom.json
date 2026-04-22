@@ -1,0 +1,11 @@
+[
+  {
+    "id": "eb-1",
+    "name": "V4Block",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

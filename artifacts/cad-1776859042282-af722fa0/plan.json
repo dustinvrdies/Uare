@@ -1,0 +1,25 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-nut_hex",
+      "name": "Regression-nut_hex",
+      "type": "nut_hex",
+      "kind": "mechanical",
+      "dims": {
+        "across_flats": 13,
+        "thickness": 8,
+        "thread_diameter": 8
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

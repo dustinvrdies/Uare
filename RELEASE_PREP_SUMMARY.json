@@ -1,0 +1,40 @@
+{
+  "cleaned": [
+    "data/product-store-10044.json",
+    "data/product-store-10557.json",
+    "data/product-store-10791.json",
+    "data/product-store-10835.json",
+    "data/product-store-10925.json",
+    "data/product-store-3208.json",
+    "data/product-store-3330.json",
+    "data/product-store-3778.json",
+    "data/product-store-4472.json",
+    "data/product-store-4706.json",
+    "data/product-store-4750.json",
+    "data/product-store-5255.json",
+    "data/product-store-5489.json",
+    "data/product-store-5533.json",
+    "data/product-store-5657.json",
+    "data/product-store-7835.json",
+    "data/product-store-8091.json",
+    "data/product-store-8139.json",
+    "data/product-store-8223.json",
+    "data/product-store-9100.json",
+    "data/product-store-9334.json",
+    "data/product-store-9810.json",
+    "data/projects-10859.json",
+    "data/projects-10925.json",
+    "data/projects-3165.json",
+    "data/projects-4761.json",
+    "data/projects-5544.json",
+    "data/projects-5657.json",
+    "data/projects-8151.json",
+    "data/projects-8223.json"
+  ],
+  "preparedAt": "2026-04-15T11:00:16.269Z",
+  "notes": [
+    "Runtime data cleaned",
+    "Dependencies are not bundled in release zip",
+    "Use npm ci after unpacking"
+  ]
+}

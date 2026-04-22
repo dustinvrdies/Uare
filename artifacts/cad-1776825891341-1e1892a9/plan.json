@@ -1,0 +1,24 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "f-nut_hex",
+      "name": "Test-nut_hex",
+      "type": "nut_hex",
+      "dims": {
+        "across_flats": 13,
+        "thickness": 8,
+        "thread_diameter": 8
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

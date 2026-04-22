@@ -1,0 +1,86 @@
+solid cad-1775963447000-2a564859
+facet normal 1 0 0
+  outer loop
+    vertex 60 -12 -6
+    vertex 60 -12 6
+    vertex 60 12 6
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 60 -12 -6
+    vertex 60 12 6
+    vertex 60 12 -6
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -60 -12 -6
+    vertex -60 12 6
+    vertex -60 -12 6
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -60 -12 -6
+    vertex -60 12 -6
+    vertex -60 12 6
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -60 12 -6
+    vertex 60 12 -6
+    vertex 60 12 6
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -60 12 -6
+    vertex 60 12 6
+    vertex -60 12 6
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -60 -12 -6
+    vertex -60 -12 6
+    vertex 60 -12 6
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -60 -12 -6
+    vertex 60 -12 6
+    vertex 60 -12 -6
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -60 -12 6
+    vertex -60 12 6
+    vertex 60 12 6
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -60 -12 6
+    vertex 60 12 6
+    vertex 60 -12 6
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -60 -12 -6
+    vertex 60 -12 -6
+    vertex 60 12 -6
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -60 -12 -6
+    vertex 60 12 -6
+    vertex -60 12 -6
+  endloop
+endfacet
+endsolid cad-1775963447000-2a564859

@@ -1,0 +1,42 @@
+{
+  "assembly_bbox_mm": {
+    "x": 465,
+    "y": 220,
+    "z": 340
+  },
+  "part_dimensions": [
+    {
+      "id": "p-eb",
+      "label": "HeavyBlock",
+      "dimensions_mm": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 465,
+        "y": 220,
+        "z": 340
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "p-pcb",
+      "label": "MainController",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 1.6
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 110
+      }
+    }
+  ]
+}

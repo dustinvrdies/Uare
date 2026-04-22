@@ -1,0 +1,28 @@
+{
+  "assembly_bbox_mm": {
+    "x": 340,
+    "y": 120,
+    "z": 110
+  },
+  "part_dimensions": [
+    {
+      "id": "test-exhaust_manifold",
+      "label": "Part-exhaust_manifold",
+      "dimensions_mm": {
+        "width": 340,
+        "height": 110,
+        "depth": 120,
+        "runners": 4,
+        "runner_diameter": 32,
+        "x": 340,
+        "y": 120,
+        "z": 110
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

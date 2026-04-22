@@ -1,0 +1,27 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-engine_block",
+      "name": "Regression-engine_block",
+      "type": "engine_block",
+      "kind": "mechanical",
+      "dims": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

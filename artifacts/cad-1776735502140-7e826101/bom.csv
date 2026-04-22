@@ -1,0 +1,10 @@
+id,name,kind,material,process,footprint,quantity
+"imp001","Impeller — 316L Investment Cast","mechanical","316L stainless","casting","","1"
+"csg001","Pump Casing — Volute, Cast Iron","mechanical","cast_iron","casting","","1"
+"shf001","Pump Shaft — 316L Stainless","mechanical","316L stainless","turning","","1"
+"slp001","Mechanical Seal — John Crane Type 1","mechanical","silicon carbide","cnc","","1"
+"brg001","Inboard Bearing — 6312-2RS","mechanical","4340 steel","cnc","","1"
+"brg002","Outboard Bearing — 6309-2RS","mechanical","4340 steel","cnc","","1"
+"brk001","Bearing Housing — Cast Iron","mechanical","cast_iron","cnc","","1"
+"cpl001","Flexible Coupling — Jaw Type","mechanical","7075-t6 aluminium","cnc","","1"
+"bst001","Baseplate — Welded Steel","mechanical","steel","cnc","","1"

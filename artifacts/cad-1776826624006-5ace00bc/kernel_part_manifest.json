@@ -1,0 +1,49 @@
+{
+  "parts": [
+    {
+      "id": "test-water_pump",
+      "name": "Part-water_pump",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "impeller_diameter": 72.0,
+        "body_diameter": 90.0,
+        "length": 120.0,
+        "hub_diameter": 24.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 72.00000000000001,
+        "y": 90.9,
+        "z": 90.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 239062.06749649227,
+        "surface_area_mm2": 39352.45307473421,
+        "mass_proxy_kg": 1.8766372298474645,
+        "bbox_fill_ratio": 0.40585582361653044,
+        "thin_wall_proxy_mm": 12.14979239248388,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.002558921535910033,
+          "iy": 0.0020774374134411434,
+          "iz": 0.0021028986890570998
+        },
+        "center_mm": {
+          "x": 12.000000000000007,
+          "y": 0.45000000000000284,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

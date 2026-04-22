@@ -1,0 +1,11 @@
+[
+  {
+    "id": "v-cylinder_head",
+    "name": "V-cylinder_head",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

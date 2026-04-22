@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "project_id": "unassigned-project",
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T12:17:02.491Z",
+  "source": {
+    "engine": "cadquery",
+    "project_id": "unassigned-project",
+    "workflow_run_id": null
+  },
+  "parts": [
+    {
+      "id": "part-turbocharger",
+      "name": "Regression-turbocharger",
+      "kind": "mechanical",
+      "shape": "turbocharger",
+      "dimensions_mm": {
+        "compressor_diameter": 96,
+        "turbine_diameter": 88,
+        "length": 170,
+        "shaft_diameter": 14,
+        "x": 50,
+        "y": 50,
+        "z": 170
+      },
+      "feature_timeline": [],
+      "features": [],
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "material": "steel",
+      "process": "cnc",
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 34
+      },
+      "measurement_anchors": {},
+      "metadata": {
+        "standard": null,
+        "revision": null,
+        "surface_finish": null,
+        "tolerance": null,
+        "notes": null,
+        "heat_treatment": null,
+        "mass_kg": null,
+        "quantity": 1
+      },
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "propulsion",
+          "thermal-fluid",
+          "aerospace",
+          "plasma"
+        ]
+      },
+      "material_alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        }
+      ],
+      "appearance": {
+        "base_color_hex": "#8f9399",
+        "finish": "passivated",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "engineering_profile": {
+        "domains": [
+          "propulsion",
+          "thermal-fluid",
+          "aerospace",
+          "plasma"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "fluid"
+        ],
+        "reactions": {
+          "vacuum_compatible": true,
+          "seawater_compatible": true,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": true,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "AS9100",
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": [],
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-turbocharger"
+      ]
+    }
+  ],
+  "bounding_box_mm": {
+    "x": 50,
+    "y": 50,
+    "z": 170
+  },
+  "manufacturing": {
+    "pcb_layers": 0,
+    "suggested_processes": [
+      "cnc"
+    ],
+    "assembly_level": "prototype"
+  },
+  "engineering_domains": [
+    "propulsion",
+    "thermal-fluid",
+    "aerospace",
+    "plasma"
+  ]
+}

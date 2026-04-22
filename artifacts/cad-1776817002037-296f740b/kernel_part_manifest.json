@@ -1,0 +1,48 @@
+{
+  "parts": [
+    {
+      "id": "part-fusion-style-1",
+      "name": "FusionStyleBracket",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 12,
+        "width": 100,
+        "depth": 80,
+        "thickness": 5
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 6.0
+      },
+      "bbox_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 12
+      },
+      "feature_report": {
+        "requested": 5,
+        "applied": [
+          {
+            "type": "hole_pattern"
+          },
+          {
+            "type": "pocket"
+          },
+          {
+            "type": "slot"
+          },
+          {
+            "type": "fillet"
+          },
+          {
+            "type": "chamfer"
+          }
+        ],
+        "failed": []
+      }
+    }
+  ]
+}

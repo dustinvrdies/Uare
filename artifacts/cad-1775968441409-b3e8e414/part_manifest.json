@@ -1,0 +1,48 @@
+{
+  "name": "cad-1775968441409-b3e8e414",
+  "dimensions_mm": {
+    "length_mm": 120,
+    "width_mm": 40,
+    "height_mm": 30,
+    "bolt_hole_diameter_mm": 8,
+    "wall_thickness_mm": 4
+  },
+  "viewer_parts": [
+    {
+      "id": "core_body",
+      "label": "Core body",
+      "offset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "mount_face",
+      "label": "Mount face",
+      "offset": [
+        0,
+        0,
+        5.3999999999999995
+      ]
+    },
+    {
+      "id": "rib_network",
+      "label": "Rib network",
+      "offset": [
+        0,
+        4.8,
+        0
+      ]
+    }
+  ],
+  "exchange_formats": [
+    "stl",
+    "obj",
+    "glb",
+    "step",
+    "svg",
+    "html"
+  ],
+  "generated_at": "2026-04-12T04:34:01.422Z"
+}

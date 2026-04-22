@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-nut_hex",
+    "name": "Regression-nut_hex",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

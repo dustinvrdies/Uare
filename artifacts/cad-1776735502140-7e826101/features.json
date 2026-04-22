@@ -1,0 +1,122 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Centrifugal Pump Assembly — 50 kW / 200 m³/h",
+      "children": [
+        "imp001",
+        "csg001",
+        "shf001",
+        "slp001",
+        "brg001",
+        "brg002",
+        "brk001",
+        "cpl001",
+        "bst001"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "imp001",
+      "label": "Impeller — 316L Investment Cast",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    },
+    {
+      "id": "csg001",
+      "label": "Pump Casing — Volute, Cast Iron",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 84
+      }
+    },
+    {
+      "id": "shf001",
+      "label": "Pump Shaft — 316L Stainless",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 84
+      }
+    },
+    {
+      "id": "slp001",
+      "label": "Mechanical Seal — John Crane Type 1",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 13.600000000000001
+      }
+    },
+    {
+      "id": "brg001",
+      "label": "Inboard Bearing — 6312-2RS",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    },
+    {
+      "id": "brg002",
+      "label": "Outboard Bearing — 6309-2RS",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    },
+    {
+      "id": "brk001",
+      "label": "Bearing Housing — Cast Iron",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 40
+      }
+    },
+    {
+      "id": "cpl001",
+      "label": "Flexible Coupling — Jaw Type",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 16
+      }
+    },
+    {
+      "id": "bst001",
+      "label": "Baseplate — Welded Steel",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

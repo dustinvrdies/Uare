@@ -1,0 +1,49 @@
+{
+  "parts": [
+    {
+      "id": "part-timing_chain",
+      "name": "Regression-timing_chain",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "pitch": 9.525,
+        "link_count": 96.0,
+        "width": 18.0,
+        "roller_diameter": 6.2
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 297.9205599264582,
+        "y": 309.0625599264582,
+        "z": 14.4
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 60716.91233615053,
+        "surface_area_mm2": 52022.80853716387,
+        "mass_proxy_kg": 0.4766277618387817,
+        "bbox_fill_ratio": 0.04579312831480986,
+        "thin_wall_proxy_mm": 2.334242000516977,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.003802179843768258,
+          "iy": 0.003533560145799935,
+          "iz": 0.007319267734119044
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "parts": [
+    {
+      "id": "test-water_pump",
+      "name": "Part-water_pump",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "impeller_diameter": 72.0,
+        "body_diameter": 90.0,
+        "length": 120.0,
+        "hub_diameter": 24.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 72.0,
+        "y": 90.9,
+        "z": 90.0
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

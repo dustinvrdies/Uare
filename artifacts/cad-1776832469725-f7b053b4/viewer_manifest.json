@@ -1,0 +1,112 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T04:34:29.727Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "part-oil_pump"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "part-oil_pump",
+      "label": "Regression-oil_pump",
+      "kind": "mechanical",
+      "material": "steel",
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "thermal-fluid",
+          "plasma"
+        ]
+      },
+      "appearance": {
+        "base_color_hex": "#8f9399",
+        "finish": "passivated",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "process": "cnc",
+      "dimensions_mm": {
+        "outer_diameter": 110,
+        "thickness": 36,
+        "inner_rotor_diameter": 46,
+        "outer_rotor_diameter": 72,
+        "x": 110,
+        "y": 110,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null,
+      "engineering_profile": {
+        "domains": [
+          "thermal-fluid",
+          "plasma"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "fluid"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": true,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": true,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      }
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 110,
+    "y": 110,
+    "z": 30
+  },
+  "engineering_domains": [
+    "thermal-fluid",
+    "plasma"
+  ]
+}

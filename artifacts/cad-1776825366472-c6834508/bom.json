@@ -1,0 +1,11 @@
+[
+  {
+    "id": "pt-turbocharger",
+    "name": "Test-turbocharger",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

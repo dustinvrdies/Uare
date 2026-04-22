@@ -1,0 +1,25 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "test-oil_pump",
+      "name": "Part-oil_pump",
+      "type": "oil_pump",
+      "dims": {
+        "outer_diameter": 110,
+        "thickness": 36,
+        "inner_rotor_diameter": 46,
+        "outer_rotor_diameter": 72
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

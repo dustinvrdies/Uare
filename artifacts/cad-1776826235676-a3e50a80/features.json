@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-engine_block"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "pt-engine_block",
+      "label": "Test-engine_block",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 68
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

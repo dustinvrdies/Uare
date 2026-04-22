@@ -1,0 +1,26 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "eb-1"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "eb-1",
+      "label": "V4Block",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 72
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

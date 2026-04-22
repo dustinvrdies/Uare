@@ -1,0 +1,31 @@
+{
+  "parts": [
+    {
+      "id": "eb-final",
+      "name": "engine_block",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 480.0,
+        "height": 360.0,
+        "depth": 230.0,
+        "bore": 86.0,
+        "cylinders": 4.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 480.0,
+        "y": 230.0,
+        "z": 313.2000001
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

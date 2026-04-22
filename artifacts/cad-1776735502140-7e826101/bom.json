@@ -1,0 +1,83 @@
+[
+  {
+    "id": "imp001",
+    "name": "Impeller — 316L Investment Cast",
+    "kind": "mechanical",
+    "material": "316L stainless",
+    "process": "casting",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "csg001",
+    "name": "Pump Casing — Volute, Cast Iron",
+    "kind": "mechanical",
+    "material": "cast_iron",
+    "process": "casting",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "shf001",
+    "name": "Pump Shaft — 316L Stainless",
+    "kind": "mechanical",
+    "material": "316L stainless",
+    "process": "turning",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "slp001",
+    "name": "Mechanical Seal — John Crane Type 1",
+    "kind": "mechanical",
+    "material": "silicon carbide",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "brg001",
+    "name": "Inboard Bearing — 6312-2RS",
+    "kind": "mechanical",
+    "material": "4340 steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "brg002",
+    "name": "Outboard Bearing — 6309-2RS",
+    "kind": "mechanical",
+    "material": "4340 steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "brk001",
+    "name": "Bearing Housing — Cast Iron",
+    "kind": "mechanical",
+    "material": "cast_iron",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "cpl001",
+    "name": "Flexible Coupling — Jaw Type",
+    "kind": "mechanical",
+    "material": "7075-t6 aluminium",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "bst001",
+    "name": "Baseplate — Welded Steel",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

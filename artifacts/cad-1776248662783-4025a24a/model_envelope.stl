@@ -1,0 +1,86 @@
+solid cad-1776248662783-4025a24a
+facet normal 1 0 0
+  outer loop
+    vertex 50 -20 -12.5
+    vertex 50 -20 12.5
+    vertex 50 20 12.5
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 50 -20 -12.5
+    vertex 50 20 12.5
+    vertex 50 20 -12.5
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -50 -20 -12.5
+    vertex -50 20 12.5
+    vertex -50 -20 12.5
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -50 -20 -12.5
+    vertex -50 20 -12.5
+    vertex -50 20 12.5
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -50 20 -12.5
+    vertex 50 20 -12.5
+    vertex 50 20 12.5
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -50 20 -12.5
+    vertex 50 20 12.5
+    vertex -50 20 12.5
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -50 -20 -12.5
+    vertex -50 -20 12.5
+    vertex 50 -20 12.5
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -50 -20 -12.5
+    vertex 50 -20 12.5
+    vertex 50 -20 -12.5
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -50 -20 12.5
+    vertex -50 20 12.5
+    vertex 50 20 12.5
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -50 -20 12.5
+    vertex 50 20 12.5
+    vertex 50 -20 12.5
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -50 -20 -12.5
+    vertex 50 -20 -12.5
+    vertex 50 20 -12.5
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -50 -20 -12.5
+    vertex 50 20 -12.5
+    vertex -50 20 -12.5
+  endloop
+endfacet
+endsolid cad-1776248662783-4025a24a

@@ -1,0 +1,6 @@
+{
+  "recipe": {
+    "parameters": "System.Collections.Hashtable",
+    "part_type": "intercooler"
+  }
+}

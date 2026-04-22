@@ -1,0 +1,45 @@
+{
+  "parts": [
+    {
+      "id": "eb-1",
+      "name": "V4Block",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 480.0,
+        "height": 360.0,
+        "depth": 230.0,
+        "bore": 86.0,
+        "cylinders": 4.0,
+        "x": 480.0,
+        "y": 230.0,
+        "z": 360.0,
+        "w": 480.0,
+        "d": 230.0,
+        "h": 360.0,
+        "length": 360.0,
+        "L": 360.0,
+        "diameter": 230.0,
+        "dia": 230.0,
+        "outer_diameter": 230.0,
+        "outerD": 230.0,
+        "inner_diameter": 86.0,
+        "innerD": 86.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 480.0,
+        "y": 230.0,
+        "z": 360.0
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

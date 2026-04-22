@@ -1,0 +1,8 @@
+{
+  "parameters": {
+    "channel_length_mm": 300,
+    "channel_diameter_mm": 3,
+    "bend_count": 5,
+    "surface_roughness_mm": 0.05
+  }
+}

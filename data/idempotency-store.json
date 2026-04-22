@@ -1,0 +1,30 @@
+{
+  "keys": [
+    {
+      "idempotency_key": "same-key",
+      "scope": "billing-checkout-session",
+      "request_hash": "df02875cc2e2447284bde892ea70abbf00dd842f516a1ecd896e69c8fb6e1391",
+      "response_status": 201,
+      "response_body_json": {
+        "ok": true,
+        "session": {
+          "checkout_session_id": "chk-1776696768845-0ab9c715",
+          "user_id": "idem-user",
+          "plan_id": "pro",
+          "status": "pending",
+          "provider": "mock",
+          "checkout_url": "/billing/mock-checkout/pro?user_id=idem-user",
+          "provider_session_id": null,
+          "metadata_json": {
+            "created_by": "idem-user",
+            "org_id": null
+          },
+          "created_at": "2026-04-20T14:52:48.845Z"
+        },
+        "provider": "mock"
+      },
+      "expires_at": "2026-04-21T14:52:48.849Z",
+      "created_at": "2026-04-20T14:52:48.849Z"
+    }
+  ]
+}

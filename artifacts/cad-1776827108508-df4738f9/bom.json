@@ -1,0 +1,11 @@
+[
+  {
+    "id": "v-water_pump",
+    "name": "V-water_pump",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

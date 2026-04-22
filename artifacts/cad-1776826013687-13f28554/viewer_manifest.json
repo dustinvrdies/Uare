@@ -1,0 +1,50 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:46:53.688Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "f-dowel_pin"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "f-dowel_pin",
+      "label": "Test-dowel_pin",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "diameter": 8,
+        "length": 20,
+        "x": 8,
+        "y": 8,
+        "z": 20
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 8,
+    "y": 8,
+    "z": 20
+  }
+}

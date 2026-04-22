@@ -1,0 +1,68 @@
+[
+  {
+    "id": "wire-bda1f7ce0043",
+    "name": "Power net",
+    "kind": "wiring",
+    "from": "input_vin",
+    "to": "regulator",
+    "net": "VIN",
+    "gauge_awg": 20,
+    "path_mm": [
+      [
+        -40,
+        0,
+        3.6
+      ],
+      [
+        -17.6,
+        0,
+        3.6
+      ]
+    ],
+    "voltage_v": 12
+  },
+  {
+    "id": "wire-71fdc5187ab0",
+    "name": "Regulated bus",
+    "kind": "wiring",
+    "from": "regulator",
+    "to": "mcu",
+    "net": "VCC_5V",
+    "gauge_awg": 24,
+    "path_mm": [
+      [
+        -17.6,
+        0,
+        3.6
+      ],
+      [
+        0,
+        0,
+        3.6
+      ]
+    ],
+    "voltage_v": 5
+  },
+  {
+    "id": "wire-4852243b30c8",
+    "name": "Sensor signal",
+    "kind": "wiring",
+    "from": "mcu",
+    "to": "sensor",
+    "net": "I2C",
+    "gauge_awg": 28,
+    "path_mm": [
+      [
+        0,
+        0,
+        3.6
+      ],
+      [
+        14.399999999999999,
+        0,
+        3.6
+      ]
+    ],
+    "voltage_v": 3.3
+  }
+]

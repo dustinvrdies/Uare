@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-dowel_pin",
+    "name": "Regression-dowel_pin",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

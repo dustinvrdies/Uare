@@ -1,0 +1,11 @@
+[
+  {
+    "id": "part-fusion-style-1",
+    "name": "FusionStyleBracket",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

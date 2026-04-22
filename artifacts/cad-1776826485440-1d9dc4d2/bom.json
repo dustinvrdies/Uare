@@ -1,0 +1,11 @@
+[
+  {
+    "id": "test-intake_manifold",
+    "name": "Part-intake_manifold",
+    "kind": "mechanical",
+    "material": "steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

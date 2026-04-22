@@ -1,0 +1,187 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T03:32:28.614Z",
+  "part_count": 2,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "p-eb",
+        "p-pcb"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "p-eb",
+      "label": "HeavyBlock",
+      "kind": "mechanical",
+      "material": "titanium_ti6al4v",
+      "material_profile": {
+        "name": "titanium_ti6al4v",
+        "family": "titanium",
+        "density_kg_m3": 4430,
+        "youngs_modulus_gpa": 113.8,
+        "yield_strength_mpa": 880,
+        "ultimate_strength_mpa": 950,
+        "thermal_conductivity_w_mk": 6.7,
+        "electrical_conductivity_ms_m": 0.58,
+        "max_service_temp_c": 400,
+        "relative_magnetic_permeability": 1,
+        "finish": "bead_blast",
+        "color_hex": "#8e9499",
+        "domain_tags": [
+          "aerospace",
+          "aviation",
+          "submersible",
+          "nuclear"
+        ],
+        "requested_material": "titanium_ti6al4v",
+        "resolved_domains": [
+          "general"
+        ]
+      },
+      "appearance": {
+        "base_color_hex": "#8e9499",
+        "finish": "bead_blast",
+        "opacity": 1,
+        "roughness": 0.42,
+        "metallic": 0.88
+      },
+      "process": "cnc",
+      "dimensions_mm": {
+        "width": 465,
+        "height": 340,
+        "depth": 220,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 465,
+        "y": 220,
+        "z": 340
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 68
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null,
+      "engineering_profile": {
+        "domains": [
+          "general"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal"
+        ],
+        "reactions": {
+          "vacuum_compatible": true,
+          "seawater_compatible": false,
+          "cryogenic_ready": true,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": true,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "GD&T"
+        ],
+        "design_exploration_ready": true
+      }
+    },
+    {
+      "id": "p-pcb",
+      "label": "MainController",
+      "kind": "electrical_pcb",
+      "material": "fr4",
+      "material_profile": {
+        "name": "fr4",
+        "family": "laminate",
+        "density_kg_m3": 1850,
+        "youngs_modulus_gpa": 22,
+        "yield_strength_mpa": 300,
+        "ultimate_strength_mpa": 420,
+        "thermal_conductivity_w_mk": 0.3,
+        "electrical_conductivity_ms_m": 0,
+        "max_service_temp_c": 130,
+        "relative_magnetic_permeability": 1,
+        "finish": "laminated",
+        "color_hex": "#2f7d47",
+        "domain_tags": [
+          "electronics"
+        ],
+        "requested_material": "fr4",
+        "resolved_domains": [
+          "electronics"
+        ]
+      },
+      "appearance": {
+        "base_color_hex": "#2f7d47",
+        "finish": "laminated",
+        "opacity": 0.96,
+        "roughness": 0.72,
+        "metallic": 0.08
+      },
+      "process": "cnc",
+      "dimensions_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 1.6
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 110
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0.32000000000000006
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null,
+      "engineering_profile": {
+        "domains": [
+          "electronics"
+        ],
+        "simulation_recommendations": [
+          "structural_static",
+          "modal",
+          "thermal",
+          "signal_integrity"
+        ],
+        "reactions": {
+          "vacuum_compatible": false,
+          "seawater_compatible": false,
+          "cryogenic_ready": false,
+          "oxidizer_resistance": false,
+          "radiation_tolerant": false,
+          "high_magnetic_permeability": false
+        },
+        "standards_context": [
+          "IPC",
+          "DFM"
+        ],
+        "design_exploration_ready": true
+      }
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 465,
+    "y": 220,
+    "z": 340
+  },
+  "engineering_domains": [
+    "general",
+    "electronics"
+  ]
+}

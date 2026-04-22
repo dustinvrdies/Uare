@@ -1,0 +1,52 @@
+{
+  "assembly_id": "asm-17d2b0c46823",
+  "generated_at": "2026-04-22T02:40:15.240Z",
+  "part_count": 1,
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Assembly",
+      "children": [
+        "pt-timing_chain"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "pt-timing_chain",
+      "label": "Test-timing_chain",
+      "kind": "mechanical",
+      "material": "steel",
+      "process": "cnc",
+      "dimensions_mm": {
+        "pitch": 9.525,
+        "link_count": 96,
+        "width": 18,
+        "roller_diameter": 6.2,
+        "x": 18,
+        "y": 50,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      },
+      "measurement_anchors": {},
+      "footprint": null,
+      "pins": null
+    }
+  ],
+  "wires": [],
+  "netlist": [],
+  "bounding_box_mm": {
+    "x": 18,
+    "y": 50,
+    "z": 30
+  }
+}

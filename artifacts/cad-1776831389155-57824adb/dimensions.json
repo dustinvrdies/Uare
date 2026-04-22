@@ -1,0 +1,27 @@
+{
+  "assembly_bbox_mm": {
+    "x": 50,
+    "y": 50,
+    "z": 170
+  },
+  "part_dimensions": [
+    {
+      "id": "part-turbocharger",
+      "label": "Regression-turbocharger",
+      "dimensions_mm": {
+        "compressor_diameter": 96,
+        "turbine_diameter": 88,
+        "length": 170,
+        "shaft_diameter": 14,
+        "x": 50,
+        "y": 50,
+        "z": 170
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

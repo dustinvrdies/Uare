@@ -1,0 +1,15 @@
+{
+  "engine": "cadquery",
+  "execution_target": "in_process",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "recipe": {
+    "parameters": {}
+  },
+  "script": "print(\"test\")",
+  "project_id": "uare-enki-default",
+  "workflow_run_id": "wf-1776648307301-8282d7cb",
+  "workflow_step": "cad"
+}

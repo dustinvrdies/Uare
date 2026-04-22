@@ -1,0 +1,48 @@
+{
+  "parts": [
+    {
+      "id": "part-nut_hex",
+      "name": "Regression-nut_hex",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "across_flats": 13.0,
+        "thickness": 8.0,
+        "thread_diameter": 8.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 13.0,
+        "y": 11.258330249197705,
+        "z": 8.0
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 476.02589977792735,
+        "surface_area_mm2": 632.0684047742286,
+        "mass_proxy_kg": 0.00373680331325673,
+        "bbox_fill_ratio": 0.40655870026334334,
+        "thin_wall_proxy_mm": 1.5062480458834553,
+        "inertia_proxy_kg_m2": {
+          "ix": 5.939960266697679e-08,
+          "iy": 7.25562643324015e-08,
+          "iz": 9.209663165797319e-08
+        },
+        "center_mm": {
+          "x": 4.440892098500626e-16,
+          "y": -8.881784197001252e-16,
+          "z": 4.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

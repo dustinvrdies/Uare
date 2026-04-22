@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-04-22T11:53:36.554Z",
+  "parts": [
+    {
+      "id": "part-engine_block",
+      "name": "Regression-engine_block",
+      "material": "steel",
+      "material_profile": {
+        "name": "stainless_316l",
+        "family": "stainless_steel",
+        "density_kg_m3": 8000,
+        "youngs_modulus_gpa": 193,
+        "yield_strength_mpa": 290,
+        "ultimate_strength_mpa": 580,
+        "thermal_conductivity_w_mk": 16.3,
+        "electrical_conductivity_ms_m": 1.35,
+        "max_service_temp_c": 870,
+        "relative_magnetic_permeability": 1.02,
+        "finish": "passivated",
+        "color_hex": "#8f9399",
+        "domain_tags": [
+          "submersible",
+          "marine",
+          "nuclear",
+          "process"
+        ],
+        "requested_material": "steel",
+        "resolved_domains": [
+          "mechanical",
+          "propulsion",
+          "aerospace",
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "inconel_718",
+          "family": "nickel_superalloy",
+          "density_kg_m3": 8190,
+          "yield_strength_mpa": 1030,
+          "color_hex": "#747a80"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": true,
+        "seawater_compatible": true,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": false,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850,
+        "volume_mm3": 14466408.072649151,
+        "surface_area_mm2": 1391817.0903778153,
+        "mass_proxy_kg": 113.56130337029585,
+        "bbox_fill_ratio": 0.47806495458274906,
+        "thin_wall_proxy_mm": 20.78780059917525,
+        "inertia_proxy_kg_m2": {
+          "ix": 1.2860594275054615,
+          "iy": 2.874261572348787,
+          "iz": 2.5042633253637114
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 0,
+          "z": -5.100000049999991
+        }
+      }
+    }
+  ]
+}

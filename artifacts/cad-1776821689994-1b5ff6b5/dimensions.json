@@ -1,0 +1,28 @@
+{
+  "assembly_bbox_mm": {
+    "x": 390,
+    "y": 225,
+    "z": 90
+  },
+  "part_dimensions": [
+    {
+      "id": "ch-1",
+      "label": "V4Head",
+      "dimensions_mm": {
+        "width": 390,
+        "height": 90,
+        "depth": 225,
+        "bore": 86,
+        "cylinders": 4,
+        "x": 390,
+        "y": 225,
+        "z": 90
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

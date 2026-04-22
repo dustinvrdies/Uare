@@ -1,0 +1,26 @@
+{
+  "engine": "cadquery",
+  "ready_for_execution": true,
+  "manufacturable": {
+    "manufacturable": true
+  },
+  "parts": [
+    {
+      "id": "part-clutch_disc",
+      "name": "Regression-clutch_disc",
+      "type": "clutch_disc",
+      "kind": "mechanical",
+      "dims": {
+        "outer_diameter": 240,
+        "inner_diameter": 130,
+        "thickness": 8,
+        "hub_diameter": 26
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

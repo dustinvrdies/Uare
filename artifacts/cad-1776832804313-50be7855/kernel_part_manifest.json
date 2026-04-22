@@ -1,0 +1,49 @@
+{
+  "parts": [
+    {
+      "id": "part-con_rod",
+      "name": "Regression-con_rod",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "ctc": 140.0,
+        "bigEndD": 50.0,
+        "smallEndD": 21.0,
+        "thickness": 20.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 50.00000000000001,
+        "y": 20.0,
+        "z": 175.5
+      },
+      "kernel_metrics": {
+        "material": "steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 54251.61864072162,
+        "surface_area_mm2": 15860.033469846814,
+        "mass_proxy_kg": 0.42587520632966475,
+        "bbox_fill_ratio": 0.30912603214086387,
+        "thin_wall_proxy_mm": 6.841299388663348,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.0011072844088572604,
+          "iy": 0.0011818125699649517,
+          "iz": 0.00010291984152966902
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": -10.0,
+          "z": 62.75
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}
