@@ -1,0 +1,524 @@
+{
+  "generated_at": "2026-04-23T04:51:44.789Z",
+  "parts": [
+    {
+      "id": "body001",
+      "name": "Main Body",
+      "material": "aluminium 6061",
+      "material_profile": {
+        "name": "inconel_718",
+        "family": "nickel_superalloy",
+        "density_kg_m3": 8190,
+        "youngs_modulus_gpa": 200,
+        "yield_strength_mpa": 1030,
+        "ultimate_strength_mpa": 1240,
+        "thermal_conductivity_w_mk": 11.4,
+        "electrical_conductivity_ms_m": 0.8,
+        "max_service_temp_c": 700,
+        "relative_magnetic_permeability": 1.01,
+        "finish": "high_temp_machined",
+        "color_hex": "#747a80",
+        "domain_tags": [
+          "aerospace",
+          "rocket",
+          "plasma",
+          "nuclear"
+        ],
+        "requested_material": "aluminium 6061",
+        "resolved_domains": [
+          "mechanical",
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": true,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "aluminium 6061",
+        "density_kg_m3": 2700,
+        "volume_mm3": 83616,
+        "surface_area_mm2": 43008,
+        "mass_proxy_kg": 0.22576320000000002,
+        "bbox_fill_ratio": 0.27872,
+        "thin_wall_proxy_mm": 3.888392857142857,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.00011476296000000002,
+          "iy": 0.0002558649600000001,
+          "iz": 0.00023517000000000007
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    },
+    {
+      "id": "brk001",
+      "name": "Mounting Bracket",
+      "material": "6061-t6 aluminium",
+      "material_profile": {
+        "name": "inconel_718",
+        "family": "nickel_superalloy",
+        "density_kg_m3": 8190,
+        "youngs_modulus_gpa": 200,
+        "yield_strength_mpa": 1030,
+        "ultimate_strength_mpa": 1240,
+        "thermal_conductivity_w_mk": 11.4,
+        "electrical_conductivity_ms_m": 0.8,
+        "max_service_temp_c": 700,
+        "relative_magnetic_permeability": 1.01,
+        "finish": "high_temp_machined",
+        "color_hex": "#747a80",
+        "domain_tags": [
+          "aerospace",
+          "rocket",
+          "plasma",
+          "nuclear"
+        ],
+        "requested_material": "6061-t6 aluminium",
+        "resolved_domains": [
+          "mechanical",
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": true,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "6061-t6 aluminium",
+        "density_kg_m3": 2700,
+        "volume_mm3": 17870.714285714283,
+        "surface_area_mm2": 8464.826926811136,
+        "mass_proxy_kg": 0.04825092857142856,
+        "bbox_fill_ratio": 0.2669761237828464,
+        "thin_wall_proxy_mm": 4.222346053907218,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.000010881589620535713,
+          "iy": 0.000018345405133928566,
+          "iz": 0.00001470145479910714
+        },
+        "center_mm": {
+          "x": 61.25,
+          "y": 0,
+          "z": 18.75
+        }
+      }
+    },
+    {
+      "id": "bolt001",
+      "name": "Socket Head Cap Screw M8×30 ISO 4762",
+      "material": "316L stainless",
+      "material_profile": {
+        "name": "inconel_718",
+        "family": "nickel_superalloy",
+        "density_kg_m3": 8190,
+        "youngs_modulus_gpa": 200,
+        "yield_strength_mpa": 1030,
+        "ultimate_strength_mpa": 1240,
+        "thermal_conductivity_w_mk": 11.4,
+        "electrical_conductivity_ms_m": 0.8,
+        "max_service_temp_c": 700,
+        "relative_magnetic_permeability": 1.01,
+        "finish": "high_temp_machined",
+        "color_hex": "#747a80",
+        "domain_tags": [
+          "aerospace",
+          "rocket",
+          "plasma",
+          "nuclear"
+        ],
+        "requested_material": "316L stainless",
+        "resolved_domains": [
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": true,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "316L stainless",
+        "density_kg_m3": 2700,
+        "volume_mm3": 2180.7207201957735,
+        "surface_area_mm2": 1222.732324887505,
+        "mass_proxy_kg": 0.005887945944528589,
+        "bbox_fill_ratio": 0.38242088627496273,
+        "thin_wall_proxy_mm": 3.566963391429774,
+        "inertia_proxy_kg_m2": {
+          "ix": 6.899102528068966e-7,
+          "iy": 7.125984711798134e-7,
+          "iz": 1.5881752861041778e-7
+        },
+        "center_mm": {
+          "x": 60,
+          "y": 20,
+          "z": 27.2
+        }
+      }
+    },
+    {
+      "id": "bolt002",
+      "name": "Socket Head Cap Screw M8×30 ISO 4762",
+      "material": "316L stainless",
+      "material_profile": {
+        "name": "inconel_718",
+        "family": "nickel_superalloy",
+        "density_kg_m3": 8190,
+        "youngs_modulus_gpa": 200,
+        "yield_strength_mpa": 1030,
+        "ultimate_strength_mpa": 1240,
+        "thermal_conductivity_w_mk": 11.4,
+        "electrical_conductivity_ms_m": 0.8,
+        "max_service_temp_c": 700,
+        "relative_magnetic_permeability": 1.01,
+        "finish": "high_temp_machined",
+        "color_hex": "#747a80",
+        "domain_tags": [
+          "aerospace",
+          "rocket",
+          "plasma",
+          "nuclear"
+        ],
+        "requested_material": "316L stainless",
+        "resolved_domains": [
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": true,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "316L stainless",
+        "density_kg_m3": 2700,
+        "volume_mm3": 2180.7207201957735,
+        "surface_area_mm2": 1222.732324887505,
+        "mass_proxy_kg": 0.005887945944528589,
+        "bbox_fill_ratio": 0.38242088627496273,
+        "thin_wall_proxy_mm": 3.566963391429774,
+        "inertia_proxy_kg_m2": {
+          "ix": 6.899102528068966e-7,
+          "iy": 7.125984711798134e-7,
+          "iz": 1.5881752861041778e-7
+        },
+        "center_mm": {
+          "x": 60,
+          "y": 20,
+          "z": -2.8000000000000007
+        }
+      }
+    },
+    {
+      "id": "seal001",
+      "name": "O-Ring Seal AS568-XXX",
+      "material": "viton fkm",
+      "material_profile": {
+        "name": "inconel_718",
+        "family": "nickel_superalloy",
+        "density_kg_m3": 8190,
+        "youngs_modulus_gpa": 200,
+        "yield_strength_mpa": 1030,
+        "ultimate_strength_mpa": 1240,
+        "thermal_conductivity_w_mk": 11.4,
+        "electrical_conductivity_ms_m": 0.8,
+        "max_service_temp_c": 700,
+        "relative_magnetic_permeability": 1.01,
+        "finish": "high_temp_machined",
+        "color_hex": "#747a80",
+        "domain_tags": [
+          "aerospace",
+          "rocket",
+          "plasma",
+          "nuclear"
+        ],
+        "requested_material": "viton fkm",
+        "resolved_domains": [
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": true,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "viton fkm",
+        "density_kg_m3": 2700,
+        "volume_mm3": 75000,
+        "surface_area_mm2": 11000,
+        "mass_proxy_kg": 0.2025,
+        "bbox_fill_ratio": 1,
+        "thin_wall_proxy_mm": 13.636363636363637,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.000057375000000000005,
+          "iy": 0.000057375000000000005,
+          "iz": 0.00008437500000000002
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 30,
+          "z": 0
+        }
+      }
+    },
+    {
+      "id": "brg001",
+      "name": "Deep Groove Ball Bearing 6205-2RS",
+      "material": "4340 steel",
+      "material_profile": {
+        "name": "inconel_718",
+        "family": "nickel_superalloy",
+        "density_kg_m3": 8190,
+        "youngs_modulus_gpa": 200,
+        "yield_strength_mpa": 1030,
+        "ultimate_strength_mpa": 1240,
+        "thermal_conductivity_w_mk": 11.4,
+        "electrical_conductivity_ms_m": 0.8,
+        "max_service_temp_c": 700,
+        "relative_magnetic_permeability": 1.01,
+        "finish": "high_temp_machined",
+        "color_hex": "#747a80",
+        "domain_tags": [
+          "aerospace",
+          "rocket",
+          "plasma",
+          "nuclear"
+        ],
+        "requested_material": "4340 steel",
+        "resolved_domains": [
+          "mechanical",
+          "plasma"
+        ]
+      },
+      "alternatives": [
+        {
+          "material": "aluminum_6061",
+          "family": "aluminum",
+          "density_kg_m3": 2700,
+          "yield_strength_mpa": 276,
+          "color_hex": "#b7bcc5"
+        },
+        {
+          "material": "aluminum_7075_t6",
+          "family": "aluminum",
+          "density_kg_m3": 2810,
+          "yield_strength_mpa": 503,
+          "color_hex": "#9da6b2"
+        },
+        {
+          "material": "titanium_ti6al4v",
+          "family": "titanium",
+          "density_kg_m3": 4430,
+          "yield_strength_mpa": 880,
+          "color_hex": "#8e9499"
+        },
+        {
+          "material": "stainless_316l",
+          "family": "stainless_steel",
+          "density_kg_m3": 8000,
+          "yield_strength_mpa": 290,
+          "color_hex": "#8f9399"
+        }
+      ],
+      "reactions": {
+        "vacuum_compatible": false,
+        "seawater_compatible": false,
+        "cryogenic_ready": false,
+        "oxidizer_resistance": true,
+        "radiation_tolerant": true,
+        "high_magnetic_permeability": false
+      },
+      "kernel_metrics": {
+        "material": "4340 steel",
+        "density_kg_m3": 7850,
+        "volume_mm3": 24492.641725549423,
+        "surface_area_mm2": 6894.225078302801,
+        "mass_proxy_kg": 0.192267237545563,
+        "bbox_fill_ratio": 0.6038619754819877,
+        "thin_wall_proxy_mm": 7.105263157894736,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.000046929228230912845,
+          "iy": 0.000046929228230912845,
+          "iz": 0.00008664843505386706
+        },
+        "center_mm": {
+          "x": 0,
+          "y": 25,
+          "z": 7.5
+        }
+      }
+    }
+  ]
+}

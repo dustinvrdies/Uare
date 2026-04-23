@@ -1,0 +1,86 @@
+solid cad-1776919794959-a3d21558
+facet normal 1 0 0
+  outer loop
+    vertex 70 -45 -45
+    vertex 70 -45 45
+    vertex 70 45 45
+  endloop
+endfacet
+facet normal 1 0 0
+  outer loop
+    vertex 70 -45 -45
+    vertex 70 45 45
+    vertex 70 45 -45
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -70 -45 -45
+    vertex -70 45 45
+    vertex -70 -45 45
+  endloop
+endfacet
+facet normal -1 0 0
+  outer loop
+    vertex -70 -45 -45
+    vertex -70 45 -45
+    vertex -70 45 45
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -70 45 -45
+    vertex 70 45 -45
+    vertex 70 45 45
+  endloop
+endfacet
+facet normal 0 1 0
+  outer loop
+    vertex -70 45 -45
+    vertex 70 45 45
+    vertex -70 45 45
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -70 -45 -45
+    vertex -70 -45 45
+    vertex 70 -45 45
+  endloop
+endfacet
+facet normal 0 -1 0
+  outer loop
+    vertex -70 -45 -45
+    vertex 70 -45 45
+    vertex 70 -45 -45
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -70 -45 45
+    vertex -70 45 45
+    vertex 70 45 45
+  endloop
+endfacet
+facet normal 0 0 1
+  outer loop
+    vertex -70 -45 45
+    vertex 70 45 45
+    vertex 70 -45 45
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -70 -45 -45
+    vertex 70 -45 -45
+    vertex 70 45 -45
+  endloop
+endfacet
+facet normal 0 0 -1
+  outer loop
+    vertex -70 -45 -45
+    vertex 70 45 -45
+    vertex -70 45 -45
+  endloop
+endfacet
+endsolid cad-1776919794959-a3d21558

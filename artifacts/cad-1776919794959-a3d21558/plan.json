@@ -1,0 +1,152 @@
+{
+  "assembly": true,
+  "name": "Precision mechanical component",
+  "description": "Parametric precision mechanical component — generated from design brief.",
+  "total_mass_kg": 2.4,
+  "parts": [
+    {
+      "id": "body001",
+      "name": "Main Body",
+      "type": "housing",
+      "material": "aluminium 6061",
+      "dims": {
+        "width": 100,
+        "height": 60,
+        "depth": 50
+      },
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "color": "#9aaabb",
+      "mass_kg": 1.8,
+      "standard": "Customer drawing",
+      "revision": "A",
+      "surface_finish": "Ra 1.6 μm mating faces, Ra 3.2 μm general",
+      "tolerance": "General ±0.1 mm per ISO 2768-m",
+      "process": "machining",
+      "coating": "Anodize T5 clear 15 μm (if aluminium) or paint to RAL 7035",
+      "notes": "aluminium 6061. Primary structural component. Customer to specify all interface dimensions."
+    },
+    {
+      "id": "brk001",
+      "name": "Mounting Bracket",
+      "type": "bracket",
+      "material": "6061-t6 aluminium",
+      "dims": {
+        "width": 50,
+        "height": 40,
+        "depth": 30
+      },
+      "position": [
+        60,
+        0,
+        0
+      ],
+      "color": "#6a7a8a",
+      "mass_kg": 0.35,
+      "standard": "Customer drawing",
+      "revision": "A",
+      "surface_finish": "Ra 3.2 μm",
+      "tolerance": "±0.1 mm",
+      "process": "machining",
+      "coating": "Anodize clear 15 μm"
+    },
+    {
+      "id": "bolt001",
+      "name": "Socket Head Cap Screw M8×30 ISO 4762",
+      "type": "bolt_hex",
+      "material": "316L stainless",
+      "dims": {
+        "diameter": 8,
+        "length": 30,
+        "thread_pitch": 1.25,
+        "head_diameter": 13
+      },
+      "position": [
+        60,
+        20,
+        15
+      ],
+      "color": "#4a4a4a",
+      "mass_kg": 0.022,
+      "standard": "ISO 4762 — Class 12.9 (or A4-70)",
+      "quantity": 4,
+      "revision": "—",
+      "torque_nm": 25,
+      "tighten_seq": "Cross-pattern, 3 passes, lubricated μ=0.12",
+      "thread_spec": "M8×1.25 — 6H/6g",
+      "surface_finish": "Passivated",
+      "notes": "Torque to VDI 2230. Hardened washer under head."
+    },
+    {
+      "id": "bolt002",
+      "name": "Socket Head Cap Screw M8×30 ISO 4762",
+      "type": "bolt_hex",
+      "material": "316L stainless",
+      "dims": {
+        "diameter": 8,
+        "length": 30
+      },
+      "position": [
+        60,
+        20,
+        -15
+      ],
+      "color": "#4a4a4a",
+      "mass_kg": 0.022,
+      "standard": "ISO 4762",
+      "quantity": 4,
+      "torque_nm": 25
+    },
+    {
+      "id": "seal001",
+      "name": "O-Ring Seal AS568-XXX",
+      "type": "o_ring",
+      "material": "viton fkm",
+      "dims": {
+        "inner_diameter": 40,
+        "cross_section": 3.5
+      },
+      "position": [
+        0,
+        30,
+        0
+      ],
+      "color": "#111111",
+      "mass_kg": 0.005,
+      "standard": "AS568 / ISO 3601",
+      "revision": "A",
+      "surface_finish": "Groove Ra 0.8 μm, lead-in chamfer 15°",
+      "tolerance": "Groove width +0.05/-0 mm",
+      "notes": "25% squeeze ratio. Groove depth = CS × 0.75. PTFE backup ring for >50 bar."
+    },
+    {
+      "id": "brg001",
+      "name": "Deep Groove Ball Bearing 6205-2RS",
+      "type": "bearing",
+      "material": "4340 steel",
+      "dims": {
+        "inner_diameter": 25,
+        "outer_diameter": 52,
+        "width": 15
+      },
+      "position": [
+        0,
+        25,
+        0
+      ],
+      "color": "#c8d8e0",
+      "mass_kg": 0.19,
+      "standard": "ISO 15:2017 (6205)",
+      "quantity": 2,
+      "revision": "—",
+      "surface_finish": "Bore H7, shaft k5 (interference fit)",
+      "tolerance": "Radial clearance C3 for elevated temperature service",
+      "notes": "FAG / SKF 6205-2RS1. C3 clearance. Grease lubricated NLGI 2. Max 10,000 RPM. Static load rating 6.55 kN, dynamic 14.0 kN.",
+      "ndt": "Acceptance per ISO 1132"
+    }
+  ],
+  "bom_notes": "Auto-generated from brief: \"build me a dragster frame\nbuild me a dragster frame\". Refine by asking Enki to add specific subsystems or materials."
+}

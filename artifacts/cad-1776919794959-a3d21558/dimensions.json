@@ -1,0 +1,110 @@
+{
+  "assembly_bbox_mm": {
+    "x": 100,
+    "y": 52,
+    "z": 60
+  },
+  "part_dimensions": [
+    {
+      "id": "body001",
+      "label": "Main Body",
+      "dimensions_mm": {
+        "width": 100,
+        "height": 60,
+        "depth": 50,
+        "x": 100,
+        "y": 50,
+        "z": 60
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "brk001",
+      "label": "Mounting Bracket",
+      "dimensions_mm": {
+        "width": 50,
+        "height": 40,
+        "depth": 30,
+        "x": 50,
+        "y": 30,
+        "z": 40
+      },
+      "transform_mm": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "id": "bolt001",
+      "label": "Socket Head Cap Screw M8×30 ISO 4762",
+      "dimensions_mm": {
+        "diameter": 8,
+        "length": 30,
+        "thread_pitch": 1.25,
+        "head_diameter": 13,
+        "x": 8,
+        "y": 8,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 60,
+        "y": 20,
+        "z": 15
+      }
+    },
+    {
+      "id": "bolt002",
+      "label": "Socket Head Cap Screw M8×30 ISO 4762",
+      "dimensions_mm": {
+        "diameter": 8,
+        "length": 30,
+        "x": 8,
+        "y": 8,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 60,
+        "y": 20,
+        "z": -15
+      }
+    },
+    {
+      "id": "seal001",
+      "label": "O-Ring Seal AS568-XXX",
+      "dimensions_mm": {
+        "inner_diameter": 40,
+        "cross_section": 3.5,
+        "x": 50,
+        "y": 50,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 30,
+        "z": 0
+      }
+    },
+    {
+      "id": "brg001",
+      "label": "Deep Groove Ball Bearing 6205-2RS",
+      "dimensions_mm": {
+        "inner_diameter": 25,
+        "outer_diameter": 52,
+        "width": 15,
+        "x": 15,
+        "y": 52,
+        "z": 30
+      },
+      "transform_mm": {
+        "x": 0,
+        "y": 25,
+        "z": 0
+      }
+    }
+  ]
+}

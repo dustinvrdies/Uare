@@ -1,0 +1,349 @@
+{
+  "parts": [
+    {
+      "id": "body001",
+      "name": "Main Body",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 100.0,
+        "height": 60.0,
+        "depth": 50.0,
+        "x": 100.0,
+        "y": 50.0,
+        "z": 60.0,
+        "w": 100.0,
+        "d": 50.0,
+        "h": 60.0,
+        "length": 60.0,
+        "L": 60.0,
+        "diameter": 50.0,
+        "dia": 50.0,
+        "outer_diameter": 50.0,
+        "outerD": 50.0,
+        "wall": 4.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 100.0,
+        "y": 50.0,
+        "z": 60.0
+      },
+      "kernel_metrics": {
+        "material": "aluminium 6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 83616.0,
+        "surface_area_mm2": 43008.0,
+        "mass_proxy_kg": 0.22576320000000002,
+        "bbox_fill_ratio": 0.27872,
+        "thin_wall_proxy_mm": 3.888392857142857,
+        "inertia_proxy_kg_m2": {
+          "ix": 0.00011476296000000002,
+          "iy": 0.0002558649600000001,
+          "iz": 0.00023517000000000007
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "brk001",
+      "name": "Mounting Bracket",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "width": 50.0,
+        "height": 40.0,
+        "depth": 30.0,
+        "x": 50.0,
+        "y": 30.0,
+        "z": 40.0,
+        "w": 50.0,
+        "d": 30.0,
+        "h": 40.0,
+        "length": 40.0,
+        "L": 40.0,
+        "diameter": 30.0,
+        "dia": 30.0,
+        "outer_diameter": 30.0,
+        "outerD": 30.0,
+        "thickness": 5.0
+      },
+      "transform_mm": {
+        "x": 60.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 52.5,
+        "y": 30.0,
+        "z": 42.5
+      },
+      "kernel_metrics": {
+        "material": "6061-t6 aluminium",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 17870.714285714283,
+        "surface_area_mm2": 8464.826926811136,
+        "mass_proxy_kg": 0.04825092857142856,
+        "bbox_fill_ratio": 0.2669761237828464,
+        "thin_wall_proxy_mm": 4.222346053907218,
+        "inertia_proxy_kg_m2": {
+          "ix": 1.0881589620535713e-05,
+          "iy": 1.8345405133928566e-05,
+          "iz": 1.470145479910714e-05
+        },
+        "center_mm": {
+          "x": 61.25,
+          "y": 0.0,
+          "z": 18.75
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "bolt001",
+      "name": "Socket Head Cap Screw M8\u00d730 ISO 4762",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "diameter": 8.0,
+        "length": 30.0,
+        "thread_pitch": 1.25,
+        "head_diameter": 13.0,
+        "x": 8.0,
+        "y": 8.0,
+        "z": 30.0,
+        "w": 8.0,
+        "width": 8.0,
+        "d": 8.0,
+        "depth": 8.0,
+        "h": 30.0,
+        "height": 30.0,
+        "L": 30.0,
+        "dia": 8.0,
+        "outer_diameter": 8.0,
+        "outerD": 8.0
+      },
+      "transform_mm": {
+        "x": 60.0,
+        "y": 20.0,
+        "z": 15.0
+      },
+      "bbox_mm": {
+        "x": 13.599999999999994,
+        "y": 11.777945491468369,
+        "z": 35.6
+      },
+      "kernel_metrics": {
+        "material": "316L stainless",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 2180.7207201957735,
+        "surface_area_mm2": 1222.732324887505,
+        "mass_proxy_kg": 0.005887945944528589,
+        "bbox_fill_ratio": 0.38242088627496273,
+        "thin_wall_proxy_mm": 3.566963391429774,
+        "inertia_proxy_kg_m2": {
+          "ix": 6.899102528068966e-07,
+          "iy": 7.125984711798134e-07,
+          "iz": 1.5881752861041778e-07
+        },
+        "center_mm": {
+          "x": 60.0,
+          "y": 20.0,
+          "z": 27.2
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "bolt002",
+      "name": "Socket Head Cap Screw M8\u00d730 ISO 4762",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "diameter": 8.0,
+        "length": 30.0,
+        "x": 8.0,
+        "y": 8.0,
+        "z": 30.0,
+        "w": 8.0,
+        "width": 8.0,
+        "d": 8.0,
+        "depth": 8.0,
+        "h": 30.0,
+        "height": 30.0,
+        "L": 30.0,
+        "dia": 8.0,
+        "outer_diameter": 8.0,
+        "outerD": 8.0
+      },
+      "transform_mm": {
+        "x": 60.0,
+        "y": 20.0,
+        "z": -15.0
+      },
+      "bbox_mm": {
+        "x": 13.599999999999994,
+        "y": 11.777945491468369,
+        "z": 35.6
+      },
+      "kernel_metrics": {
+        "material": "316L stainless",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 2180.7207201957735,
+        "surface_area_mm2": 1222.732324887505,
+        "mass_proxy_kg": 0.005887945944528589,
+        "bbox_fill_ratio": 0.38242088627496273,
+        "thin_wall_proxy_mm": 3.566963391429774,
+        "inertia_proxy_kg_m2": {
+          "ix": 6.899102528068966e-07,
+          "iy": 7.125984711798134e-07,
+          "iz": 1.5881752861041778e-07
+        },
+        "center_mm": {
+          "x": 60.0,
+          "y": 20.0,
+          "z": -2.8000000000000007
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "seal001",
+      "name": "O-Ring Seal AS568-XXX",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "inner_diameter": 40.0,
+        "cross_section": 3.5,
+        "x": 50.0,
+        "y": 50.0,
+        "z": 30.0,
+        "w": 50.0,
+        "width": 50.0,
+        "d": 50.0,
+        "depth": 50.0,
+        "h": 30.0,
+        "height": 30.0,
+        "length": 30.0,
+        "L": 30.0,
+        "diameter": 50.0,
+        "dia": 50.0,
+        "outer_diameter": 50.0,
+        "outerD": 50.0,
+        "innerD": 40.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 30.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 50.0,
+        "y": 50.0,
+        "z": 30.0
+      },
+      "kernel_metrics": {
+        "material": "viton fkm",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 75000.0,
+        "surface_area_mm2": 11000.0,
+        "mass_proxy_kg": 0.2025,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 13.636363636363637,
+        "inertia_proxy_kg_m2": {
+          "ix": 5.7375000000000005e-05,
+          "iy": 5.7375000000000005e-05,
+          "iz": 8.437500000000002e-05
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 30.0,
+          "z": 0.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    },
+    {
+      "id": "brg001",
+      "name": "Deep Groove Ball Bearing 6205-2RS",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "inner_diameter": 25.0,
+        "outer_diameter": 52.0,
+        "width": 15.0,
+        "x": 15.0,
+        "y": 52.0,
+        "z": 30.0,
+        "w": 15.0,
+        "d": 52.0,
+        "depth": 52.0,
+        "h": 30.0,
+        "height": 30.0,
+        "length": 30.0,
+        "L": 30.0,
+        "diameter": 52.0,
+        "dia": 52.0,
+        "outerD": 52.0,
+        "innerD": 25.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 25.0,
+        "z": 0.0
+      },
+      "bbox_mm": {
+        "x": 52.0,
+        "y": 52.0,
+        "z": 15.0
+      },
+      "kernel_metrics": {
+        "material": "4340 steel",
+        "density_kg_m3": 7850.0,
+        "volume_mm3": 24492.641725549423,
+        "surface_area_mm2": 6894.225078302801,
+        "mass_proxy_kg": 0.192267237545563,
+        "bbox_fill_ratio": 0.6038619754819877,
+        "thin_wall_proxy_mm": 7.105263157894736,
+        "inertia_proxy_kg_m2": {
+          "ix": 4.6929228230912845e-05,
+          "iy": 4.6929228230912845e-05,
+          "iz": 8.664843505386706e-05
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 25.0,
+          "z": 7.5
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

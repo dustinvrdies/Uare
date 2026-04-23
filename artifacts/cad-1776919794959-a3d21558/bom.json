@@ -1,0 +1,56 @@
+[
+  {
+    "id": "body001",
+    "name": "Main Body",
+    "kind": "mechanical",
+    "material": "aluminium 6061",
+    "process": "machining",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "brk001",
+    "name": "Mounting Bracket",
+    "kind": "mechanical",
+    "material": "6061-t6 aluminium",
+    "process": "machining",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "bolt001",
+    "name": "Socket Head Cap Screw M8×30 ISO 4762",
+    "kind": "mechanical",
+    "material": "316L stainless",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "bolt002",
+    "name": "Socket Head Cap Screw M8×30 ISO 4762",
+    "kind": "mechanical",
+    "material": "316L stainless",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "seal001",
+    "name": "O-Ring Seal AS568-XXX",
+    "kind": "mechanical",
+    "material": "viton fkm",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  },
+  {
+    "id": "brg001",
+    "name": "Deep Groove Ball Bearing 6205-2RS",
+    "kind": "mechanical",
+    "material": "4340 steel",
+    "process": "cnc",
+    "footprint": null,
+    "quantity": 1
+  }
+]

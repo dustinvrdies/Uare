@@ -1,0 +1,86 @@
+{
+  "hierarchy": [
+    {
+      "id": "root",
+      "name": "Precision mechanical component",
+      "children": [
+        "body001",
+        "brk001",
+        "bolt001",
+        "bolt002",
+        "seal001",
+        "brg001"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "body001",
+      "label": "Main Body",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 12
+      }
+    },
+    {
+      "id": "brk001",
+      "label": "Mounting Bracket",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 8
+      }
+    },
+    {
+      "id": "bolt001",
+      "label": "Socket Head Cap Screw M8×30 ISO 4762",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    },
+    {
+      "id": "bolt002",
+      "label": "Socket Head Cap Screw M8×30 ISO 4762",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    },
+    {
+      "id": "seal001",
+      "label": "O-Ring Seal AS568-XXX",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    },
+    {
+      "id": "brg001",
+      "label": "Deep Groove Ball Bearing 6205-2RS",
+      "kind": "mechanical",
+      "footprint": null,
+      "exploded_offset_mm": {
+        "x": 0,
+        "y": 0,
+        "z": 6
+      }
+    }
+  ],
+  "wiring": [],
+  "netlist": []
+}

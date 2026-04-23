@@ -1,0 +1,105 @@
+{
+  "generated_at": "2026-04-23T04:51:44.789Z",
+  "autonomous_search_enabled": true,
+  "candidates": [
+    {
+      "id": "body001",
+      "name": "Main Body",
+      "domains": [
+        "mechanical",
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "brk001",
+      "name": "Mounting Bracket",
+      "domains": [
+        "mechanical",
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "bolt001",
+      "name": "Socket Head Cap Screw M8×30 ISO 4762",
+      "domains": [
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "bolt002",
+      "name": "Socket Head Cap Screw M8×30 ISO 4762",
+      "domains": [
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "seal001",
+      "name": "O-Ring Seal AS568-XXX",
+      "domains": [
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    },
+    {
+      "id": "brg001",
+      "name": "Deep Groove Ball Bearing 6205-2RS",
+      "domains": [
+        "mechanical",
+        "plasma"
+      ],
+      "recommended_mutations": [
+        "resize_for_mass_efficiency",
+        "evaluate_material_alternatives",
+        "add_feature_timeline_detail"
+      ],
+      "recommended_simulations": [
+        "structural_static",
+        "modal"
+      ]
+    }
+  ]
+}

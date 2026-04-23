@@ -1,0 +1,7 @@
+id,name,kind,material,process,footprint,quantity
+"body001","Main Body","mechanical","aluminium 6061","machining","","1"
+"brk001","Mounting Bracket","mechanical","6061-t6 aluminium","machining","","1"
+"bolt001","Socket Head Cap Screw M8×30 ISO 4762","mechanical","316L stainless","cnc","","1"
+"bolt002","Socket Head Cap Screw M8×30 ISO 4762","mechanical","316L stainless","cnc","","1"
+"seal001","O-Ring Seal AS568-XXX","mechanical","viton fkm","cnc","","1"
+"brg001","Deep Groove Ball Bearing 6205-2RS","mechanical","4340 steel","cnc","","1"
