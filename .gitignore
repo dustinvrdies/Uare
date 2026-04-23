@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+/data/
+/object_storage_mirror/
+*.log
+coverage/
+dist/
+.DS_Store
