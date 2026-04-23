@@ -1,7 +1,16 @@
 {
   "name": "uare-custom-backend",
   "private": true,
+  "description": "Backend API for the UARE platform with auth, billing, orgs, CAD execution, workflows, workers, analytics, and ops tooling.",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustinvrdies/Uare.git"
+  },
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "node --max-old-space-size=4096 --env-file-if-exists=.env server.mjs",
     "start": "node --max-old-space-size=4096 --env-file-if-exists=.env server.mjs",
