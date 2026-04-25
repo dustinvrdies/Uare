@@ -15,6 +15,15 @@ import { validateExecutionArtifacts } from './geometryValidator.mjs';
 import { compareGeometryFromManifest } from './geometryComparator.mjs';
 import { applyEngineeringGuardrails, synthesizeAutoRepairPlan } from './engineeringGuardrails.mjs';
 import { resolvePythonInvocation } from '../platform/process.mjs';
+import {
+  buildPartEnvelopeCatalog,
+  buildParetoTradeoffs,
+  buildPartDetailManifest,
+  buildMaterialAlternativesMatrix,
+  buildDetailedAssemblyInstructions,
+  buildDesignVariationMatrix,
+} from './advancedArtifactBuilders.mjs';
+import { buildViewerOptions } from './viewerBuilder.mjs';
 
 function readExecutionJson(artifactStore, executionId, filename, fallback = null) {
   try {
@@ -1267,6 +1276,19 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
     });
     const inventionFeed = buildInventionFeed(manifest, assemblyDocument, engineeringManifest, designExploration);
 
+    // ── Advanced artifact generation ─────────────────────────────────────
+    const partEnvelopeCatalog = buildPartEnvelopeCatalog(assemblyDocument);
+    const paretoTradeoffs = buildParetoTradeoffs(assemblyDocument, executionPlan);
+    const partDetailManifest = buildPartDetailManifest(assemblyDocument);
+    const materialAlternatives = buildMaterialAlternativesMatrix((executionPlan?.parts || [{}])[0] || {});
+    const assemblyInstructionsDetailed = buildDetailedAssemblyInstructions(
+      assemblyDocument,
+      Array.isArray(executionPlan?.interfaces) ? executionPlan.interfaces : []
+    );
+    const designVariations = buildDesignVariationMatrix(executionPlan || {}, assemblyDocument);
+    const viewerOptions = buildViewerOptions(assemblyDocument, manifest);
+    // ────────────────────────────────────────────────────────────────────
+
     artifactStore.writeText(executionId, 'engineering_manifest.json', JSON.stringify(engineeringManifest, null, 2));
     artifactStore.writeText(executionId, 'material_report.json', JSON.stringify(materialReport, null, 2));
     artifactStore.writeText(executionId, 'design_exploration.json', JSON.stringify(designExploration, null, 2));
@@ -1274,6 +1296,13 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
     artifactStore.writeText(executionId, 'kernel_dimension_verification.json', JSON.stringify(dimensionVerification, null, 2));
     artifactStore.writeText(executionId, 'engineering_quality_score.json', JSON.stringify(qualityScore, null, 2));
     artifactStore.writeText(executionId, 'invention_feed.json', JSON.stringify(inventionFeed, null, 2));
+    artifactStore.writeText(executionId, 'part_envelope_catalog.json', JSON.stringify(partEnvelopeCatalog, null, 2));
+    artifactStore.writeText(executionId, 'pareto_tradeoffs.json', JSON.stringify(paretoTradeoffs, null, 2));
+    artifactStore.writeText(executionId, 'part_detail_manifest.json', JSON.stringify(partDetailManifest, null, 2));
+    artifactStore.writeText(executionId, 'material_alternatives.json', JSON.stringify(materialAlternatives, null, 2));
+    artifactStore.writeText(executionId, 'assembly_instructions_detailed.json', JSON.stringify(assemblyInstructionsDetailed, null, 2));
+    artifactStore.writeText(executionId, 'design_variations.json', JSON.stringify(designVariations, null, 2));
+    artifactStore.writeText(executionId, 'viewer_options.json', JSON.stringify(viewerOptions, null, 2));
     manifest.artifacts.push(...registerArtifacts(executionId, [
       { type: 'engineering_manifest', filename: 'engineering_manifest.json' },
       { type: 'material_report', filename: 'material_report.json' },
@@ -1282,6 +1311,13 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
       { type: 'kernel_dimension_verification', filename: 'kernel_dimension_verification.json' },
       { type: 'engineering_quality_score', filename: 'engineering_quality_score.json' },
       { type: 'invention_feed', filename: 'invention_feed.json' },
+      { type: 'part_envelope_catalog', filename: 'part_envelope_catalog.json' },
+      { type: 'pareto_tradeoffs', filename: 'pareto_tradeoffs.json' },
+      { type: 'part_detail_manifest', filename: 'part_detail_manifest.json' },
+      { type: 'material_alternatives', filename: 'material_alternatives.json' },
+      { type: 'assembly_instructions_detailed', filename: 'assembly_instructions_detailed.json' },
+      { type: 'design_variations', filename: 'design_variations.json' },
+      { type: 'viewer_options', filename: 'viewer_options.json' },
     ]));
 
     manifest.engineering_quality = {

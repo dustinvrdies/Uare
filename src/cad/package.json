@@ -1,0 +1,59 @@
+{
+  "name": "@uare/cad-planner",
+  "version": "1.0.0",
+  "description": "Production-grade Node.js system for automated 3D assembly planning, topology optimization, routing, and visualization",
+  "type": "module",
+  "main": "src/cad/plannerService.mjs",
+  "exports": {
+    ".": "./src/cad/plannerService.mjs",
+    "./api": "./src/cad/api.mjs",
+    "./topology": "./src/cad/topologyOptimization.mjs",
+    "./routing": "./src/cad/routingEngine.mjs",
+    "./geometry": "./src/cad/geometryGeneration.mjs",
+    "./visualization": "./src/cad/enhancedVisualization.mjs",
+    "./validation": "./src/cad/dataValidation.mjs",
+    "./examples": "./src/cad/examples.mjs"
+  },
+  "scripts": {
+    "start": "node src/cad/api.mjs",
+    "dev": "NODE_ENV=development node --watch src/cad/api.mjs",
+    "examples": "node src/cad/examples.mjs",
+    "test": "node --test src/cad/*.test.mjs",
+    "lint": "eslint src/cad/",
+    "format": "prettier --write src/cad/"
+  },
+  "keywords": [
+    "cad",
+    "3d",
+    "assembly",
+    "optimization",
+    "topology",
+    "routing",
+    "manufacturing",
+    "mechanical-design",
+    "electronics",
+    "visualization",
+    "webgl"
+  ],
+  "author": "UARE Enterprise",
+  "license": "Proprietary",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "prettier": "^3.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uare/cad-planner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uare/cad-planner/issues"
+  },
+  "homepage": "https://github.com/uare/cad-planner#readme"
+}

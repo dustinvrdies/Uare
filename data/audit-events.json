@@ -1,6 +1,146 @@
 {
   "events": [
     {
+      "audit_id": "audit-1777128502066-fec38a55",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777128502066-4569d26b",
+      "status": "success",
+      "request_id": "req-1777128502065-kewgpv",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777128502061-ad8fb0e0",
+        "user_id": "user-1777128501976-797c40a3",
+        "role": "admin"
+      },
+      "created_at": "2026-04-25T14:48:22.066Z"
+    },
+    {
+      "audit_id": "audit-1777128502061-e1a8be49",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777128502061-ad8fb0e0",
+      "status": "success",
+      "request_id": "req-1777128502060-usmxzs",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-c052",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-25T14:48:22.061Z"
+    },
+    {
+      "audit_id": "audit-1777128502057-077bc4cb",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777128502018-28c2401b",
+      "status": "success",
+      "request_id": "req-1777128502018-kaut2w",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-25T14:48:22.057Z"
+    },
+    {
+      "audit_id": "audit-1777128502015-b5532e58",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777128501976-797c40a3",
+      "status": "success",
+      "request_id": "req-1777128501976-0988kl",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-25T14:48:22.015Z"
+    },
+    {
+      "audit_id": "audit-1777128501972-296e9e8c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777128501929-6b31b160",
+      "status": "success",
+      "request_id": "req-1777128501928-r5ujtj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-25T14:48:21.972Z"
+    },
+    {
+      "audit_id": "audit-1777128498402-75b3b14e",
+      "actor_id": "user-1777128498298-ad80eee7",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777128498298-ad80eee7",
+      "status": "success",
+      "request_id": "req-1777128498357-pn4wtm",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-25T14:48:18.402Z"
+    },
+    {
+      "audit_id": "audit-1777128498353-03bb30f4",
+      "actor_id": "user-1777128498298-ad80eee7",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777128498298-ad80eee7",
+      "status": "success",
+      "request_id": "req-1777128498352-j5wgwe",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777128498343-d75fcaad"
+      },
+      "created_at": "2026-04-25T14:48:18.353Z"
+    },
+    {
+      "audit_id": "audit-1777128498344-38fdaf70",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777128498298-ad80eee7",
+      "status": "success",
+      "request_id": "req-1777128498296-ys20qg",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-25T14:48:18.344Z"
+    },
+    {
+      "audit_id": "audit-1777128494759-91dd9fd0",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777128494757-a7a5bd3c",
+      "status": "success",
+      "request_id": "req-1777128494756-v8pov3",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-25T14:48:14.759Z"
+    },
+    {
       "audit_id": "audit-1777046768629-c9ec6a47",
       "actor_id": "idem-user",
       "actor_role": "owner",
