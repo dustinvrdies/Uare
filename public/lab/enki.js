@@ -99,6 +99,37 @@ function _normalizePart(part, idx) {
   return p;
 }
 
+function _promoteEngineSpecificPartType(part) {
+  if (!part || typeof part !== 'object') return part;
+  const type = String(part.type || '').toLowerCase();
+  const name = String(part.name || '').toLowerCase();
+  const setType = (next) => {
+    part.type = next;
+  };
+
+  if ((type === 'housing' || type === 'custom') && /oil pump|gerotor/.test(name)) setType('oil_pump');
+  if ((type === 'housing' || type === 'custom') && /water pump|coolant pump/.test(name)) setType('water_pump');
+  if ((type === 'housing' || type === 'custom') && /thermostat housing/.test(name)) setType('thermostat_housing');
+  if ((type === 'cylinder' || type === 'custom') && /^thermostat\b/.test(name)) setType('thermostat_valve');
+  if ((type === 'housing' || type === 'custom') && /(ignition coil|coil-on-plug|\bcop\b|coil pack)/.test(name)) setType('ignition_coil');
+  if (type === 'cylinder' && /fuel injector/.test(name)) setType('fuel_injector');
+  if (type === 'cylinder' && /oil filter/.test(name)) setType('oil_filter');
+
+  if (type === 'cylinder' || type === 'custom' || type === 'housing') {
+    if (/\bmap sensor\b/.test(name)) setType('map_sensor');
+    else if (/\biat sensor\b|intake air temp/.test(name)) setType('iat_sensor');
+    else if (/\bo2 sensor\b|oxygen sensor/.test(name)) setType('o2_sensor');
+    else if (/\bknock sensor\b/.test(name)) setType('knock_sensor');
+    else if (/coolant temperature sensor|\bcts\b/.test(name)) setType('coolant_temp_sensor');
+    else if (/crank position sensor|\bckp\b/.test(name)) setType('crank_sensor');
+    else if (/cam position sensor|\bcmp\b/.test(name)) setType('cam_sensor');
+    else if (/oil pressure sender|oil pressure sensor/.test(name)) setType('oil_pressure_sensor');
+    else if (/\bsensor\b/.test(name)) setType('engine_sensor');
+  }
+
+  return part;
+}
+
 /* ── Enki System Prompt ──────────────────────────────────────────────────── */
 const SYSTEM_PROMPT = `You are Enki — UARE's hyper-precision autonomous engineering AI. You embody the combined mastery of a senior mechanical engineer, electrical engineer, manufacturing engineer, materials scientist, aerospace engineer, propulsion engineer, and systems integrator.
 
@@ -277,7 +308,7 @@ const GREETINGS = [
 
 /* ── Quick Intent Patterns (offline, no LLM needed) ─────────────────────── */
 const QUICK_PATTERNS = [
-  { re: /\b(4.?cyl|four.?cyl|inline.?4|i4).*engine|engine.*4.?cyl/i, fn: _buildEngine4Cyl },
+  { re: /\b((?:4|four)[ -]?(?:cyl|cylinder)|inline.?4|i4).*engine|engine.*((?:4|four)[ -]?(?:cyl|cylinder)|inline.?4|i4)/i, fn: _buildEngine4Cyl },
   { re: /\b(gear|gearbox|transmission|reducer|differential)/i, fn: _buildGearAssembly },
   { re: /\b(drone|quadcopter|uav|fpv.quad)/i, fn: _buildDrone },
   { re: /\b(robot|robotic).*(arm|manipulator)|6.?dof.*(arm|robot)/i, fn: _buildRoboticArm },
@@ -302,11 +333,22 @@ let _history = []; // [{role:'user'|'assistant', content:str}]
 let _assembly = null; // current assembly object
 let _partBuildQueue = [];
 let _isBusy = false;
+let _pendingCadPlan = null;
+let _pendingDerivedCadSpec = null;
+const _MAX_AUTOLOAD_STL_BYTES = 48 * 1024 * 1024;
+let _engineCycleState = null;
 
 /* ── DOM Refs ────────────────────────────────────────────────────────────── */
 let $msgs, $sugg, $input, $sendBtn, $enkiSub, $actionOverlay, $actionText,
     $actionFill, $enkiLive, $enkiLiveMsg, $asmName, $partCount,
-    $vpEmpty, $asmTreeContent, $asmBOM, $mParts, $mMass, $simResult;
+  $vpEmpty, $asmTreeContent, $asmBOM, $mParts, $mMass, $simResult,
+  $derivedSpecPanel, $derivedSpecSummary, $derivedSpecGrid, $derivedSpecStatus,
+  $derivedSpecExecute, $derivedSpecDismiss,
+  $engineBenchPanel, $engineThrottle, $engineThrottleVal, $engineLoad,
+  $engineLoadVal, $engineRpmTarget, $enginePowerReadout, $engineTorqueReadout,
+  $engineOilReadout, $engineCoolantReadout,
+  $qaPanel, $qaScore, $qaDimDev, $qaMateViolations, $qaGeomWarnings,
+  $qaDimensionList, $qaMateList, $qaGeometryList;
 
 /* ── Init ────────────────────────────────────────────────────────────────── */
 function _init(opts) {
@@ -329,6 +371,30 @@ function _init(opts) {
   $mParts       = document.getElementById('m-parts');
   $mMass        = document.getElementById('m-mass');
   $simResult    = document.getElementById('sim-result-text');
+  $derivedSpecPanel = document.getElementById('derived-spec-panel');
+  $derivedSpecSummary = document.getElementById('derived-spec-summary');
+  $derivedSpecGrid = document.getElementById('derived-spec-grid');
+  $derivedSpecStatus = document.getElementById('derived-spec-status');
+  $derivedSpecExecute = document.getElementById('btn-derived-spec-execute');
+  $derivedSpecDismiss = document.getElementById('btn-derived-spec-dismiss');
+  $engineBenchPanel = document.getElementById('engine-bench-panel');
+  $engineThrottle = document.getElementById('engine-throttle');
+  $engineThrottleVal = document.getElementById('engine-throttle-val');
+  $engineLoad = document.getElementById('engine-load');
+  $engineLoadVal = document.getElementById('engine-load-val');
+  $engineRpmTarget = document.getElementById('engine-rpm-target');
+  $enginePowerReadout = document.getElementById('engine-power-readout');
+  $engineTorqueReadout = document.getElementById('engine-torque-readout');
+  $engineOilReadout = document.getElementById('engine-oil-readout');
+  $engineCoolantReadout = document.getElementById('engine-coolant-readout');
+  $qaPanel = document.getElementById('engineering-qa-panel');
+  $qaScore = document.getElementById('qa-score');
+  $qaDimDev = document.getElementById('qa-dim-dev');
+  $qaMateViolations = document.getElementById('qa-mate-violations');
+  $qaGeomWarnings = document.getElementById('qa-geom-warnings');
+  $qaDimensionList = document.getElementById('qa-dimension-list');
+  $qaMateList = document.getElementById('qa-mate-list');
+  $qaGeometryList = document.getElementById('qa-geometry-list');
 
   _bindEvents();
   _showGreeting();
@@ -355,6 +421,7 @@ function _bindEvents() {
     if ($msgs) $msgs.innerHTML = '';
     _history = [];
     _clearSuggestions();
+    _resetDerivedSpecPanel();
     _showGreeting();
   });
   const $newBtn = document.getElementById('btn-new');
@@ -364,10 +431,23 @@ function _bindEvents() {
     _history = [];
     _clearSuggestions();
     _resetAssemblyUI();
+    _resetDerivedSpecPanel();
     if (global.UARE_CAD && global.UARE_CAD.clearScene) global.UARE_CAD.clearScene();
     if ($vpEmpty) $vpEmpty.classList.remove('hidden');
     _showGreeting();
   });
+  if ($derivedSpecExecute) $derivedSpecExecute.addEventListener('click', _executePendingCadPlan);
+  if ($derivedSpecDismiss) $derivedSpecDismiss.addEventListener('click', _resetDerivedSpecPanel);
+  [$engineThrottle, $engineLoad].forEach((input) => {
+    if (!input) return;
+    input.addEventListener('input', _updateEngineBenchLabels);
+  });
+  if ($engineRpmTarget) {
+    $engineRpmTarget.addEventListener('change', () => {
+      const clamped = Math.max(700, Math.min(7600, Number($engineRpmTarget.value || 1200)));
+      $engineRpmTarget.value = String(clamped);
+    });
+  }
   // Export buttons
   _bindExportBtn('btn-export-step', 'step');
   _bindExportBtn('btn-export-obj', 'obj');
@@ -577,18 +657,11 @@ async function _onSend() {
 
 /* ── Message Processing ──────────────────────────────────────────────────── */
 async function _processMessage(text) {
-  // 1. Quick local intent check
-  for (const p of QUICK_PATTERNS) {
-    if (p.re.test(text)) {
-      const intent = p.fn(text);
-      if (intent && intent.assembly && intent.parts) {
-        return await _buildAssemblyFromPlan(intent);
-      }
-    }
-  }
-  // 2. Show typing
+  const quickPattern = QUICK_PATTERNS.find((pattern) => pattern.re.test(text)) || null;
+  _resetDerivedSpecPanel();
+  // 1. Show typing
   const typingId = _addTyping();
-  // 3. Send to LLM
+  // 2. Send to AI planner first; keep quick patterns as offline fallback.
   try {
     const resp = await _callLLM(text);
     _removeMsg(typingId);
@@ -596,17 +669,28 @@ async function _processMessage(text) {
     if (!response) { _addMsg('assistant', 'No response from AI. Is the server running?'); return; }
 
     // 4a. Use server-provided assembly_plan if available (skips regex parse)
-    const plan = resp.assembly_plan || _parseAssemblyPlan(response);
+    let plan = resp.assembly_plan || _parseAssemblyPlan(response);
+    if (quickPattern && quickPattern.fn === _buildEngine4Cyl && plan && !_isEngineAssembly(plan)) {
+      plan = quickPattern.fn(text);
+    }
     if (plan && plan.assembly && plan.parts && plan.parts.length > 0) {
       _addMsg('assistant', _mdToHtml(_stripJsonBlock(response)));
       await _buildAssemblyFromPlan(plan);
-      // 4b. Show STEP/artifact download link if server pre-executed the kernel
+      _renderDerivedSpecPanel(resp.derived_cad_spec || plan.derived_cad_spec || null, plan);
       if (resp.cad_execution_id) {
         _addMsg('assistant',
-          '🔩 CadQuery kernel execution started — <a href="/cad/executions/' + esc(resp.cad_execution_id) + '/artifacts" target="_blank">View artifacts (STEP · STL · OBJ)</a>'
+          '🔩 CadQuery kernel execution started — <a href="/lab/?execution_id=' + esc(resp.cad_execution_id) + '">Open in unified app</a>'
         );
         // Auto-load the accurate kernel STL into the 3D viewport once ready
         _loadKernelSTLWhenReady(resp.cad_execution_id, plan && plan.name);
+      } else if (resp.derived_cad_spec) {
+        _addMsg('assistant', 'Review the <strong>Derived CAD Spec</strong> panel, then click <strong>Generate CAD</strong> when the inferred dimensions and tolerances look right.');
+      }
+    } else if (quickPattern) {
+      const intent = quickPattern.fn(text);
+      if (intent && intent.assembly && intent.parts) {
+        await _buildAssemblyFromPlan(intent);
+        return;
       }
     } else {
       await _streamMsg(response);
@@ -614,6 +698,13 @@ async function _processMessage(text) {
     }
   } catch (e) {
     _removeMsg(typingId);
+    if (quickPattern) {
+      const intent = quickPattern.fn(text);
+      if (intent && intent.assembly && intent.parts) {
+        await _buildAssemblyFromPlan(intent);
+        return;
+      }
+    }
     throw e;
   }
 }
@@ -629,7 +720,7 @@ async function _callLLM(userText) {
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: Object.assign({ 'Content-Type': 'application/json' }, _opts.headers),
-    body: JSON.stringify({ prompt: contextualPrompt, system_prompt: SYSTEM_PROMPT })
+    body: JSON.stringify({ prompt: contextualPrompt, current_prompt: userText, system_prompt: SYSTEM_PROMPT, auto_execute_cad: false })
   });
   if (!res.ok) throw new Error('LLM API error ' + res.status);
   const data = await res.json();
@@ -639,6 +730,7 @@ async function _callLLM(userText) {
     narrative: data.narrative || '',
     cad_execution_id: data.cad_execution_id || null,
     assembly_plan: data.assembly_plan || null,
+    derived_cad_spec: data.derived_cad_spec || null,
     insights: data.insights || [],
     suggestions: data.suggestions || [],
   };
@@ -663,7 +755,7 @@ function _stripJsonBlock(text) {
 // it into the 3D viewport for 100% accurate CadQuery geometry.
 async function _loadKernelSTLWhenReady(executionId, assemblyName) {
   const CAD = global.UARE_CAD;
-  if (!CAD || !CAD.loadKernelSTL) return;
+  if (!CAD || !CAD.loadKernelSTL) return false;
   const maxAttempts = 12; // up to ~24s
   const delay = 2000;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -675,27 +767,80 @@ async function _loadKernelSTLWhenReady(executionId, assemblyName) {
       if (!r.ok) continue;
       const data = await r.json();
       const artifacts = Array.isArray(data.artifacts) ? data.artifacts : [];
-      // Prefer assembly_kernel.stl (real CadQuery output); fall back to model_envelope.stl
-      const kernelArt = artifacts.find(a => a.type === 'stl_kernel' || (a.filename && a.filename.includes('kernel')));
-      const envelopeArt = artifacts.find(a => a.type === 'stl' || (a.filename && a.filename.endsWith('.stl')));
-      const art = kernelArt || envelopeArt;
+      const kernelArt = artifacts.find((artifact) => artifact.type === 'stl_kernel' || /kernel/i.test(artifact.filename || ''));
+      const envelopeArt = artifacts.find((artifact) => /\.stl$/i.test(artifact.filename || '') && !/kernel/i.test(artifact.filename || ''));
+      const kernelWithinLimit = !kernelArt || !kernelArt.bytes || Number(kernelArt.bytes) <= _MAX_AUTOLOAD_STL_BYTES;
+      const envelopeWithinLimit = !envelopeArt || !envelopeArt.bytes || Number(envelopeArt.bytes) <= _MAX_AUTOLOAD_STL_BYTES;
+
+      let art = null;
+      if (kernelArt && kernelWithinLimit) art = kernelArt;
+      else if (envelopeArt && envelopeWithinLimit) art = envelopeArt;
+      else if (kernelArt || envelopeArt) {
+        _addMsg('assistant', 'Kernel mesh artifacts are ready, but the STL is too large for automatic browser loading. The viewport will keep the lighter parametric scene to avoid memory failure.');
+        return false;
+      }
       if (!art) continue;
+
+      if (art === envelopeArt && kernelArt && !kernelWithinLimit) {
+        _addMsg('assistant', 'Loaded the lighter envelope STL because the full kernel mesh is too large for safe browser autoload.');
+      }
+
       const stlUrl = art.url || ('/cad/artifacts/' + executionId + '/' + art.filename);
       const loaded = await CAD.loadKernelSTL(stlUrl, assemblyName || 'Assembly');
+      if (!loaded && art !== envelopeArt && envelopeArt && envelopeWithinLimit) {
+        const fallbackUrl = envelopeArt.url || ('/cad/artifacts/' + executionId + '/' + envelopeArt.filename);
+        const fallbackLoaded = await CAD.loadKernelSTL(fallbackUrl, assemblyName || 'Assembly');
+        if (fallbackLoaded) {
+          _addMsg('assistant', '✅ <strong>Envelope mesh loaded</strong> — the browser fell back to a lighter STL because the full kernel mesh could not be loaded safely.');
+          return true;
+        }
+      }
       if (loaded) {
         _addMsg('assistant', '✅ <strong>Accurate CadQuery geometry loaded</strong> — 3D viewport updated with real kernel mesh.');
-        return;
+        return true;
       }
     } catch (_) { /* keep polling */ }
   }
+  return false;
+}
+
+async function _loadExecutionInUnifiedShell(executionId) {
+  const id = String(executionId || '').trim();
+  if (!id) return false;
+
+  _addMsg('assistant', 'Loading CAD execution <code>' + esc(id) + '</code> in unified workspace…');
+
+  let assemblyName = 'Assembly';
+  try {
+    const statusRes = await fetch('/cad/status/' + encodeURIComponent(id), {
+      headers: Object.assign({}, _opts && _opts.headers ? _opts.headers : {}),
+    });
+    if (statusRes.ok) {
+      const statusData = await statusRes.json();
+      assemblyName = (statusData && statusData.manifest && (statusData.manifest.recipe && statusData.manifest.recipe.name))
+        || (statusData && statusData.manifest && statusData.manifest.execution_id)
+        || assemblyName;
+    }
+  } catch (_) { /* non-fatal */ }
+
+  const loaded = await _loadKernelSTLWhenReady(id, assemblyName);
+  if (!loaded) {
+    _addMsg('assistant', 'Waiting for CAD mesh artifacts for <code>' + esc(id) + '</code>. If this is a new run, they may still be generating.');
+  }
+  return Boolean(loaded);
 }
 
 /* ── Build Assembly from Plan ────────────────────────────────────────────── */
 async function _buildAssemblyFromPlan(plan) {
   plan = Object.assign({}, plan || {}, {
-    parts: ((plan && plan.parts) || []).map((p, i) => _normalizePart(p, i)),
+    parts: ((plan && plan.parts) || []).map((p, i) => _promoteEngineSpecificPartType(_normalizePart(p, i))),
   });
+  _resolveAssemblyConstraints(plan);
+  const audit = _runAssemblyEngineeringAudit(plan);
+  _stopEngineCycle(true);
   _assembly = plan;
+  _setEngineBenchVisible(plan);
+  _updateEngineeringQaPanel(plan, audit);
   _setEnkiLive(true, 'Building assembly…');
   _setEnkiStatus('Building ' + plan.name + '…');
   // Update topbar
@@ -757,8 +902,12 @@ async function _buildAssemblyFromPlan(plan) {
   _addMsg('assistant',
     'Assembly complete! <strong>' + plan.parts.length + ' parts</strong> built.' +
     (plan.bom_notes ? '<br><em>' + esc(plan.bom_notes) + '</em>' : '') +
-    '<br><span class="text-muted">Total mass: ' + mass + '</span>'
+    '<br><span class="text-muted">Total mass: ' + mass + '</span>' +
+    '<br><span class="text-muted">Engineering audit: ' + audit.score + '/100 (' + audit.issueCount + ' issue(s)).</span>'
   );
+  if (audit.issueCount) {
+    _addMsg('assistant', '<strong>Engineering Findings</strong><br>' + audit.issues.slice(0, 6).map((issue) => '• ' + esc(issue)).join('<br>'));
+  }
   _history.push({ role: 'assistant', content: '[Assembly: ' + plan.name + ', ' + plan.parts.length + ' parts]' });
   // Show suggestions
   _showSuggestions(_buildSuggestions(plan));
@@ -786,6 +935,7 @@ function _buildSuggestions(plan) {
   ];
   if (plan && plan.parts) {
     const types = plan.parts.map(p => p.type);
+    if (_isEngineAssembly(plan)) suggs.unshift('Run engine cycle simulation');
     if (types.includes('shaft') || types.includes('gear')) suggs.unshift('Add lubrication system and oil passages');
     if (types.includes('piston') || types.includes('housing')) suggs.unshift('Add cooling water jacket and passages');
     if (types.some(t => ['bolt_hex','nut_hex','washer'].includes(t))) suggs.unshift('Verify torque specs and thread engagement');
@@ -1157,6 +1307,78 @@ function _updateMetrics(plan) {
   const mass = plan.total_mass_kg != null ? plan.total_mass_kg.toFixed(1) + ' kg' : '—';
   if ($mMass) $mMass.textContent = mass;
 }
+
+function _renderQaRows(container, rows, formatValue) {
+  if (!container) return;
+  if (!Array.isArray(rows) || !rows.length) {
+    container.innerHTML = '<div class="qa-empty">No findings.</div>';
+    return;
+  }
+  container.innerHTML = rows.slice(0, 8).map((row) => {
+    const label = row && (row.label || row.name || row.message || row.id || 'Check');
+    const value = formatValue(row);
+    return '<div class="qa-item"><span>' + esc(String(label)) + '</span><strong>' + esc(String(value)) + '</strong></div>';
+  }).join('');
+}
+
+function _updateEngineeringQaPanel(plan, audit) {
+  if (!$qaPanel) return;
+  if (!plan || !audit) {
+    $qaPanel.classList.add('hidden');
+    if ($qaScore) $qaScore.textContent = '--/100';
+    if ($qaDimDev) $qaDimDev.textContent = '-- mm';
+    if ($qaMateViolations) $qaMateViolations.textContent = '--';
+    if ($qaGeomWarnings) $qaGeomWarnings.textContent = '--';
+    if ($qaDimensionList) $qaDimensionList.innerHTML = '<div class="qa-empty">No assembly loaded.</div>';
+    if ($qaMateList) $qaMateList.innerHTML = '<div class="qa-empty">No assembly loaded.</div>';
+    if ($qaGeometryList) $qaGeometryList.innerHTML = '<div class="qa-empty">No assembly loaded.</div>';
+    return;
+  }
+
+  const solver = plan.constraint_solver || {};
+  const mateRows = [];
+  (solver.violations || []).forEach((violation) => {
+    mateRows.push({
+      label: (violation.partId || '?') + ' -> ' + (violation.baseId || '?'),
+      deviationMm: violation.deviationMm,
+    });
+  });
+  (solver.conflicts || []).forEach((conflict) => {
+    mateRows.push({
+      label: 'Conflict: ' + (conflict.partId || '?'),
+      deviationMm: conflict.deltaMm,
+    });
+  });
+
+  const maxDim = Number(audit.maxDimensionalDeviationMm || 0);
+  const geomWarnings = Array.isArray(audit.geometryWarnings) ? audit.geometryWarnings : [];
+  if ($qaScore) $qaScore.textContent = String(audit.score || 0) + '/100';
+  if ($qaDimDev) $qaDimDev.textContent = maxDim.toFixed(2) + ' mm';
+  if ($qaMateViolations) $qaMateViolations.textContent = String(mateRows.length);
+  if ($qaGeomWarnings) $qaGeomWarnings.textContent = String(geomWarnings.length);
+
+  _renderQaRows($qaDimensionList, audit.dimensionalChecks || [], (row) => {
+    return row && row.deviationMm != null
+      ? row.deviationMm.toFixed(2) + ' mm / tol ' + Number(row.toleranceMm || 0).toFixed(2)
+      : 'n/a';
+  });
+  _renderQaRows($qaMateList, mateRows, (row) => Number(row.deviationMm || 0).toFixed(2) + ' mm');
+  _renderQaRows($qaGeometryList, geomWarnings.map((message, index) => ({ label: 'Warning ' + (index + 1), message })), (row) => row.message || '');
+  $qaPanel.classList.remove('hidden');
+}
+
+function _resetDerivedSpecPanel() {
+  _pendingCadPlan = null;
+  _pendingDerivedCadSpec = null;
+  if ($derivedSpecPanel) $derivedSpecPanel.classList.add('hidden');
+  if ($derivedSpecSummary) $derivedSpecSummary.innerHTML = '';
+  if ($derivedSpecGrid) $derivedSpecGrid.innerHTML = '';
+  if ($derivedSpecStatus) $derivedSpecStatus.textContent = 'Review before execution';
+  if ($derivedSpecExecute) {
+    $derivedSpecExecute.disabled = true;
+    $derivedSpecExecute.textContent = 'Generate CAD';
+  }
+}
 function _resetAssemblyUI() {
   if ($asmName) $asmName.textContent = 'No assembly loaded';
   if ($partCount) { $partCount.textContent = ''; $partCount.classList.add('hidden'); }
@@ -1164,6 +1386,952 @@ function _resetAssemblyUI() {
   if ($mMass) $mMass.textContent = '0 kg';
   if ($asmTreeContent) $asmTreeContent.innerHTML = '';
   if ($asmBOM) $asmBOM.innerHTML = '';
+  _setEngineBenchVisible(null);
+  _updateEngineeringQaPanel(null, null);
+}
+
+function _formatSpecValue(value, suffix) {
+  if (value === null || value === undefined || value === '') return '—';
+  if (typeof value === 'number') {
+    const rendered = Number.isInteger(value) ? String(value) : String(Number(value.toFixed(3)));
+    return suffix ? rendered + ' ' + suffix : rendered;
+  }
+  return suffix ? String(value) + ' ' + suffix : String(value);
+}
+
+function _isEngineAssembly(plan) {
+  const parts = Array.isArray(plan && plan.parts) ? plan.parts : [];
+  if (!parts.length) return false;
+  const types = new Set(parts.map((part) => String(part.type || '').toLowerCase()));
+  return types.has('engine_block') && types.has('crankshaft') && types.has('piston');
+}
+
+function _captureEngineTransform(mesh) {
+  return {
+    position: mesh.position.clone(),
+    rotation: mesh.rotation.clone(),
+    scale: mesh.scale.clone(),
+  };
+}
+
+function _restoreEngineTransforms(state) {
+  if (!state || !Array.isArray(state.entries)) return;
+  state.entries.forEach((entry) => {
+    if (!entry.mesh || !entry.base) return;
+    entry.mesh.position.copy(entry.base.position);
+    entry.mesh.rotation.copy(entry.base.rotation);
+    entry.mesh.scale.copy(entry.base.scale);
+  });
+}
+
+function _stopEngineCycle(resetTransforms) {
+  if (!_engineCycleState) return;
+  if (_engineCycleState.rafId) cancelAnimationFrame(_engineCycleState.rafId);
+  if (resetTransforms) _restoreEngineTransforms(_engineCycleState);
+  _engineCycleState = null;
+}
+
+function _engineBenchSnapshot() {
+  return {
+    throttlePct: Math.max(0, Math.min(100, Number($engineThrottle && $engineThrottle.value || 28))),
+    loadNm: Math.max(0, Math.min(260, Number($engineLoad && $engineLoad.value || 45))),
+    rpmTarget: Math.max(700, Math.min(7600, Number($engineRpmTarget && $engineRpmTarget.value || 1200))),
+  };
+}
+
+function _updateEngineBenchLabels() {
+  const bench = _engineBenchSnapshot();
+  if ($engineThrottleVal) $engineThrottleVal.textContent = bench.throttlePct.toFixed(0) + '%';
+  if ($engineLoadVal) $engineLoadVal.textContent = bench.loadNm.toFixed(0) + ' N·m';
+}
+
+function _updateEngineBenchTelemetry(metrics) {
+  if ($enginePowerReadout) $enginePowerReadout.textContent = metrics ? metrics.powerKw.toFixed(1) + ' kW' : '0.0 kW';
+  if ($engineTorqueReadout) $engineTorqueReadout.textContent = metrics ? metrics.torqueNm.toFixed(0) + ' N·m' : '0 N·m';
+  if ($engineOilReadout) $engineOilReadout.textContent = metrics ? metrics.oilPressureBar.toFixed(1) + ' bar' : '0.0 bar';
+  if ($engineCoolantReadout) $engineCoolantReadout.textContent = metrics ? metrics.coolantTempC.toFixed(0) + ' C' : '20 C';
+}
+
+function _setEngineBenchVisible(plan) {
+  const visible = _isEngineAssembly(plan);
+  if ($engineBenchPanel) $engineBenchPanel.classList.toggle('hidden', !visible);
+  if (!visible) {
+    _updateEngineBenchTelemetry(null);
+    return;
+  }
+  _updateEngineBenchLabels();
+}
+
+function _createInline4EngineSpec(overrides) {
+  const spec = Object.assign({
+    cylinders: 4,
+    boreMm: 86,
+    strokeMm: 86,
+    rodLengthMm: 155,
+    borePitchMm: 100,
+    deckHeightMm: 240.5,
+    headCenterYMm: 279,
+    crankCenterYMm: 0,
+    centerXMm: 150,
+    centerZMm: 110,
+    mainCapXsMm: [0, 100, 200, 300, 350],
+    flywheelXOffsetMm: 280,
+    compressionRatio: 10.5,
+    redlineRpm: 6800,
+    peakTorqueRpm: 4500,
+    intakeValveHeadMm: 33,
+    exhaustValveHeadMm: 28,
+    intakeRunnerMm: 220,
+    exhaustRunnerMm: 200,
+    intakeCamCenterDeg: 112,
+    exhaustCamCenterDeg: 116,
+    vvtAuthorityDeg: 26,
+    targetPeakTorqueNm: 200,
+    targetPeakPowerKw: 147,
+    peakPowerRpm: 6500,
+    torqueCurveWidthRpm: 1850,
+    powerCurveWidthRpm: 1400,
+    fuelLhvJPerKg: 43e6,
+    stoichAfr: 14.1,
+    rotationalInertia: 0.34,
+  }, overrides || {});
+  spec.displacementCc = Math.PI / 4 * Math.pow(spec.boreMm / 10, 2) * (spec.strokeMm / 10) * spec.cylinders;
+  spec.displacementLiters = spec.displacementCc / 1000;
+  return spec;
+}
+
+function _createInline4Layout(spec) {
+  const startX = spec.centerXMm - ((spec.cylinders - 1) * spec.borePitchMm) / 2;
+  const cylinderXsMm = Array.from({ length: spec.cylinders }, (_, index) => startX + index * spec.borePitchMm);
+  return {
+    cylinderXsMm,
+    crankCenter: [spec.centerXMm, spec.crankCenterYMm, spec.centerZMm],
+    blockCenter: [spec.centerXMm, 70, spec.centerZMm],
+    headCenter: [spec.centerXMm, spec.headCenterYMm, spec.centerZMm],
+    intakeCamCenter: [spec.centerXMm, 390, 80],
+    exhaustCamCenter: [spec.centerXMm, 390, 140],
+    intakeManifoldCenter: [spec.centerXMm, 360, 60],
+    exhaustManifoldCenter: [spec.centerXMm, 300, 160],
+    oilPanCenter: [spec.centerXMm, -138, spec.centerZMm],
+    valveCoverCenter: [spec.centerXMm, 415, spec.centerZMm],
+    waterPumpCenter: [-30, 120, 20],
+    starterCenter: [spec.centerXMm + spec.flywheelXOffsetMm - 70, -20, 175],
+    alternatorCenter: [-60, 120, 50],
+    valveZsMm: [80, 100, 115, 135],
+  };
+}
+
+function _applyMateGraph(parts, mates) {
+  const partMap = new Map((parts || []).map((part) => [part.id, part]));
+  (mates || []).forEach((mate) => {
+    const part = partMap.get(mate.partId);
+    const base = partMap.get(mate.baseId);
+    if (!part || !base) return;
+    const basePos = Array.isArray(base.position) ? base.position : [0, 0, 0];
+    const offset = Array.isArray(mate.offset) ? mate.offset : [0, 0, 0];
+    part.position = [
+      basePos[0] + offset[0],
+      basePos[1] + offset[1],
+      basePos[2] + offset[2],
+    ];
+    part.mate = { base_id: mate.baseId, joint: mate.joint || 'offset', offset_mm: offset.slice() };
+  });
+  return parts;
+}
+
+function _buildInline4MateGraph(parts, specOverrides) {
+  const spec = _createInline4EngineSpec(specOverrides || {});
+  const layout = _createInline4Layout(spec);
+  const find = (pattern) => parts.find((part) => pattern.test(String(part.name || '')));
+  const mates = [];
+  const link = (pattern, basePattern, joint, offset) => {
+    const part = find(pattern);
+    const base = find(basePattern);
+    if (part && base) mates.push({ partId: part.id, baseId: base.id, joint, offset });
+  };
+  const linkToPoint = (pattern, basePattern, joint, targetPoint) => {
+    const part = find(pattern);
+    const base = find(basePattern);
+    if (!part || !base) return;
+    const basePos = Array.isArray(base.position) ? base.position : [0, 0, 0];
+    mates.push({
+      partId: part.id,
+      baseId: base.id,
+      joint,
+      offset: [
+        targetPoint[0] - basePos[0],
+        targetPoint[1] - basePos[1],
+        targetPoint[2] - basePos[2],
+      ],
+    });
+  };
+
+  linkToPoint(/Cylinder Head/, /Cylinder Block/, 'deck_face', layout.headCenter);
+  linkToPoint(/Intake Camshaft/, /Cylinder Head/, 'cam_bore', layout.intakeCamCenter);
+  linkToPoint(/Exhaust Camshaft/, /Cylinder Head/, 'cam_bore', layout.exhaustCamCenter);
+  link(/Intake Cam Sprocket/, /Intake Camshaft/, 'shaft_face', [-162, 0, 0]);
+  link(/Exhaust Cam Sprocket/, /Exhaust Camshaft/, 'shaft_face', [-162, 0, 0]);
+  link(/Timing Chain —/, /Cylinder Block/, 'timing_drive', [-162, 195, 0]);
+  linkToPoint(/Intake Manifold/, /Cylinder Head/, 'intake_face', layout.intakeManifoldCenter);
+  linkToPoint(/Exhaust Manifold/, /Cylinder Head/, 'exhaust_face', layout.exhaustManifoldCenter);
+  linkToPoint(/Valve Cover/, /Cylinder Head/, 'cover_flange', layout.valveCoverCenter);
+  linkToPoint(/Oil Pan —/, /Cylinder Block/, 'sump_rail', layout.oilPanCenter);
+  linkToPoint(/Water Pump —/, /Cylinder Block/, 'front_cover', layout.waterPumpCenter);
+  link(/Thermostat Housing/, /Cylinder Head/, 'coolant_outlet', [-100, -24, -90]);
+  link(/Flywheel —/, /Crankshaft —/, 'crank_flange', [280, 0, 0]);
+  link(/Clutch Disc —/, /Flywheel —/, 'clutch_face', [18, 0, 0]);
+  link(/Pressure Plate —/, /Flywheel —/, 'clutch_cover', [38, 0, 0]);
+  link(/Starter Motor —/, /Flywheel —/, 'ring_gear_mesh', [-70, -20, 62]);
+  linkToPoint(/Alternator —/, /Cylinder Block/, 'front_accessory', layout.alternatorCenter);
+  link(/Drive Belt Tensioner —/, /Cylinder Block/, 'front_accessory', [-210, -10, -60]);
+  link(/Idler Pulley —/, /Cylinder Block/, 'front_accessory', [-175, -15, -60]);
+
+  return mates;
+}
+
+function _mateOrderByDependency(mates) {
+  const list = Array.isArray(mates) ? mates : [];
+  const indegree = new Array(list.length).fill(0);
+  const edges = new Map();
+  const byPart = new Map();
+
+  list.forEach((mate, idx) => {
+    const partId = String(mate && mate.partId || '');
+    if (!partId) return;
+    if (!byPart.has(partId)) byPart.set(partId, []);
+    byPart.get(partId).push(idx);
+  });
+
+  list.forEach((mate, idx) => {
+    const baseId = String(mate && mate.baseId || '');
+    const dependents = byPart.get(baseId) || [];
+    dependents.forEach((depIdx) => {
+      if (depIdx === idx) return;
+      if (!edges.has(idx)) edges.set(idx, []);
+      edges.get(idx).push(depIdx);
+      indegree[depIdx] += 1;
+    });
+  });
+
+  const queue = [];
+  indegree.forEach((deg, idx) => { if (deg === 0) queue.push(idx); });
+  const ordered = [];
+  while (queue.length) {
+    const idx = queue.shift();
+    ordered.push(list[idx]);
+    const out = edges.get(idx) || [];
+    out.forEach((toIdx) => {
+      indegree[toIdx] -= 1;
+      if (indegree[toIdx] === 0) queue.push(toIdx);
+    });
+  }
+
+  const unresolvedIndices = [];
+  indegree.forEach((deg, idx) => {
+    if (deg > 0) unresolvedIndices.push(idx);
+  });
+  unresolvedIndices.forEach((idx) => ordered.push(list[idx]));
+
+  return {
+    ordered,
+    unresolvedMateIds: unresolvedIndices.map((idx) => String(list[idx] && list[idx].partId || '?')),
+    cycleCount: unresolvedIndices.length,
+  };
+}
+
+function _solveMateConstraints(plan, mates, options) {
+  const cfg = Object.assign({
+    maxPasses: 8,
+    convergeTolMm: 0.05,
+    hardTolMm: 0.8,
+  }, options || {});
+  const partMap = new Map((plan.parts || []).map((part) => [part.id, part]));
+  const order = _mateOrderByDependency(mates);
+  const conflicts = [];
+  const unknownRefs = [];
+  let iterations = 0;
+
+  for (let pass = 0; pass < cfg.maxPasses; pass++) {
+    iterations = pass + 1;
+    let moved = 0;
+    const targetByPart = new Map();
+
+    order.ordered.forEach((mate) => {
+      const part = partMap.get(mate.partId);
+      const base = partMap.get(mate.baseId);
+      if (!part || !base) {
+        unknownRefs.push({ partId: mate.partId, baseId: mate.baseId });
+        return;
+      }
+      const basePos = Array.isArray(base.position) ? base.position : [0, 0, 0];
+      const off = Array.isArray(mate.offset) ? mate.offset : [0, 0, 0];
+      const target = [basePos[0] + off[0], basePos[1] + off[1], basePos[2] + off[2]];
+
+      if (targetByPart.has(part.id)) {
+        const prior = targetByPart.get(part.id);
+        const dx = target[0] - prior[0];
+        const dy = target[1] - prior[1];
+        const dz = target[2] - prior[2];
+        const delta = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (delta > cfg.hardTolMm) {
+          conflicts.push({ partId: part.id, deltaMm: delta, baseId: mate.baseId });
+        }
+      }
+      targetByPart.set(part.id, target);
+
+      const cur = Array.isArray(part.position) ? part.position : [0, 0, 0];
+      const dx = target[0] - cur[0];
+      const dy = target[1] - cur[1];
+      const dz = target[2] - cur[2];
+      const shift = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (shift > cfg.convergeTolMm) moved += 1;
+
+      part.position = target;
+      part.mate = { base_id: mate.baseId, joint: mate.joint || 'offset', offset_mm: off.slice() };
+    });
+
+    if (moved === 0) break;
+  }
+
+  const violations = [];
+  let maxDeviationMm = 0;
+  order.ordered.forEach((mate) => {
+    const part = partMap.get(mate.partId);
+    const base = partMap.get(mate.baseId);
+    if (!part || !base) return;
+    const basePos = Array.isArray(base.position) ? base.position : [0, 0, 0];
+    const off = Array.isArray(mate.offset) ? mate.offset : [0, 0, 0];
+    const expected = [basePos[0] + off[0], basePos[1] + off[1], basePos[2] + off[2]];
+    const cur = Array.isArray(part.position) ? part.position : [0, 0, 0];
+    const dx = cur[0] - expected[0];
+    const dy = cur[1] - expected[1];
+    const dz = cur[2] - expected[2];
+    const deviation = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    if (deviation > maxDeviationMm) maxDeviationMm = deviation;
+    if (deviation > cfg.hardTolMm) {
+      violations.push({
+        partId: mate.partId,
+        baseId: mate.baseId,
+        deviationMm: deviation,
+      });
+    }
+  });
+
+  return {
+    iterations,
+    hardToleranceMm: cfg.hardTolMm,
+    convergenceToleranceMm: cfg.convergeTolMm,
+    cycleCount: order.cycleCount,
+    unresolvedMateIds: order.unresolvedMateIds,
+    unknownReferences: unknownRefs,
+    conflicts,
+    violations,
+    maxDeviationMm,
+  };
+}
+
+function _resolveAssemblyConstraints(plan) {
+  if (!plan || !Array.isArray(plan.parts)) return plan;
+  let mates = Array.isArray(plan.mates) ? plan.mates.slice() : [];
+  if (_isEngineAssembly(plan)) {
+    mates = _buildInline4MateGraph(plan.parts, plan.engine_spec || {});
+  }
+  if (mates.length) {
+    const report = _solveMateConstraints(plan, mates, { maxPasses: 10, hardTolMm: 0.75, convergeTolMm: 0.03 });
+    plan.constraint_solver = report;
+    plan.mates = mates;
+  } else {
+    plan.constraint_solver = {
+      iterations: 0,
+      hardToleranceMm: 0.75,
+      convergenceToleranceMm: 0.03,
+      cycleCount: 0,
+      unresolvedMateIds: [],
+      unknownReferences: [],
+      conflicts: [],
+      violations: [],
+      maxDeviationMm: 0,
+    };
+  }
+  return plan;
+}
+
+function _runAssemblyEngineeringAudit(plan) {
+  const parts = Array.isArray(plan && plan.parts) ? plan.parts : [];
+  const issues = [];
+  const geometryWarnings = [];
+  const dimensionalChecks = [];
+  const byName = (pattern) => parts.find((part) => pattern.test(String(part && part.name || '')));
+  const byNameAll = (pattern) => parts.filter((part) => pattern.test(String(part && part.name || '')));
+  const pos = (part) => Array.isArray(part && part.position) ? part.position : [0, 0, 0];
+  const dist = (a, b) => {
+    const pa = pos(a);
+    const pb = pos(b);
+    const dx = pa[0] - pb[0];
+    const dy = pa[1] - pb[1];
+    const dz = pa[2] - pb[2];
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
+  };
+
+  const block = byName(/Cylinder Block/);
+  const head = byName(/Cylinder Head/);
+  const crank = byName(/Crankshaft/);
+  const cams = byNameAll(/Camshaft/);
+  const injectors = byNameAll(/Fuel Injector/);
+  const intake = byName(/Intake Manifold/);
+  const starter = byName(/Starter Motor/);
+  const flywheel = byName(/Flywheel/);
+  const checkRange = (label, actual, lo, hi) => {
+    const deviation = actual < lo ? (lo - actual) : actual > hi ? (actual - hi) : 0;
+    dimensionalChecks.push({ label, actualMm: actual, expectedMinMm: lo, expectedMaxMm: hi, toleranceMm: 0, deviationMm: deviation });
+    return deviation;
+  };
+
+  if (block && head) {
+    const dy = pos(head)[1] - pos(block)[1];
+    const dev = checkRange('Head-to-block deck offset', dy, 120, 320);
+    if (dev > 0) issues.push('Head-to-block deck offset is outside expected range (' + dy.toFixed(1) + ' mm).');
+  }
+  if (block && crank) {
+    const dy = Math.abs(pos(crank)[1] - pos(block)[1]);
+    dimensionalChecks.push({ label: 'Crank centerline offset', actualMm: dy, expectedMinMm: 0, expectedMaxMm: 100, toleranceMm: 0, deviationMm: Math.max(0, dy - 100) });
+    if (dy > 100) issues.push('Crank centerline appears offset from block datum (' + dy.toFixed(1) + ' mm).');
+  }
+  if (cams.length >= 2) {
+    const dz = Math.abs(pos(cams[0])[2] - pos(cams[1])[2]);
+    const dev = checkRange('Camshaft bank spacing', dz, 35, 120);
+    if (dz < 35 || dz > 120) issues.push('Camshaft bank spacing seems unrealistic (' + dz.toFixed(1) + ' mm).');
+  }
+  if (intake && injectors.length) {
+    const far = injectors.filter((inj) => dist(inj, intake) > 300).length;
+    if (far) issues.push(far + ' injector(s) are too far from intake manifold runners.');
+  }
+  if (starter && flywheel) {
+    const meshDist = dist(starter, flywheel);
+    const dev = checkRange('Starter-flywheel packaging', meshDist, 40, 180);
+    if (meshDist < 40 || meshDist > 180) issues.push('Starter-to-flywheel mesh distance is outside expected packaging (' + meshDist.toFixed(1) + ' mm).');
+  }
+
+  const genericEnginePartTypes = new Set(['housing', 'cylinder', 'washer', 'circlip', 'bearing', 'piston', 'custom']);
+  const genericEngineParts = parts.filter((part) => {
+    const name = String(part && part.name || '');
+    const type = String(part && part.type || '').toLowerCase();
+    return /(Cylinder Block|Cylinder Head|Camshaft|Fuel Injector|Starter Motor|Pressure Plate|Rod Bearing|Valve Collet|Lash Adjuster)/i.test(name)
+      && genericEnginePartTypes.has(type);
+  });
+  if (genericEngineParts.length) {
+    const msg = genericEngineParts.length + ' engine-critical part(s) still use generic geometry types.';
+    issues.push(msg);
+    geometryWarnings.push(msg);
+  }
+
+  const missingMaterials = parts.filter((part) => !String(part && part.material || '').trim()).length;
+  if (missingMaterials) {
+    const msg = missingMaterials + ' part(s) have missing material assignments.';
+    issues.push(msg);
+    geometryWarnings.push(msg);
+  }
+
+  const solver = plan && plan.constraint_solver ? plan.constraint_solver : null;
+  const mateViolationCount = solver ? ((solver.violations || []).length + (solver.conflicts || []).length + (solver.cycleCount || 0)) : 0;
+  if (mateViolationCount) {
+    const msg = 'Constraint solver reported ' + mateViolationCount + ' mate violation(s)/conflict(s).';
+    issues.push(msg);
+  }
+
+  const maxDimensionalDeviationMm = dimensionalChecks.reduce((mx, row) => Math.max(mx, Number(row.deviationMm || 0)), 0);
+
+  const score = Math.max(0, Math.min(100, 100 - issues.length * 9));
+  const result = {
+    score,
+    issueCount: issues.length,
+    issues,
+    checkedParts: parts.length,
+    maxDimensionalDeviationMm,
+    dimensionalChecks,
+    mateViolations: solver ? (solver.violations || []) : [],
+    geometryWarnings,
+  };
+  plan.engineering_audit = result;
+  return result;
+}
+
+function _estimateCombustionState(spec, bench, state, dt) {
+  const throttle = Math.max(0, Math.min(1, bench.throttlePct / 100));
+  const currentRpm = Math.max(700, state.currentRpm || bench.rpmTarget || 900);
+  const rpmNorm = Math.max(0, Math.min(1.15, currentRpm / spec.redlineRpm));
+  const atmKpa = 101.325;
+  const coolantTempC = state.coolantTempC == null ? 24 : state.coolantTempC;
+  const oilTempC = state.oilTempC == null ? 28 : state.oilTempC;
+  const intakeTempC = Math.max(20, 24 + throttle * 9 + Math.max(0, coolantTempC - 90) * 0.08);
+  const rpmBlend = Math.max(0, Math.min(1, (currentRpm - 1200) / Math.max(1200, spec.redlineRpm - 1200)));
+  const camIntakeAdvanceDeg = (spec.intakeCamAdvanceDeg != null)
+    ? Number(spec.intakeCamAdvanceDeg)
+    : Math.max(-spec.vvtAuthorityDeg, Math.min(spec.vvtAuthorityDeg, 14 - rpmBlend * 18 + throttle * 6));
+  const camExhaustRetardDeg = (spec.exhaustCamRetardDeg != null)
+    ? Number(spec.exhaustCamRetardDeg)
+    : Math.max(-spec.vvtAuthorityDeg, Math.min(spec.vvtAuthorityDeg, 4 + rpmBlend * 14 - throttle * 4));
+  const camOverlapDeg = Math.max(0, camIntakeAdvanceDeg + camExhaustRetardDeg - 2);
+  const manifoldPressureKpa = Math.max(24, Math.min(atmKpa, 26 + throttle * 75 - Math.max(0, bench.loadNm - 40) * 0.035));
+  const ve = Math.max(0.48, Math.min(1.04,
+    0.58 + throttle * 0.16
+    + Math.sin(Math.PI * Math.max(0, Math.min(1, currentRpm / spec.peakTorqueRpm))) * 0.18
+    + camIntakeAdvanceDeg * 0.0022
+    - camOverlapDeg * 0.0014
+    - Math.max(0, coolantTempC - 102) * 0.0018
+  ));
+  const airDensity = 1.225 * (manifoldPressureKpa / atmKpa) * (293.15 / (273.15 + intakeTempC));
+  const displacementM3 = spec.displacementCc / 1e6;
+  const airflowM3s = displacementM3 * (currentRpm / 120) * ve;
+  const airMassFlowKgs = airflowM3s * airDensity;
+  const lambda = throttle > 0.82 ? 0.88 : throttle > 0.55 ? 0.94 : 1.0;
+  const afr = spec.stoichAfr * lambda;
+  const fuelMassFlowKgs = airMassFlowKgs / Math.max(10.5, afr);
+  const baseSparkDeg = 12 + (1 - throttle) * 8 + rpmNorm * 16;
+  let sparkAdvanceDeg = Math.max(4, Math.min(34, baseSparkDeg - Math.max(0, coolantTempC - 96) * 0.18));
+  const mbtDeg = Math.max(10, Math.min(32, 16 + rpmNorm * 14 - throttle * 4));
+  const knockIndex = (manifoldPressureKpa / atmKpa)
+    * (spec.compressionRatio / 10.5)
+    * (1 + Math.max(0, sparkAdvanceDeg - mbtDeg) * 0.055)
+    * (1 + Math.max(0, intakeTempC - 45) * 0.0085);
+  const knockMargin = 1.02 - knockIndex;
+  if (knockMargin < 0) {
+    sparkAdvanceDeg = Math.max(3, sparkAdvanceDeg + knockMargin * 10.5);
+  }
+  const knockFactor = knockMargin >= 0 ? 1 : Math.max(0.65, 1 + knockMargin * 0.7);
+  const sparkEfficiency = Math.max(0.74, 1 - Math.abs(sparkAdvanceDeg - mbtDeg) / 30);
+  const thermalEfficiency = Math.max(0.18, Math.min(0.37,
+    0.21 + ve * 0.11 + sparkEfficiency * 0.06 - Math.max(0, coolantTempC - 105) * 0.0015
+  ));
+  const fuelPowerKw = fuelMassFlowKgs * spec.fuelLhvJPerKg / 1000;
+  const omega = Math.max(80, currentRpm * Math.PI * 2 / 60);
+  const grossTorqueNm = (fuelPowerKw * thermalEfficiency * 1000) / omega;
+  const frictionTorqueNm = 16 + currentRpm * 0.011 + Math.max(0, oilTempC - 95) * 0.05;
+  const rawBrakeTorqueNm = Math.max(0, grossTorqueNm - frictionTorqueNm);
+  const tqCurve = spec.targetPeakTorqueNm * Math.exp(-Math.pow((currentRpm - spec.peakTorqueRpm) / Math.max(600, spec.torqueCurveWidthRpm), 2) * 0.5);
+  const pwrCurveKw = spec.targetPeakPowerKw * Math.exp(-Math.pow((currentRpm - spec.peakPowerRpm) / Math.max(500, spec.powerCurveWidthRpm), 2) * 0.5);
+  const torqueFromPowerNm = (pwrCurveKw * 9549) / Math.max(700, currentRpm);
+  const shapedTargetNm = Math.max(tqCurve * (0.45 + throttle * 0.55), torqueFromPowerNm * (0.35 + throttle * 0.65));
+  const calibrationGain = Math.max(0.65, Math.min(1.45, shapedTargetNm / Math.max(45, rawBrakeTorqueNm)));
+  const brakeTorqueNm = Math.max(0, rawBrakeTorqueNm * calibrationGain * knockFactor);
+  const netTorqueNm = brakeTorqueNm - bench.loadNm;
+  const rpmAccel = (netTorqueNm / spec.rotationalInertia) * (60 / (Math.PI * 2));
+  const nextRpm = Math.max(700, Math.min(spec.redlineRpm, currentRpm + rpmAccel * dt));
+  const heatRejectKw = Math.max(0, fuelPowerKw * (1 - thermalEfficiency) * 0.58);
+  const nextCoolant = coolantTempC + ((heatRejectKw * 0.022) - (coolantTempC - 88) * 0.028) * dt * 10;
+  const nextOil = oilTempC + ((heatRejectKw * 0.011) - (oilTempC - 96) * 0.018) * dt * 10;
+  const oilPressureBar = Math.max(0.7, Math.min(6.9, 0.85 + nextRpm / 1500 - Math.max(0, nextOil - 112) * 0.02));
+  return {
+    rpm: nextRpm,
+    ve,
+    lambda,
+    knockIndex,
+    knockMarginDeg: (mbtDeg - sparkAdvanceDeg),
+    camIntakeAdvanceDeg,
+    camExhaustRetardDeg,
+    sparkAdvanceDeg,
+    manifoldPressureKpa,
+    airflowGPerS: airMassFlowKgs * 1000,
+    fuelFlowGPerS: fuelMassFlowKgs * 1000,
+    torqueNm: brakeTorqueNm,
+    powerKw: brakeTorqueNm * (nextRpm * Math.PI * 2 / 60) / 1000,
+    oilPressureBar,
+    coolantTempC: nextCoolant,
+    oilTempC: nextOil,
+    intakeTempC,
+  };
+}
+
+function _startEngineCycle(scene, plan, ui) {
+  if (!scene || !scene.partMeshes || !_isEngineAssembly(plan)) return false;
+  _stopEngineCycle(true);
+
+  const engineSpec = Object.assign(
+    _createInline4EngineSpec(),
+    plan && plan.engine_spec ? plan.engine_spec : {},
+  );
+
+  const parts = Array.isArray(plan.parts) ? plan.parts : [];
+  const partById = new Map(parts.map((part) => [part.id, part]));
+  const entries = Object.entries(scene.partMeshes).map(([id, mesh]) => ({
+    id,
+    mesh,
+    part: partById.get(id) || mesh.userData?.partDef || null,
+    base: _captureEngineTransform(mesh),
+  }));
+
+  const pistons = entries.filter((entry) => /piston$/.test(String(entry.part?.type || '')) && !/ring|pin/.test(String(entry.part?.type || '')))
+    .sort((a, b) => (a.part?.position?.[0] || 0) - (b.part?.position?.[0] || 0));
+  const rods = entries.filter((entry) => String(entry.part?.type || '') === 'con_rod')
+    .sort((a, b) => (a.part?.position?.[0] || 0) - (b.part?.position?.[0] || 0));
+  const crankMeshes = entries.filter((entry) => ['crankshaft', 'flywheel', 'pulley', 'sprocket'].includes(String(entry.part?.type || '')));
+  const camMeshes = entries.filter((entry) => {
+    const type = String(entry.part?.type || '').toLowerCase();
+    return type === 'camshaft' || /camshaft/.test(String(entry.part?.name || '').toLowerCase());
+  });
+  const valveMeshes = entries.filter((entry) => /valve_(intake|exhaust)/.test(String(entry.part?.type || '')))
+    .sort((a, b) => (a.part?.position?.[0] || 0) - (b.part?.position?.[0] || 0) || (a.part?.position?.[2] || 0) - (b.part?.position?.[2] || 0));
+
+  if (!pistons.length || !crankMeshes.length) return false;
+
+  const strokeMm = Number(pistons[0].part?.dims?.stroke || plan.recipe?.parameters?.stroke_mm || engineSpec.strokeMm);
+  const crankRadius = Math.max(4, strokeMm * 0.5) * 0.1;
+  const rodLength = Math.max(crankRadius * 1.8, (Number(rods[0]?.part?.dims?.ctc || engineSpec.rodLengthMm)) * 0.1);
+  const valveLift = 9.5 * 0.1;
+  const firingOrder = [0, Math.PI, Math.PI, 0];
+
+  const state = {
+    entries,
+    rafId: null,
+    startTs: null,
+    lastTs: null,
+    crankAngle: 0,
+    currentRpm: Math.max(850, _engineBenchSnapshot().rpmTarget),
+    coolantTempC: 24,
+    oilTempC: 28,
+  };
+  _engineCycleState = state;
+
+  function sliderCrankDisplacement(theta) {
+    const sinTheta = Math.sin(theta);
+    const cosTheta = Math.cos(theta);
+    const rodTerm = Math.sqrt(Math.max(0, rodLength * rodLength - (crankRadius * sinTheta) * (crankRadius * sinTheta)));
+    return crankRadius * cosTheta + rodTerm - rodLength;
+  }
+
+  function frame(ts) {
+    if (!_engineCycleState || _engineCycleState !== state) return;
+    if (state.startTs == null) state.startTs = ts;
+    if (state.lastTs == null) state.lastTs = ts;
+    const dt = Math.max(0.001, Math.min(0.05, (ts - state.lastTs) / 1000));
+    state.lastTs = ts;
+    const elapsed = (ts - state.startTs) / 1000;
+    const bench = _engineBenchSnapshot();
+    const metrics = _estimateCombustionState(engineSpec, bench, state, dt);
+    state.currentRpm = metrics.rpm;
+    state.coolantTempC = metrics.coolantTempC;
+    state.oilTempC = metrics.oilTempC;
+    state.crankAngle += state.currentRpm * Math.PI * 2 / 60 * dt;
+    const crankAngle = state.crankAngle;
+
+    crankMeshes.forEach((entry) => {
+      entry.mesh.rotation.x = entry.base.rotation.x + crankAngle;
+    });
+    camMeshes.forEach((entry) => {
+      entry.mesh.rotation.x = entry.base.rotation.x + crankAngle * 0.5;
+    });
+
+    pistons.forEach((entry, index) => {
+      const phase = firingOrder[index % firingOrder.length];
+      const displacement = sliderCrankDisplacement(crankAngle + phase);
+      entry.mesh.position.y = entry.base.position.y + displacement;
+    });
+
+    rods.forEach((entry, index) => {
+      const phase = firingOrder[index % firingOrder.length];
+      const theta = crankAngle + phase;
+      const pistonOffset = sliderCrankDisplacement(theta);
+      const rodAngle = Math.asin(Math.max(-1, Math.min(1, (crankRadius * Math.sin(theta)) / rodLength)));
+      entry.mesh.position.y = entry.base.position.y + pistonOffset * 0.52;
+      entry.mesh.rotation.z = entry.base.rotation.z + rodAngle;
+    });
+
+    valveMeshes.forEach((entry, index) => {
+      const cylinderIndex = Math.floor(index / 4);
+      const valveIndex = index % 4;
+      const phase = firingOrder[cylinderIndex % firingOrder.length] + (String(entry.part?.type || '').includes('exhaust') ? Math.PI * 0.55 : 0);
+      const openProfile = Math.max(0, Math.sin(crankAngle * 0.5 + phase + valveIndex * 0.12));
+      entry.mesh.position.y = entry.base.position.y - openProfile * valveLift;
+    });
+
+    if (ui && ui.onStep) {
+      ui.onStep(elapsed, {
+        rpm: metrics.rpm,
+        throttlePct: bench.throttlePct,
+        loadNm: bench.loadNm,
+        torqueNm: metrics.torqueNm,
+        powerKw: metrics.powerKw,
+        oilPressureBar: metrics.oilPressureBar,
+        coolantTempC: metrics.coolantTempC,
+        ve: metrics.ve,
+        lambda: metrics.lambda,
+        knockIndex: metrics.knockIndex,
+        knockMarginDeg: metrics.knockMarginDeg,
+        camIntakeAdvanceDeg: metrics.camIntakeAdvanceDeg,
+        camExhaustRetardDeg: metrics.camExhaustRetardDeg,
+        sparkAdvanceDeg: metrics.sparkAdvanceDeg,
+        manifoldPressureKpa: metrics.manifoldPressureKpa,
+      });
+    }
+    state.rafId = requestAnimationFrame(frame);
+  }
+
+  state.rafId = requestAnimationFrame(frame);
+  return true;
+}
+
+function _setNestedValue(target, path, value) {
+  if (!target || !path) return;
+  const keys = Array.isArray(path) ? path : String(path).split('.');
+  let cursor = target;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i];
+    if (!cursor[key] || typeof cursor[key] !== 'object') cursor[key] = {};
+    cursor = cursor[key];
+  }
+  cursor[keys[keys.length - 1]] = value;
+}
+
+function _renderSpecSection(title, rows) {
+  const validRows = rows.filter((row) => row[1] !== null && row[1] !== undefined && row[1] !== '');
+  return '<section class="derived-spec-section">'
+    + '<div class="derived-spec-section-title">' + esc(title) + '</div>'
+    + (validRows.length
+      ? validRows.map((row) => '<div class="derived-spec-row"><span class="derived-spec-label">' + esc(row[0]) + '</span><span class="derived-spec-value">' + esc(String(row[1])) + '</span></div>').join('')
+      : '<div class="derived-spec-empty">No inferred ' + esc(title.toLowerCase()) + '.</div>')
+    + '</section>';
+}
+
+function _renderSpecInput(label, options) {
+  const value = options && options.value != null ? options.value : '';
+  const type = options && options.type ? options.type : 'text';
+  const step = options && options.step != null ? ' step="' + esc(options.step) + '"' : '';
+  const min = options && options.min != null ? ' min="' + esc(options.min) + '"' : '';
+  const placeholder = options && options.placeholder ? ' placeholder="' + esc(options.placeholder) + '"' : '';
+  const unit = options && options.unit ? '<span class="derived-spec-unit">' + esc(options.unit) + '</span>' : '';
+  const path = options && options.path ? ' data-spec-path="' + esc(options.path) + '"' : '';
+  const valueAttr = type === 'number' ? ' value="' + esc(String(value)) + '"' : ' value="' + esc(String(value || '')) + '"';
+  return '<label class="derived-spec-input-row">'
+    + '<span class="derived-spec-label">' + esc(label) + '</span>'
+    + '<span class="derived-spec-field">'
+    + '<input class="derived-spec-input" type="' + esc(type) + '"' + path + valueAttr + step + min + placeholder + '>'
+    + unit
+    + '</span>'
+    + '</label>';
+}
+
+function _renderEditableSpecSection(title, fields) {
+  const validFields = fields.filter((field) => field && field.path);
+  return '<section class="derived-spec-section">'
+    + '<div class="derived-spec-section-title">' + esc(title) + '</div>'
+    + (validFields.length
+      ? validFields.map((field) => _renderSpecInput(field.label, field)).join('')
+      : '<div class="derived-spec-empty">No editable ' + esc(title.toLowerCase()) + '.</div>')
+    + '</section>';
+}
+
+function _coerceSpecInputValue(input) {
+  if (!input) return null;
+  if (input.type === 'number') {
+    if (input.value === '') return null;
+    const num = Number(input.value);
+    return Number.isFinite(num) ? num : null;
+  }
+  const text = String(input.value || '').trim();
+  return text || null;
+}
+
+function _syncDerivedSpecSummary() {
+  if (!$derivedSpecSummary || !_pendingDerivedCadSpec) return;
+  const spec = _pendingDerivedCadSpec;
+  const params = spec.normalized_parameters || {};
+  const holePatterns = Array.isArray(spec.hole_patterns) ? spec.hole_patterns : [];
+  const chips = [
+    spec.material_name ? 'material: ' + spec.material_name : null,
+    spec.process ? 'process: ' + spec.process : null,
+    params.fit_designation ? 'fit: ' + params.fit_designation : null,
+    params.tolerance_general_mm != null ? 'tol: ±' + params.tolerance_general_mm + ' mm' : null,
+    holePatterns[0]?.hole_count ? 'holes: ' + holePatterns[0].hole_count + 'x' : (holePatterns[0]?.pattern ? 'holes: ' + holePatterns[0].pattern : null),
+  ].filter(Boolean);
+  $derivedSpecSummary.innerHTML = chips.map((chip) => '<span class="derived-spec-chip">' + esc(chip) + '</span>').join('');
+}
+
+function _applyDerivedSpecEdit(path, value) {
+  if (!_pendingDerivedCadSpec) return;
+  const spec = _pendingDerivedCadSpec;
+  spec.dimensions = spec.dimensions || {};
+  spec.fits = Array.isArray(spec.fits) ? spec.fits : [];
+  spec.tolerances = Array.isArray(spec.tolerances) ? spec.tolerances : [];
+  spec.hole_patterns = Array.isArray(spec.hole_patterns) ? spec.hole_patterns : [];
+  spec.normalized_parameters = spec.normalized_parameters || {};
+
+  const holePattern = spec.hole_patterns[0] || (spec.hole_patterns[0] = { pattern: 'bolt_circle', source: 'panel_edit' });
+  const fit = spec.fits[0] || (spec.fits[0] = { designation: null, type: null, source: 'panel_edit' });
+  const tolerance = spec.tolerances[0] || (spec.tolerances[0] = { kind: 'plus_minus', value: null, unit: 'mm', value_mm: null, source: 'panel_edit' });
+
+  switch (path) {
+    case 'dimensions.length_mm':
+      spec.dimensions.length_mm = value;
+      spec.normalized_parameters.bracket_length_mm = value;
+      break;
+    case 'dimensions.width_mm':
+      spec.dimensions.width_mm = value;
+      spec.normalized_parameters.bracket_width_mm = value;
+      break;
+    case 'dimensions.height_mm':
+      spec.dimensions.height_mm = value;
+      spec.normalized_parameters.bracket_height_mm = value;
+      break;
+    case 'dimensions.wall_thickness_mm':
+      spec.dimensions.wall_thickness_mm = value;
+      spec.normalized_parameters.wall_thickness_mm = value;
+      break;
+    case 'dimensions.hole_diameter_mm':
+      spec.dimensions.hole_diameter_mm = value;
+      spec.normalized_parameters.bolt_hole_diameter_mm = value;
+      holePattern.hole_diameter_mm = value;
+      break;
+    case 'metadata.material_name':
+      spec.material_name = value;
+      spec.normalized_parameters.material_name = value;
+      break;
+    case 'metadata.process':
+      spec.process = value;
+      spec.normalized_parameters.process = value;
+      break;
+    case 'fits.0.designation':
+      fit.designation = value;
+      spec.normalized_parameters.fit_designation = value;
+      break;
+    case 'tolerances.0.value_mm':
+      tolerance.value = value;
+      tolerance.value_mm = value;
+      tolerance.unit = 'mm';
+      spec.normalized_parameters.tolerance_general_mm = value;
+      break;
+    case 'hole_patterns.0.hole_count':
+      holePattern.hole_count = value;
+      spec.normalized_parameters.hole_count = value;
+      break;
+    case 'hole_patterns.0.thread_spec':
+      holePattern.thread_spec = value;
+      break;
+    case 'hole_patterns.0.bolt_circle_mm':
+      holePattern.bolt_circle_mm = value;
+      spec.dimensions.bolt_circle_mm = value;
+      spec.normalized_parameters.bolt_circle_diameter_mm = value;
+      break;
+    case 'hole_patterns.0.spacing_mm':
+      holePattern.spacing_mm = value;
+      spec.dimensions.hole_spacing_mm = value;
+      spec.normalized_parameters.hole_spacing_mm = value;
+      break;
+    default:
+      _setNestedValue(spec, path, value);
+      break;
+  }
+
+  if (_pendingCadPlan) {
+    _pendingCadPlan.recipe = _pendingCadPlan.recipe || {};
+    _pendingCadPlan.recipe.parameters = Object.assign({}, _pendingCadPlan.recipe.parameters || {}, spec.normalized_parameters || {});
+    _pendingCadPlan.derived_cad_spec = JSON.parse(JSON.stringify(spec));
+  }
+
+  _syncDerivedSpecSummary();
+}
+
+function _bindDerivedSpecInputs() {
+  if (!$derivedSpecGrid) return;
+  $derivedSpecGrid.querySelectorAll('[data-spec-path]').forEach((input) => {
+    input.addEventListener('input', () => {
+      const path = input.getAttribute('data-spec-path');
+      _applyDerivedSpecEdit(path, _coerceSpecInputValue(input));
+    });
+  });
+}
+
+function _renderDerivedSpecPanel(spec, plan) {
+  if (!$derivedSpecPanel || !spec) return;
+  _pendingCadPlan = plan ? JSON.parse(JSON.stringify(plan)) : null;
+  _pendingDerivedCadSpec = JSON.parse(JSON.stringify(spec));
+
+  const dims = _pendingDerivedCadSpec.dimensions || {};
+  const fits = Array.isArray(_pendingDerivedCadSpec.fits) ? _pendingDerivedCadSpec.fits : [];
+  const tolerances = Array.isArray(_pendingDerivedCadSpec.tolerances) ? _pendingDerivedCadSpec.tolerances : [];
+  const holePatterns = Array.isArray(_pendingDerivedCadSpec.hole_patterns) ? _pendingDerivedCadSpec.hole_patterns : [];
+  const params = _pendingDerivedCadSpec.normalized_parameters || {};
+
+  if ($derivedSpecStatus) {
+    $derivedSpecStatus.textContent = _pendingCadPlan
+      ? 'Review these inferred values before execution'
+      : 'Inspection only';
+  }
+  _syncDerivedSpecSummary();
+  if ($derivedSpecGrid) {
+    $derivedSpecGrid.innerHTML = [
+      _renderEditableSpecSection('Dimensions', [
+        { label: 'Length', path: 'dimensions.length_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: dims.length_mm },
+        { label: 'Width', path: 'dimensions.width_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: dims.width_mm },
+        { label: 'Height', path: 'dimensions.height_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: dims.height_mm },
+        { label: 'Wall', path: 'dimensions.wall_thickness_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: dims.wall_thickness_mm },
+        { label: 'Hole Ø', path: 'dimensions.hole_diameter_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: dims.hole_diameter_mm },
+      ]),
+      _renderEditableSpecSection('Manufacturing', [
+        { label: 'Material', path: 'metadata.material_name', type: 'text', value: _pendingDerivedCadSpec.material_name, placeholder: 'cast_iron' },
+        { label: 'Process', path: 'metadata.process', type: 'text', value: _pendingDerivedCadSpec.process, placeholder: 'casting' },
+        { label: 'Fit', path: 'fits.0.designation', type: 'text', value: fits[0]?.designation || params.fit_designation || '', placeholder: 'H7/g6' },
+        { label: 'Tolerance', path: 'tolerances.0.value_mm', type: 'number', step: '0.001', min: '0', unit: 'mm', value: tolerances[0]?.value_mm != null ? tolerances[0].value_mm : params.tolerance_general_mm },
+      ]),
+      _renderEditableSpecSection('Hole Pattern', [
+        { label: 'Hole Count', path: 'hole_patterns.0.hole_count', type: 'number', step: '1', min: '1', value: holePatterns[0]?.hole_count },
+        { label: 'Thread Spec', path: 'hole_patterns.0.thread_spec', type: 'text', value: holePatterns[0]?.thread_spec || '', placeholder: 'M8' },
+        { label: 'Bolt Circle', path: 'hole_patterns.0.bolt_circle_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: holePatterns[0]?.bolt_circle_mm != null ? holePatterns[0].bolt_circle_mm : dims.bolt_circle_mm },
+        { label: 'Spacing', path: 'hole_patterns.0.spacing_mm', type: 'number', step: '0.1', min: '0', unit: 'mm', value: holePatterns[0]?.spacing_mm != null ? holePatterns[0].spacing_mm : dims.hole_spacing_mm },
+      ]),
+      _renderSpecSection('Review Notes', [
+        ['Status', _pendingCadPlan ? 'Edits here will be applied to the reviewed CAD execution plan.' : 'Inspection only'],
+        ['Source', _pendingDerivedCadSpec.source || 'prompt_inference'],
+      ]),
+    ].join('');
+    _bindDerivedSpecInputs();
+  }
+  if ($derivedSpecExecute) {
+    $derivedSpecExecute.disabled = !_pendingCadPlan;
+    $derivedSpecExecute.textContent = 'Generate CAD';
+  }
+  $derivedSpecPanel.classList.remove('hidden');
+}
+
+async function _executePendingCadPlan() {
+  if (_isBusy || !_pendingCadPlan) return;
+  const executeLabel = $derivedSpecExecute ? $derivedSpecExecute.textContent : 'Generate CAD';
+  try {
+    _setBusy(true);
+    _setEnkiStatus('Submitting reviewed CAD spec…');
+    _setEnkiLive(true, 'Submitting reviewed CAD spec…');
+    if ($derivedSpecExecute) {
+      $derivedSpecExecute.disabled = true;
+      $derivedSpecExecute.textContent = 'Submitting…';
+    }
+
+    const response = await fetch('/cad/execute', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, _opts.headers),
+      body: JSON.stringify({ plan: _pendingCadPlan }),
+    });
+    const data = await response.json();
+    if (!response.ok || !data.ok) throw new Error(data.error || ('CAD execute failed with HTTP ' + response.status));
+
+    const manifest = data.manifest || {};
+    if ($derivedSpecStatus) $derivedSpecStatus.textContent = manifest.execution_id ? 'Execution ' + manifest.execution_id : 'Execution submitted';
+    if ($derivedSpecExecute) $derivedSpecExecute.textContent = 'CAD Submitted';
+    _addMsg('assistant', '🔩 <strong>Derived CAD spec approved.</strong> Started execution <code>' + esc(manifest.execution_id || 'pending') + '</code> from the reviewed spec.');
+
+    if (manifest.execution_id) {
+      await _loadKernelSTLWhenReady(manifest.execution_id, _pendingCadPlan.name || manifest.recipe?.name || 'Assembly');
+    }
+  } catch (error) {
+    if ($derivedSpecStatus) $derivedSpecStatus.textContent = 'Execution failed — review and retry';
+    if ($derivedSpecExecute) {
+      $derivedSpecExecute.disabled = false;
+      $derivedSpecExecute.textContent = executeLabel;
+    }
+    _addMsg('assistant', 'CAD execution failed: ' + esc(error.message));
+  } finally {
+    _setBusy(false);
+    _setEnkiStatus('Engineering AI · Ready');
+    _setEnkiLive(false);
+  }
 }
 
 /* ── DOM Helpers ─────────────────────────────────────────────────────────── */
@@ -1295,10 +2463,45 @@ function _initSimControls() {
   }
 
   if ($run) $run.addEventListener('click', async () => {
-    if (!global.UARE_SIM) { _addMsg('assistant', 'Physics engine not loaded yet.'); return; }
     const CAD = global.UARE_CAD;
     const scene = CAD && CAD.getLastScene && CAD.getLastScene();
     if (!scene) { _addMsg('assistant', 'No assembly loaded. Design something first!'); return; }
+
+    if (_isEngineAssembly(_assembly)) {
+      _updateEngineBenchLabels();
+      const started = _startEngineCycle(scene, _assembly, {
+        onStep: (t, metrics) => {
+          if ($mTime) $mTime.textContent = t.toFixed(1) + ' s';
+          if ($mFPS) $mFPS.textContent = 'live';
+          if ($mStr) $mStr.textContent = metrics.powerKw.toFixed(1) + ' kW';
+          if ($mSafe) $mSafe.textContent = metrics.torqueNm.toFixed(0) + ' N·m';
+          _updateEngineBenchTelemetry(metrics);
+          if ($simResult) {
+            $simResult.textContent = 'Dyno mode: ' + metrics.rpm.toFixed(0)
+              + ' rpm, VE ' + (metrics.ve * 100).toFixed(0)
+              + '%, spark ' + metrics.sparkAdvanceDeg.toFixed(1)
+              + '° (knock margin ' + metrics.knockMarginDeg.toFixed(1)
+              + '°), cam I+' + metrics.camIntakeAdvanceDeg.toFixed(1)
+              + '/E+' + metrics.camExhaustRetardDeg.toFixed(1)
+              + '°, MAP ' + metrics.manifoldPressureKpa.toFixed(0)
+              + ' kPa, ' + metrics.loadNm.toFixed(0) + ' N·m brake load.';
+          }
+        },
+      });
+      if (!started) {
+        _addMsg('assistant', 'Engine runtime animation could not be started for this assembly.');
+        return;
+      }
+      setSimStatus('running');
+      if ($run) $run.disabled = true;
+      if ($pause) $pause.disabled = false;
+      if ($reset) $reset.disabled = false;
+      _setEnkiLive(true, 'Engine dyno running…');
+      _addMsg('assistant', '<strong>Engine dyno mode running.</strong> Adjust throttle, brake load, and RPM target from the test bench strip while the viewport animates the crankshaft, pistons, rods, cams, and valves.');
+      return;
+    }
+
+    if (!global.UARE_SIM) { _addMsg('assistant', 'Physics engine not loaded yet.'); return; }
     setSimStatus('running');
     if ($run) $run.disabled = true;
     if ($pause) $pause.disabled = false;
@@ -1326,6 +2529,8 @@ function _initSimControls() {
     });
   });
   if ($pause) $pause.addEventListener('click', () => {
+    _stopEngineCycle(false);
+    if (_isEngineAssembly(_assembly) && $simResult) $simResult.textContent = 'Dyno paused. Adjust throttle, load, or RPM target, then run again.';
     if (global.UARE_SIM) global.UARE_SIM.pause();
     setSimStatus('idle');
     _setEnkiLive(false);
@@ -1333,10 +2538,16 @@ function _initSimControls() {
     if ($pause) $pause.disabled = true;
   });
   if ($reset) $reset.addEventListener('click', () => {
+    _stopEngineCycle(true);
     if (global.UARE_SIM) global.UARE_SIM.reset();
     setSimStatus('idle');
     if ($mTime) $mTime.textContent = '0.0 s';
     if ($mFPS) $mFPS.textContent = '–';
+    if ($mStr) $mStr.textContent = '– MPa';
+    if ($mSafe) $mSafe.textContent = '–';
+    _updateEngineBenchTelemetry(null);
+    _updateEngineBenchLabels();
+    if (_isEngineAssembly(_assembly) && $simResult) $simResult.textContent = 'Dyno reset. Set throttle, brake load, and RPM target to run the engine again.';
     if ($run) $run.disabled = false;
     if ($pause) $pause.disabled = true;
     _setEnkiLive(false);
@@ -1468,15 +2679,22 @@ function _initSimControls() {
 /* ── Quick Build Functions ───────────────────────────────────────────────── */
 function _buildEngine4Cyl(text) {
     const U = 1; // all dims in mm
+    const engineSpec = _createInline4EngineSpec();
+    const layout = _createInline4Layout(engineSpec);
     const parts = [];
+    const mates = [];
     let id = 1;
-    const p = (obj) => { parts.push({ id: `p${String(id++).padStart('3','0')}`, ...obj }); };
+    const p = (obj) => {
+      const part = { id: `p${String(id++).padStart('3','0')}`, ...obj };
+      parts.push(part);
+      return part;
+    };
 
     // ══════════════════════════════════════════════
     // §1  CYLINDER BLOCK & MAIN STRUCTURE
     // ══════════════════════════════════════════════
     p({ name:'Cylinder Block — A380 Die-Cast Aluminum', type:'engine_block', material:'aluminum_cast_a380',
-        dims:{w:465,h:340,d:220, cylinders:4, bore:86, pitch:100, stroke:86}, position:[150,70,110], color:'#8a9ab5', mass_kg:38.5,
+      dims:{w:465,h:340,d:220, cylinders:engineSpec.cylinders, bore:engineSpec.boreMm, pitch:engineSpec.borePitchMm, stroke:engineSpec.strokeMm}, position:layout.blockCenter, color:'#8a9ab5', mass_kg:38.5,
         surface_finish:'Ra 1.6 deck, Ra 3.2 bores (as-cast)', tolerance:'bore H7',
         notes:'A380 die cast. Deck face ground Ra 0.4μm. Main bearing bore Ø58 H7. Bore 86mm, line-bored after main cap install. Bore-to-bore pitch 100mm. Water jacket integral.' });
     p({ name:'Main Bearing Cap #1 — Steel Forged 4340', type:'bracket', material:'steel_4340',
@@ -1523,6 +2741,15 @@ function _buildEngine4Cyl(text) {
     p({ name:'Harmonic Balancer / Crankshaft Pulley', type:'pulley', material:'cast_iron',
         dims:{d:180,h:52}, position:[-40,0,110], color:'#505050', mass_kg:3.8,
         notes:'Elastomeric vibration damper. Rubber bond cured in. TDC mark at 0° on OD. Align to timing cover index mark.' });
+    p({ name:'Flywheel — Nodular Iron Ring Gear Assembly', type:'flywheel', material:'cast_iron_ductile',
+      dims:{d:290,h:32}, position:[430,0,110], color:'#5f6772', mass_kg:8.9,
+      notes:'Dual-mass style flywheel with integral starter ring gear. Indexed to crank flange with dowel. Face runout max 0.10mm.' });
+    p({ name:'Clutch Disc — Organic Friction 240mm', type:'clutch_disc', material:'steel_1018',
+      dims:{d:240,h:10}, position:[448,0,110], color:'#6b5b4d', mass_kg:1.35,
+      notes:'Sprung-hub disc, 240mm OD, organic friction lining. Torque capacity 320 N·m. Inspect for hot spotting and radial cracks.' });
+    p({ name:'Pressure Plate — Diaphragm Spring 240mm', type:'pressure_plate', material:'steel_1018',
+      dims:{w:250,h:45,d:250}, position:[468,0,110], color:'#4f5660', mass_kg:4.6,
+      notes:'Cast cover with diaphragm spring. Clamp load 8.5 kN. Balanced with flywheel as matched set.' });
     p({ name:'Harmonic Balancer Bolt — ISO 4162 M20×1.5×65 10.9', type:'bolt_hex', material:'steel_4340',
         dims:{d:20,L:65}, position:[-52,0,110], color:'#3a3a3a', mass_kg:0.11, standard:'ISO 4162',
         torque_nm:280, notes:'Grade 10.9. Single-use (plastic region). Threadlocker Loctite 277. 280 N·m + angle 90°.' });
@@ -1530,7 +2757,7 @@ function _buildEngine4Cyl(text) {
     // ══════════════════════════════════════════════
     // §3  PER-CYLINDER ASSEMBLIES (4×)
     // ══════════════════════════════════════════════
-    const BORES = [0, 100, 200, 300];
+    const BORES = layout.cylinderXsMm;
     BORES.forEach((bx, ci) => {
       const cn = ci + 1;
 
@@ -1580,10 +2807,10 @@ function _buildEngine4Cyl(text) {
       p({ name:`Con Rod Bolt #${cn}B — ARP 2000 M9×1.0×34`, type:'bolt_hex', material:'steel_4340',
           dims:{d:9,L:34}, position:[bx,2,120], color:'#3a3a4a', mass_kg:0.025,
           standard:'ARP 200-6301', torque_nm:50, notes:'Same spec as A bolt.' });
-      p({ name:`Rod Bearing #${cn} Upper — ACL 4B2342H`, type:'bearing', material:'copper',
+        p({ name:`Rod Bearing #${cn} Upper — ACL 4B2342H`, type:'rod_bearing', material:'copper',
           dims:{innerD:47.98,outerD:53,width:18}, position:[bx,-5,110], color:'#c8a860', mass_kg:0.03,
           notes:'Clearance 0.020–0.050mm. Check with Plastigauge. Oil groove full 360°.' });
-      p({ name:`Rod Bearing #${cn} Lower — ACL 4B2342H`, type:'bearing', material:'copper',
+        p({ name:`Rod Bearing #${cn} Lower — ACL 4B2342H`, type:'rod_bearing', material:'copper',
           dims:{innerD:47.98,outerD:53,width:18}, position:[bx,-8,110], color:'#c8a860', mass_kg:0.03,
           notes:'No oil groove on lower shell. Locating notch at parting face.' });
     });
@@ -1591,8 +2818,8 @@ function _buildEngine4Cyl(text) {
     // ══════════════════════════════════════════════
     // §4  CYLINDER HEAD
     // ══════════════════════════════════════════════
-    p({ name:'Cylinder Head — A356-T6 Sand-Cast Aluminum, DOHC 16V', type:'housing', material:'aluminum',
-        dims:{w:380,h:78,d:220}, position:[150,279,110], color:'#9ab0c0', mass_kg:14.8,
+    p({ name:'Cylinder Head — A356-T6 Sand-Cast Aluminum, DOHC 16V', type:'cylinder_head', material:'aluminum',
+      dims:{w:380,h:78,d:220, cylinders:engineSpec.cylinders, bore:engineSpec.boreMm, pitch:engineSpec.borePitchMm, depth:220}, position:layout.headCenter, color:'#9ab0c0', mass_kg:14.8,
         surface_finish:'Ra 0.4 deck, Ra 0.8 cam bores',
         notes:'A356-T6 T4 heat-treated. Combustion chamber CNC-machined. Intake port flow 210 cfm @ 28" H2O. Exhaust port flow 155 cfm. Valve seat: steel-alloy insert press-fit.' });
     p({ name:'Head Gasket — Multi-Layer Steel (MLS), 0.7mm', type:'gasket', material:'stainless_304',
@@ -1611,12 +2838,12 @@ function _buildEngine4Cyl(text) {
     // ══════════════════════════════════════════════
     // §5  VALVETRAIN — DOHC 16V
     // ══════════════════════════════════════════════
-    p({ name:'Intake Camshaft — Billet 4340, 268° Duration', type:'shaft', material:'steel_4340',
-        dims:{d:26,L:360}, position:[150,390,80], color:'#5a6878', mass_kg:1.85,
+    p({ name:'Intake Camshaft — Billet 4340, 268° Duration', type:'camshaft', material:'steel_4340',
+      dims:{d:26,L:360,cylinders:engineSpec.cylinders,lift:10.5,jD:26}, position:layout.intakeCamCenter, color:'#5a6878', mass_kg:1.85,
         surface_finish:'Ra 0.4 journals and lobes',
         notes:'Billet 4340. Hardened and ground lobes HRC 58–62. Lift 10.5mm. Duration 268°@1mm. Journals Ø26 k5. Cam-to-cam phasing via VVT actuator.' });
-    p({ name:'Exhaust Camshaft — Billet 4340, 256° Duration', type:'shaft', material:'steel_4340',
-        dims:{d:26,L:360}, position:[150,390,140], color:'#5a6878', mass_kg:1.75,
+    p({ name:'Exhaust Camshaft — Billet 4340, 256° Duration', type:'camshaft', material:'steel_4340',
+      dims:{d:26,L:360,cylinders:engineSpec.cylinders,lift:9.8,jD:26}, position:layout.exhaustCamCenter, color:'#5a6878', mass_kg:1.75,
         surface_finish:'Ra 0.4',
         notes:'Exhaust cam. Lift 9.8mm. Duration 256°@1mm. VVT phaser range ±28° CCA.' });
     p({ name:'Intake Cam Sprocket (VVT Phaser)', type:'sprocket', material:'aluminum_7075_t6',
@@ -1625,8 +2852,8 @@ function _buildEngine4Cyl(text) {
     p({ name:'Exhaust Cam Sprocket (VVT Phaser)', type:'sprocket', material:'aluminum_7075_t6',
         dims:{d:120,h:28}, position:[-12,390,140], color:'#8898a8', mass_kg:0.58,
         notes:'VVT phaser. Retard-only on exhaust for NOx. Lock pin at full retard.' });
-    p({ name:'Timing Chain — Duplex #08B-2, 140-Link', type:'spring', material:'steel',
-        dims:{w:10,h:340,d:3}, position:[-12,195,110], color:'#5a5a6a', mass_kg:0.38,
+    p({ name:'Timing Chain — Duplex #08B-2, 140-Link', type:'timing_chain', material:'steel',
+      dims:{w:10,h:340,d:3,links:140,pitch:12.7}, position:[-12,195,110], color:'#5a5a6a', mass_kg:0.38,
         notes:'Iwis duplex roller chain #08B-2. 12.7mm pitch, 140 links. Min tensile 35 kN. Replace at 150,000 km.' });
     p({ name:'Timing Chain Guide — Upper (Tensioner Side)', type:'bracket', material:'nylon_pa66',
         dims:{w:8,h:180,d:20}, position:[-8,290,88], color:'#1a1a1a', mass_kg:0.045,
@@ -1640,51 +2867,56 @@ function _buildEngine4Cyl(text) {
         dims:{d:8,L:30}, position:[-30,255,75], color:'#4a4a4a', mass_kg:0.015,
         standard:'ISO 4762', torque_nm:25, notes:'M8×1.25. 25 N·m.' });
 
-    // Valves — 8 intake + 8 exhaust (2 per cylinder each bank)
-    BORES.forEach((bx,ci)=>{
-      const cn = ci+1;
-      [0,1].forEach(vi=>{
-        const vz = vi===0 ? 90 : 125;
-        p({ name:`Intake Valve #${cn*2-1+vi} — Stainless 21-4N, Ø33mm`, type:'valve_intake', material:'stainless_304',
-            dims:{d:5.5, L:105, headD:33}, position:[bx,295,vz-10], color:'#c8d0d8', mass_kg:0.062,
-            surface_finish:'Ra 0.4 stem, Ra 0.2 seating face',
-            notes:'21-4N stainless. Head Ø33mm, 45° seat, 30° back-cut. Stem Ø5.5 h6. Seat width 1.5mm. Chromium nitride DLC coating on stem.' });
-        p({ name:`Exhaust Valve #${cn*2-1+vi} — Inconel 751, Ø28mm`, type:'valve_exhaust', material:'inconel_718',
-            dims:{d:5.5, L:103, headD:28}, position:[bx,295,vz+10], color:'#a0a8b0', mass_kg:0.055,
-            surface_finish:'Ra 0.4 stem',
-            notes:'Inconel 751 head (sodium-cooled hollow stem option). Ø28mm head, 45° seat. Stellite-faced valve seat for lead-free fuel.' });
+    // Valves — 16 total with matched retainers, collets, seals, and HLAs
+    BORES.forEach((bx, ci) => {
+      const valveDefs = [
+      { kind: 'intake', z: layout.valveZsMm[0], valveY: 295, springY: 340, retainerY: 348, colletY: 352, sealY: 363, hlaY: 375 },
+      { kind: 'exhaust', z: layout.valveZsMm[1], valveY: 295, springY: 340, retainerY: 348, colletY: 352, sealY: 363, hlaY: 375 },
+      { kind: 'intake', z: layout.valveZsMm[2], valveY: 295, springY: 340, retainerY: 348, colletY: 352, sealY: 363, hlaY: 375 },
+      { kind: 'exhaust', z: layout.valveZsMm[3], valveY: 295, springY: 340, retainerY: 348, colletY: 352, sealY: 363, hlaY: 375 },
+      ];
+      valveDefs.forEach((valve, valveIndex) => {
+      const globalIndex = ci * 4 + valveIndex + 1;
+      const isIntake = valve.kind === 'intake';
+      p({
+        name: `${isIntake ? 'Intake' : 'Exhaust'} Valve #${globalIndex} — ${isIntake ? 'Stainless 21-4N, Ø33mm' : 'Inconel 751, Ø28mm'}`,
+        type: isIntake ? 'valve_intake' : 'valve_exhaust',
+        material: isIntake ? 'stainless_304' : 'inconel_718',
+        dims: { d: 5.5, L: isIntake ? 105 : 103, headD: isIntake ? engineSpec.intakeValveHeadMm : engineSpec.exhaustValveHeadMm },
+        position: [bx, valve.valveY, valve.z],
+        color: isIntake ? '#c8d0d8' : '#a0a8b0',
+        mass_kg: isIntake ? 0.062 : 0.055,
+        surface_finish: isIntake ? 'Ra 0.4 stem, Ra 0.2 seating face' : 'Ra 0.4 stem',
+        notes: isIntake
+        ? '21-4N stainless. Head Ø33mm, 45° seat, 30° back-cut. Stem Ø5.5 h6. Seat width 1.5mm. Chromium nitride DLC coating on stem.'
+        : 'Inconel 751 head (sodium-cooled hollow stem option). Ø28mm head, 45° seat. Stellite-faced valve seat for lead-free fuel.',
       });
-      // Valve springs (16 total, 4 per cylinder)
-      [90,125].forEach(vz=>{
-        [0,1].forEach(si=>{
-          const vz2 = vz + (si===0?-10:10);
-          p({ name:`Valve Spring #${ci*4+si*2+1} — Single Beehive, PAC Racing`, type:'spring', material:'spring_steel',
-              dims:{d:30,L:45}, position:[bx,340,vz2], color:'#8090a0', mass_kg:0.065,
-              notes:'High-strength alloy wire. Seat load 200N at installed height 38mm. Open load 450N at lift 10.5mm. Natural freq > 2× max cam lobe freq.' });
-          p({ name:`Valve Spring Retainer #${ci*4+si*2+1} — Titanium Grade 5`, type:'washer', material:'titanium_6al4v',
-              dims:{innerD:6,outerD:28,h:7}, position:[bx,348,vz2], color:'#9aa8b8', mass_kg:0.018,
-              notes:'Ti-6Al-4V retainer reduces valvetrain mass 40%. Inner groove for 2-piece collet. Match-grade with spring top coil OD.' });
-          p({ name:`Valve Collet #${ci*4+si*2+1}A — ISO 5356 Ø5.5`, type:'circlip', material:'steel',
-              dims:{innerD:5.5,outerR:8,h:5}, position:[bx,352,vz2-2], color:'#5a5a6a', mass_kg:0.006,
-              notes:'2-piece split collet. 3-groove stem engagement. Install with assembly lube. Re-use if undamaged.' });
-          p({ name:`Valve Collet #${ci*4+si*2+1}B — ISO 5356 Ø5.5`, type:'circlip', material:'steel',
-              dims:{innerD:5.5,outerR:8,h:5}, position:[bx,352,vz2+2], color:'#5a5a6a', mass_kg:0.006,
-              notes:'Partner to collet A. Stagger gap 180°.' });
-          p({ name:`Valve Stem Seal #${ci*4+si*2+1} — Viton PTFE-Lip`, type:'lip_seal', material:'viton',
-              dims:{innerD:5.5,outerD:12,h:9}, position:[bx,363,vz2], color:'#202020', mass_kg:0.004,
-              notes:'Viton with PTFE-coated inner lip. Spring-loaded. Max stem seal oil consumption: 0.1 g/h. Replace every valve job.' });
-          p({ name:`Hydraulic Lash Adjuster (HLA) #${ci*4+si*2+1}`, type:'piston', material:'steel',
-              dims:{d:23,h:30}, position:[bx,375,vz2], color:'#6a7080', mass_kg:0.055,
-              notes:'Full-hydraulic zero-lash adjuster. Oil-fed through cylinder head gallery. Bleed-down time 60s min after installation. If noisy >15 min, replace.' });
-        });
+      p({ name:`Valve Spring #${globalIndex} — Single Beehive, PAC Racing`, type:'valve_spring', material:'spring_steel',
+        dims:{d:30,L:45}, position:[bx, valve.springY, valve.z], color:'#8090a0', mass_kg:0.065,
+        notes:'High-strength alloy wire. Seat load 200N at installed height 38mm. Open load 450N at lift 10.5mm. Natural freq > 2× max cam lobe freq.' });
+      p({ name:`Valve Spring Retainer #${globalIndex} — Titanium Grade 5`, type:'valve_spring_retainer', material:'titanium_6al4v',
+        dims:{innerD:6,outerD:28,h:7}, position:[bx, valve.retainerY, valve.z], color:'#9aa8b8', mass_kg:0.018,
+        notes:'Ti-6Al-4V retainer reduces valvetrain mass 40%. Inner groove for 2-piece collet. Match-grade with spring top coil OD.' });
+      p({ name:`Valve Collet #${globalIndex}A — ISO 5356 Ø5.5`, type:'valve_collet', material:'steel',
+        dims:{innerD:5.5,outerR:8,h:5}, position:[bx, valve.colletY, valve.z - 2], color:'#5a5a6a', mass_kg:0.006,
+        notes:'2-piece split collet. 3-groove stem engagement. Install with assembly lube. Re-use if undamaged.' });
+      p({ name:`Valve Collet #${globalIndex}B — ISO 5356 Ø5.5`, type:'valve_collet', material:'steel',
+        dims:{innerD:5.5,outerR:8,h:5}, position:[bx, valve.colletY, valve.z + 2], color:'#5a5a6a', mass_kg:0.006,
+        notes:'Partner to collet A. Stagger gap 180°.' });
+      p({ name:`Valve Stem Seal #${globalIndex} — Viton PTFE-Lip`, type:'lip_seal', material:'viton',
+        dims:{innerD:5.5,outerD:12,h:9}, position:[bx, valve.sealY, valve.z], color:'#202020', mass_kg:0.004,
+        notes:'Viton with PTFE-coated inner lip. Spring-loaded. Max stem seal oil consumption: 0.1 g/h. Replace every valve job.' });
+      p({ name:`Hydraulic Lash Adjuster (HLA) #${globalIndex}`, type:'lash_adjuster', material:'steel',
+        dims:{d:23,h:30}, position:[bx, valve.hlaY, valve.z], color:'#6a7080', mass_kg:0.055,
+        notes:'Full-hydraulic zero-lash adjuster. Oil-fed through cylinder head gallery. Bleed-down time 60s min after installation. If noisy >15 min, replace.' });
       });
     });
 
     // ══════════════════════════════════════════════
     // §6  OIL SYSTEM
     // ══════════════════════════════════════════════
-    p({ name:'Oil Pan — Stamped Steel 0.8mm, 5.5L Capacity', type:'plate', material:'steel_1018',
-        dims:{w:440,h:75,d:220}, position:[150,-138,110], color:'#505060', mass_kg:2.1,
+    p({ name:'Oil Pan — Stamped Steel 0.8mm, 5.5L Capacity', type:'oil_pan', material:'steel_1018',
+      dims:{w:440,h:75,d:220}, position:layout.oilPanCenter, color:'#505060', mass_kg:2.1,
         notes:'Stamped 1.0mm steel. Baffled sump. Drain plug M14×1.5 with sealing washer. Capacity 5.5L with filter. RTV sealant on flange (no gasket).' });
     p({ name:'Oil Pan Gasket — Silicone RTV (in lieu of separate gasket)', type:'gasket', material:'silicone',
         dims:{w:440,h:2,d:220}, position:[150,-100.5,110], color:'#303030', mass_kg:0.01,
@@ -1696,7 +2928,7 @@ function _buildEngine4Cyl(text) {
           dims:{d:8,L:25}, position:[bx<440?bx:440,-100,i%2===0?20:200], color:'#4a4a4a', mass_kg:0.012,
           standard:'ISO 4762', torque_nm:25, notes:'M8×1.25. 25 N·m. Zinc-plated.' });
     }
-    p({ name:'Oil Pump — Gerotor, Integral Balance Shafts', type:'housing', material:'aluminum',
+    p({ name:'Oil Pump — Gerotor, Integral Balance Shafts', type:'oil_pump', material:'aluminum',
         dims:{w:120,h:60,d:80}, position:[-20,-50,110], color:'#8898a8', mass_kg:1.4,
         notes:'Chain-driven gerotor pump. Max flow 50 L/min @2000 RPM. Relief valve set 4.5 bar. Integrated balance shaft eliminates first-order vibration.' });
     p({ name:'Oil Pickup Tube', type:'pipe_straight', material:'steel',
@@ -1705,10 +2937,10 @@ function _buildEngine4Cyl(text) {
     p({ name:'Oil Pickup O-ring — AS568-120 Viton', type:'o_ring', material:'viton',
         dims:{innerD:20,tubeR:2.5}, position:[0,-50,110], color:'#181818', mass_kg:0.003,
         standard:'AS568-120', notes:'Viton V70. Replace each removal.' });
-    p({ name:'Oil Filter — Mann W 7015 (Spin-On)', type:'cylinder', material:'steel',
+    p({ name:'Oil Filter — Mann W 7015 (Spin-On)', type:'oil_filter', material:'steel',
         dims:{d:68,L:76}, position:[400,-60,200], color:'#383838', mass_kg:0.35,
         notes:'Mann W7015. Anti-drainback valve. Bypass valve 1.2 bar. Tighten 3/4 turn after gasket contact. Replace every 10,000 km.' });
-    p({ name:'Oil Pressure Sender — VDO 360-081-029', type:'cylinder', material:'steel',
+    p({ name:'Oil Pressure Sender — VDO 360-081-029', type:'oil_pressure_sensor', material:'steel',
         dims:{d:20,L:35}, position:[380,-30,200], color:'#605a50', mass_kg:0.04,
         notes:'1/8" NPT. 0–7 bar. Resistance 10Ω (pressure) – 180Ω (no pressure). M12×1.5 fitting. 25 N·m.' });
     p({ name:'Engine Oil Dipstick', type:'shaft', material:'steel',
@@ -1718,7 +2950,7 @@ function _buildEngine4Cyl(text) {
     // ══════════════════════════════════════════════
     // §7  COOLING SYSTEM
     // ══════════════════════════════════════════════
-    p({ name:'Water Pump — Mechanical, Cast Iron Housing', type:'housing', material:'cast_iron',
+    p({ name:'Water Pump — Mechanical, Cast Iron Housing', type:'water_pump', material:'cast_iron',
         dims:{w:120,h:100,d:80}, position:[-30,120,20], color:'#646464', mass_kg:1.8,
         notes:'V-belt or serpentine driven. 60 L/min @3000 RPM. Ceramic seal. Bearing: 6206-2RS. Replace at 120,000 km or on coolant leak.' });
     p({ name:'Water Pump Gasket — Copper 1mm', type:'gasket', material:'copper',
@@ -1730,10 +2962,10 @@ function _buildEngine4Cyl(text) {
           dims:{d:8,L:30}, position:[-50+i*20,120+30*Math.sin(i),56], color:'#4a4a4a', mass_kg:0.014,
           standard:'ISO 4762', torque_nm:25, notes:'M8. 25 N·m. Anti-seize on threads into aluminum.' });
     }
-    p({ name:'Thermostat — Wax-Element 87°C Opening', type:'cylinder', material:'brass',
+    p({ name:'Thermostat — Wax-Element 87°C Opening', type:'thermostat_valve', material:'brass',
         dims:{d:44,h:25}, position:[50,240,20], color:'#c89040', mass_kg:0.06,
         notes:'OEM spec 87°C. Full open 102°C. Lift 8mm. Thermostat housing seals with O-ring 44×3mm. Replace every coolant service.' });
-    p({ name:'Thermostat Housing — Plastic Fiber-Reinforced', type:'housing', material:'nylon_pa66',
+    p({ name:'Thermostat Housing — Plastic Fiber-Reinforced', type:'thermostat_housing', material:'nylon_pa66',
         dims:{w:70,h:55,d:55}, position:[50,255,20], color:'#383838', mass_kg:0.12,
         notes:'PA66-GF35. Integrated coolant bleed nipple. O-ring seat molded-in. Inspect for cracks every service.' });
     for(let i=0;i<3;i++){
@@ -1751,8 +2983,8 @@ function _buildEngine4Cyl(text) {
     // ══════════════════════════════════════════════
     // §8  INTAKE MANIFOLD & FUEL
     // ══════════════════════════════════════════════
-    p({ name:'Intake Manifold — Cast Aluminum, Variable Runner', type:'housing', material:'aluminum_cast_a380',
-        dims:{w:360,h:120,d:160}, position:[150,360,60], color:'#a8b8c8', mass_kg:4.2,
+    p({ name:'Intake Manifold — Cast Aluminum, Variable Runner', type:'intake_manifold', material:'aluminum_cast_a380',
+      dims:{w:360,h:120,d:160,cylinders:engineSpec.cylinders,pitch:engineSpec.borePitchMm,runnerD:42,runnerL:engineSpec.intakeRunnerMm,throttleD:64}, position:layout.intakeManifoldCenter, color:'#a8b8c8', mass_kg:4.2,
         notes:'Cast A380 with plastic composite runners above. Tumble valves for low-load efficiency. Internal EGR passages. Torque: 22 N·m on head studs.' });
     BORES.forEach((bx,ci)=>{
       p({ name:`Intake Port Gasket #${ci+1} — MLS Fiber 1mm`, type:'gasket', material:'stainless_304',
@@ -1777,7 +3009,7 @@ function _buildEngine4Cyl(text) {
         dims:{d:16,L:340}, position:[150,380,185], color:'#9a9a9a', mass_kg:0.32,
         notes:'Stainless 316. Max pressure 350 bar (direct injection). Fuel pressure regulator port at end. Injector cups Ø14.4 H7.' });
     BORES.forEach((bx,ci)=>{
-      p({ name:`Fuel Injector #${ci+1} — Bosch EV14 280cc/min`, type:'cylinder', material:'steel',
+        p({ name:`Fuel Injector #${ci+1} — Bosch EV14 280cc/min`, type:'fuel_injector', material:'steel',
           dims:{d:14,L:68}, position:[bx,380,185], color:'#3a4050', mass_kg:0.038,
           notes:'Bosch EV14 connector. Static flow 280 cc/min @3bar. 12V solenoid. O-ring top and bottom. Fuel rail: 3bar operating / 7bar static test.' });
       p({ name:`Injector O-ring Top #${ci+1} — AS568-009 Viton`, type:'o_ring', material:'viton',
@@ -1792,16 +3024,16 @@ function _buildEngine4Cyl(text) {
           dims:{d:6,L:20}, position:[40+i*100,385,180], color:'#4a4a4a', mass_kg:0.006,
           standard:'ISO 4762', torque_nm:10, notes:'10 N·m.' });
     }
-    p({ name:'MAP Sensor — 3-bar Absolute', type:'cylinder', material:'abs',
+    p({ name:'MAP Sensor — 3-bar Absolute', type:'map_sensor', material:'abs',
         dims:{d:22,h:35}, position:[150,395,190], color:'#303038', mass_kg:0.025, notes:'3-bar MAP. 0.5–4.5V output. Ported to intake manifold via 5mm rubber hose.' });
-    p({ name:'IAT Sensor — NTC 2kΩ@25°C', type:'cylinder', material:'nylon_pa66',
+    p({ name:'IAT Sensor — NTC 2kΩ@25°C', type:'iat_sensor', material:'nylon_pa66',
         dims:{d:12,h:28}, position:[50,365,195], color:'#282830', mass_kg:0.015, notes:'Mounted in intake elbow. NTC thermistor. Pull-up 5V. Replace if response time >2s.' });
 
     // ══════════════════════════════════════════════
     // §9  EXHAUST MANIFOLD
     // ══════════════════════════════════════════════
-    p({ name:'Exhaust Manifold — Ductile Cast Iron, 4-2-1 Merge', type:'housing', material:'cast_iron_ductile',
-        dims:{w:360,h:80,d:80}, position:[150,300,160], color:'#5a6060', mass_kg:6.8,
+    p({ name:'Exhaust Manifold — Ductile Cast Iron, 4-2-1 Merge', type:'exhaust_manifold', material:'cast_iron_ductile',
+      dims:{w:360,h:80,d:80,cylinders:engineSpec.cylinders,pitch:engineSpec.borePitchMm,portD:38,runnerL:engineSpec.exhaustRunnerMm,collectorD:60}, position:layout.exhaustManifoldCenter, color:'#5a6060', mass_kg:6.8,
         notes:'Ductile iron GGG-40. 4-2-1 merge for low-mid torque. Wall thickness 5mm. Thermal expansion slot between mid pairs. Coat with ceramic thermal barrier (optional).' });
     BORES.forEach((bx,ci)=>{
       p({ name:`Exhaust Gasket #${ci+1} — Embossed Steel`, type:'gasket', material:'stainless_304',
@@ -1817,10 +3049,10 @@ function _buildEngine4Cyl(text) {
           dims:{d:8,h:7}, position:[bx+8,315,160], color:'#9090a0', mass_kg:0.008, torque_nm:30, notes:'Same.' });
     });
     // O2 sensors
-    p({ name:'O2 Sensor #1 — Wideband LSU 4.9 (Pre-Cat)', type:'cylinder', material:'stainless_316',
+    p({ name:'O2 Sensor #1 — Wideband LSU 4.9 (Pre-Cat)', type:'o2_sensor', material:'stainless_316',
         dims:{d:22,L:70}, position:[60,290,175], color:'#8080a0', mass_kg:0.08,
         notes:'Bosch LSU 4.9. 5-wire wideband. Lambda 0.7–1.3. Hex 22mm, 45 N·m. Heater 12W. Connector: Bosch EV1.' });
-    p({ name:'O2 Sensor #2 — Narrowband NTK (Post-Cat)', type:'cylinder', material:'stainless_316',
+    p({ name:'O2 Sensor #2 — Narrowband NTK (Post-Cat)', type:'o2_sensor', material:'stainless_316',
         dims:{d:22,L:65}, position:[200,285,175], color:'#8080a0', mass_kg:0.06,
         notes:'NTK OZA678. 4-wire. 0–1V. Post-catalyst OBD2 monitoring. 45 N·m.' });
 
@@ -1831,28 +3063,28 @@ function _buildEngine4Cyl(text) {
       p({ name:`Spark Plug #${ci+1} — NGK IRIDIUM LKR8AI-8`, type:'cylinder', material:'stainless_316',
           dims:{d:14,L:58}, position:[bx,270,110], color:'#a09888', mass_kg:0.028,
           standard:'M14×1.25', torque_nm:25, notes:'Iridium center electrode 0.6mm. Gap 0.7mm. 25 N·m. Replace every 100,000 km.' });
-      p({ name:`Ignition Coil #${ci+1} — COP, Energy 110mJ`, type:'housing', material:'abs',
+        p({ name:`Ignition Coil #${ci+1} — COP, Energy 110mJ`, type:'ignition_coil', material:'abs',
           dims:{w:42,h:108,d:42}, position:[bx,330,110], color:'#1a1a28', mass_kg:0.19,
           notes:'Coil-on-plug. Primary 0.5Ω, secondary 12kΩ. 12V supply. Connector 3-pin EV1. Dwell time 3.0ms @ 800 RPM.' });
       p({ name:`COP Coil Bolt #${ci+1} — M6×20`, type:'bolt_hex', material:'steel',
           dims:{d:6,L:20}, position:[bx,332,110], color:'#4a4a4a', mass_kg:0.005,
           standard:'ISO 4762', torque_nm:10, notes:'10 N·m.' });
     });
-    p({ name:'Crank Position Sensor (CKP) — Hall Effect 60-2 Tooth', type:'cylinder', material:'abs',
+    p({ name:'Crank Position Sensor (CKP) — Hall Effect 60-2 Tooth', type:'crank_sensor', material:'abs',
         dims:{d:19,L:40}, position:[-20,-5,110], color:'#202028', mass_kg:0.04,
         notes:'60-2 tooth wheel on crankshaft. 0.5–1.5mm air gap. 3-wire: 5V, GND, signal. CAN-triggered crank sync.' });
-    p({ name:'Cam Position Sensor Front (CMP) — Hall Effect', type:'cylinder', material:'abs',
+    p({ name:'Cam Position Sensor Front (CMP) — Hall Effect', type:'cam_sensor', material:'abs',
         dims:{d:19,L:35}, position:[-8,390,60], color:'#202028', mass_kg:0.03,
         notes:'Intake cam 3-lobe trigger wheel. 3-wire sensor. 1.0±0.5mm gap.' });
-    p({ name:'Cam Position Sensor Rear (CMP) — Hall Effect', type:'cylinder', material:'abs',
+    p({ name:'Cam Position Sensor Rear (CMP) — Hall Effect', type:'cam_sensor', material:'abs',
         dims:{d:19,L:35}, position:[-8,390,160], color:'#202028', mass_kg:0.03,
         notes:'Exhaust cam sensor. Identical to front CMP.' });
-    p({ name:'Knock Sensor #1 — Bosch 0261231006', type:'cylinder', material:'stainless_304',
+    p({ name:'Knock Sensor #1 — Bosch 0261231006', type:'knock_sensor', material:'stainless_304',
         dims:{d:24,L:28}, position:[80,60,200], color:'#707080', mass_kg:0.05,
         standard:'M8×1.25', torque_nm:20, notes:'Broadband piezoelectric. 4–18 kHz. Flat-mount on block. 20 N·m. 2-wire shielded cable.' });
-    p({ name:'Knock Sensor #2 — Bosch 0261231006', type:'cylinder', material:'stainless_304',
+    p({ name:'Knock Sensor #2 — Bosch 0261231006', type:'knock_sensor', material:'stainless_304',
         dims:{d:24,L:28}, position:[220,60,200], color:'#707080', mass_kg:0.05, torque_nm:20, notes:'Identical to KS#1.' });
-    p({ name:'Coolant Temperature Sensor — NTC 2kΩ@25°C', type:'cylinder', material:'brass',
+    p({ name:'Coolant Temperature Sensor — NTC 2kΩ@25°C', type:'coolant_temp_sensor', material:'brass',
         dims:{d:16,L:28}, position:[30,250,200], color:'#c89040', mass_kg:0.03,
         standard:'M12×1.5', torque_nm:20, notes:'Engine temp signal to ECU and gauge. 20 N·m PTFE tape.' });
 
@@ -1874,9 +3106,12 @@ function _buildEngine4Cyl(text) {
     // ══════════════════════════════════════════════
     // §12  ACCESSORY DRIVE
     // ══════════════════════════════════════════════
-    p({ name:'Alternator — Bosch NCB1 150A 14.4V', type:'housing', material:'aluminum',
+    p({ name:'Alternator — Bosch NCB1 150A 14.4V', type:'alternator', material:'aluminum',
         dims:{w:130,h:110,d:80}, position:[-60,120,50], color:'#8898a8', mass_kg:3.8,
         notes:'150A max. Integral voltage regulator. Serpentine 6PK groove. Connector: 4-pin excitation + main B+ M10 stud. Replace brush pack every 100,000 km.' });
+    p({ name:'Starter Motor — 12V Planetary Reduction', type:'starter_motor', material:'steel_1018',
+      dims:{w:160,h:90,d:85}, position:[360,-20,175], color:'#575d66', mass_kg:3.4,
+      notes:'1.7 kW reduction starter. Engages flywheel ring gear via overrunning clutch. Solenoid mounted integral. Peak current 180 A.' });
     p({ name:'Alternator Mounting Bracket', type:'bracket', material:'aluminum_6061_t6',
         dims:{w:80,h:60,d:20}, position:[-50,90,50], color:'#9ab0c0', mass_kg:0.38,
         notes:'T6 aluminium. Clamping slot allows belt tension adjustment ±15mm.' });
@@ -1904,6 +3139,9 @@ function _buildEngine4Cyl(text) {
         dims:{w:5,h:4,d:220}, position:[300,-98,110], color:'#8a7040', mass_kg:0.015,
         notes:'Same spec.' });
 
+    mates.push(..._buildInline4MateGraph(parts, engineSpec));
+    _applyMateGraph(parts, mates);
+
     return {
       assembly: true,
       name: '2.0L DOHC 16V Inline-4 Engine — Complete Digital Twin',
@@ -1911,8 +3149,10 @@ function _buildEngine4Cyl(text) {
       revision: 'A',
       standard: 'ISO 9001:2015',
       total_mass_kg: 142,
+      engine_spec: engineSpec,
+      mates,
       parts,
-      bom_notes: 'Includes: all block/head fasteners, all bearings, all seals, full valvetrain, fuel/ignition/sensors, accessories. Excludes: ECU/wiring harness, starter motor, flywheel/clutch, exhaust system downstream of manifold, air filter/intake pipe. Cam belt/chain covers not modeled (transparent). All torques in N·m on clean dry threads unless noted.'
+      bom_notes: 'Includes: block/head fasteners, bearings, seals, full valvetrain, fuel/ignition/sensors, accessory drive, flywheel, clutch hardware, and starter motor. Excludes: ECU/wiring harness, gearbox/bellhousing, exhaust system downstream of manifold, air filter/intake pipe. Cam belt/chain covers not modeled (transparent). All torques in N·m on clean dry threads unless noted.'
     };
   }
 
@@ -2538,6 +3778,7 @@ global.UARE_ENKI = {
   init: _init,
   getAssembly: () => _assembly,
   addMessage: _addMsg,
+  loadExecution: _loadExecutionInUnifiedShell,
   cacheFeaResult: _cacheFeaResult,
   _onPartPick: (partId, partDefOverride) => {
     const part = _assembly && _assembly.parts && _assembly.parts.find(p => p.id === partId);

@@ -4635,8 +4635,12 @@ function _buildPartMesh(partDef) {
       case 'cam_follower':
       case 'tappet':
       case 'lifter':          geom = _camFollowerGeom(d, THREE);   break;
+      case 'lash_adjuster':
+      case 'hydraulic_lash_adjuster': geom = _lashAdjusterGeom(d, THREE); break;
       case 'valve_spring_retainer':
       case 'retainer':        geom = _valveRetainerGeom(d, THREE); break;
+      case 'valve_collet':
+      case 'valve_keeper':    geom = _valveColletGeom(d, THREE);   break;
       case 'valve_spring':    geom = _springGeom({ coils: d.coils||8, wireD: d.wireD||3, outerD: d.outerD||25, freeLen: d.freeLen||50 }, THREE); break;
       case 'push_rod':        geom = _pushRodGeom(d, THREE);       break;
       case 'throttle_body':   geom = _throttleBodyGeom(d, THREE);  break;
@@ -4651,17 +4655,33 @@ function _buildPartMesh(partDef) {
       case 'gerotor_pump':    geom = _oilPumpGeom(d, THREE);       break;
       case 'water_pump':
       case 'coolant_pump':    geom = _waterPumpGeom(d, THREE);     break;
+      case 'thermostat_housing': geom = _thermostatHousingGeom(d, THREE); break;
+      case 'thermostat_valve':   geom = _thermostatValveGeom(d, THREE);   break;
       case 'clutch_disc':
       case 'friction_disc':   geom = _clutchDiscGeom(d, THREE);    break;
+      case 'pressure_plate':  geom = _pressurePlateGeom(d, THREE); break;
+      case 'starter_motor':   geom = _starterMotorGeom(d, THREE);  break;
+      case 'ignition_coil':
+      case 'coil_pack':       geom = _ignitionCoilGeom(d, THREE);   break;
       case 'alternator':
       case 'generator':       geom = _alternatorGeom(d, THREE);    break;
       case 'oil_filter':
       case 'fuel_filter':     geom = _oilFilterGeom(d, THREE);     break;
+      case 'map_sensor':
+      case 'iat_sensor':
+      case 'o2_sensor':
+      case 'knock_sensor':
+      case 'coolant_temp_sensor':
+      case 'crank_sensor':
+      case 'cam_sensor':
+      case 'oil_pressure_sensor':
+      case 'engine_sensor':   geom = _engineSensorGeom(d, THREE, type); break;
       case 'cylinder_liner':
       case 'cylinder_sleeve': geom = _cylinderLinerGeom(d, THREE); break;
+      case 'rod_bearing':
       case 'connecting_rod_bearing':
       case 'big_end_bearing':
-      case 'small_end_bearing': geom = _bearingGeom(d, THREE);     break;
+      case 'small_end_bearing': geom = _rodBearingGeom(d, THREE);  break;
       case 'crankshaft_seal':
       case 'rear_main_seal':
       case 'front_seal':      geom = _oRingGeom(d, THREE);         break;
@@ -6250,72 +6270,86 @@ function _throttleBodyGeom(d, THREE) {
 // Fuel injector — solenoid body, pintle tip, top/bottom O-rings, connector
 function _fuelInjectorGeom(d, THREE) {
   const U   = UARE_CAD_UNIT;
-  const len = (d.L || 82) * U;
-  const od  = (d.d || 14.5) * U;
-  const group= new THREE.Group();
-  const matBody  = new THREE.MeshStandardMaterial({ color: 0x282828, metalness: 0.50, roughness: 0.55 });
-  const matSteel = new THREE.MeshStandardMaterial({ color: 0xd0d8e0, metalness: 0.90, roughness: 0.15 });
-  const matRubber= new THREE.MeshStandardMaterial({ color: 0x101010, metalness: 0.05, roughness: 0.95 });
-  const matConn  = new THREE.MeshStandardMaterial({ color: 0x3a2828, metalness: 0.10, roughness: 0.80 });
-  const matTip   = new THREE.MeshStandardMaterial({ color: 0xe8ecf0, metalness: 0.95, roughness: 0.08 });
-  // Solenoid body (lathe profile)
+  const len = (d.L || 68) * U;
+  const od  = (d.d || 14) * U;
+  const group = new THREE.Group();
+  const matBody = new THREE.MeshStandardMaterial({ color: 0x24272b, metalness: 0.45, roughness: 0.56 });
+  const matSteel = new THREE.MeshStandardMaterial({ color: 0xd6dde4, metalness: 0.92, roughness: 0.12 });
+  const matTip = new THREE.MeshStandardMaterial({ color: 0xe8edf2, metalness: 0.95, roughness: 0.07 });
+  const matRubber = new THREE.MeshStandardMaterial({ color: 0x0f1113, metalness: 0.05, roughness: 0.94 });
+  const matPlastic = new THREE.MeshStandardMaterial({ color: 0x252a33, metalness: 0.08, roughness: 0.84 });
+  const matCopper = new THREE.MeshStandardMaterial({ color: 0xd79b42, metalness: 0.90, roughness: 0.16 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x0a0b0d, metalness: 0.25, roughness: 0.92 });
+
   const bodyPts = [
-    new THREE.Vector2(od*0.48, -len*0.50),
-    new THREE.Vector2(od*0.48, -len*0.05),
-    new THREE.Vector2(od*0.52,  len*0.05),
-    new THREE.Vector2(od*0.52,  len*0.35),
-    new THREE.Vector2(od*0.44,  len*0.40),
-    new THREE.Vector2(od*0.44,  len*0.50),
+    new THREE.Vector2(od * 0.35, -len * 0.50),
+    new THREE.Vector2(od * 0.36, -len * 0.30),
+    new THREE.Vector2(od * 0.49, -len * 0.22),
+    new THREE.Vector2(od * 0.50,  len * 0.02),
+    new THREE.Vector2(od * 0.52,  len * 0.22),
+    new THREE.Vector2(od * 0.44,  len * 0.35),
+    new THREE.Vector2(od * 0.44,  len * 0.50),
   ];
-  group.add(new THREE.Mesh(new THREE.LatheGeometry(bodyPts, 18), matBody));
-  // Nozzle tip (stainless, pintle valve tip)
-  const tipPts = [
-    new THREE.Vector2(od*0.30, -len*0.50),
-    new THREE.Vector2(od*0.30, -len*0.36),
-    new THREE.Vector2(od*0.25, -len*0.30),
-    new THREE.Vector2(od*0.08, -len*0.34),
-    new THREE.Vector2(od*0.04, -len*0.40),
-    new THREE.Vector2(od*0.04, -len*0.50),
-  ];
-  group.add(new THREE.Mesh(new THREE.LatheGeometry(tipPts, 16), matTip));
-  // Top fuel inlet
-  const inlet = new THREE.Mesh(new THREE.CylinderGeometry(od*0.38, od*0.38, 12*U, 12), matSteel);
-  inlet.position.y = len*0.50+6*U;
+  group.add(new THREE.Mesh(new THREE.LatheGeometry(bodyPts, 24), matBody));
+
+  const shellBand = new THREE.Mesh(new THREE.CylinderGeometry(od * 0.55, od * 0.55, 9 * U, 20), matSteel);
+  shellBand.position.y = len * 0.08;
+  group.add(shellBand);
+
+  const inlet = new THREE.Mesh(new THREE.CylinderGeometry(od * 0.31, od * 0.31, 12 * U, 14), matSteel);
+  inlet.position.y = len * 0.54;
   group.add(inlet);
-  // Inlet filter basket (wire mesh approximated as small cylinder)
-  const filter = new THREE.Mesh(new THREE.CylinderGeometry(od*0.34, od*0.34, 8*U, 12),
-    new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.60, roughness: 0.70, wireframe: true }));
-  filter.position.y = len*0.50+12*U;
-  group.add(filter);
-  // Top O-ring
-  const or1 = new THREE.Mesh(new THREE.TorusGeometry(od*0.44, 1.8*U, 8, 20), matRubber);
-  or1.rotation.x = Math.PI/2; or1.position.y = len*0.44;
-  group.add(or1);
-  // Bottom O-ring
-  const or2 = new THREE.Mesh(new THREE.TorusGeometry(od*0.38, 1.6*U, 8, 20), matRubber);
-  or2.rotation.x = Math.PI/2; or2.position.y = -len*0.44;
-  group.add(or2);
-  // Electrical connector
-  const connBody = new THREE.Mesh(new THREE.BoxGeometry(14*U, 16*U, 10*U), matConn);
-  connBody.position.set(od*0.52+7*U, len*0.20, 0);
-  group.add(connBody);
-  // 2x connector pins
-  for (let i = -1; i <= 1; i += 2) {
-    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.8*U, 0.8*U, 10*U, 6),
-      new THREE.MeshStandardMaterial({ color: 0xffd080, metalness: 0.95, roughness: 0.05 }));
-    pin.rotation.z = Math.PI/2;
-    pin.position.set(od*0.52+17*U, len*0.20+i*3*U, 0);
+
+  const basket = new THREE.Mesh(
+    new THREE.CylinderGeometry(od * 0.27, od * 0.27, 8 * U, 12),
+    new THREE.MeshStandardMaterial({ color: 0x8f969f, metalness: 0.55, roughness: 0.72, wireframe: true })
+  );
+  basket.position.y = len * 0.63;
+  group.add(basket);
+
+  const connector = new THREE.Mesh(new THREE.BoxGeometry(15 * U, 14 * U, 11 * U), matPlastic);
+  connector.position.set(od * 0.62 + 6 * U, len * 0.25, 0);
+  group.add(connector);
+
+  for (const sy of [-1, 1]) {
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.9 * U, 0.9 * U, 11 * U, 6), matCopper);
+    pin.rotation.z = Math.PI / 2;
+    pin.position.set(od * 0.62 + 17 * U, len * 0.25 + sy * 2.6 * U, 0);
     group.add(pin);
   }
-  // Spray pattern diffuser holes (4x, visible on tip)
-  for (let i = 0; i < 4; i++) {
-    const a = (i/4)*Math.PI*2;
-    const hole = new THREE.Mesh(new THREE.CylinderGeometry(0.4*U, 0.4*U, od*0.35, 6),
-      new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.9 }));
-    hole.rotation.z = Math.PI/2;
-    hole.position.set(Math.cos(a)*od*0.14, -len*0.46, Math.sin(a)*od*0.14);
+
+  const nozzlePts = [
+    new THREE.Vector2(od * 0.25, -len * 0.50),
+    new THREE.Vector2(od * 0.25, -len * 0.38),
+    new THREE.Vector2(od * 0.18, -len * 0.30),
+    new THREE.Vector2(od * 0.10, -len * 0.34),
+    new THREE.Vector2(od * 0.05, -len * 0.42),
+    new THREE.Vector2(od * 0.04, -len * 0.50),
+  ];
+  group.add(new THREE.Mesh(new THREE.LatheGeometry(nozzlePts, 20), matTip));
+
+  const seatRing = new THREE.Mesh(new THREE.TorusGeometry(od * 0.20, 0.9 * U, 8, 18), matSteel);
+  seatRing.rotation.x = Math.PI / 2;
+  seatRing.position.y = -len * 0.33;
+  group.add(seatRing);
+
+  const sprayAngles = [0, Math.PI / 3, (Math.PI * 2) / 3, Math.PI, (Math.PI * 4) / 3, (Math.PI * 5) / 3];
+  sprayAngles.forEach((a) => {
+    const hole = new THREE.Mesh(new THREE.CylinderGeometry(0.32 * U, 0.32 * U, od * 0.26, 6), matDark);
+    hole.rotation.z = Math.PI / 2;
+    hole.position.set(Math.cos(a) * od * 0.10, -len * 0.47, Math.sin(a) * od * 0.10);
     group.add(hole);
-  }
+  });
+
+  const orTop = new THREE.Mesh(new THREE.TorusGeometry(od * 0.43, 1.7 * U, 8, 24), matRubber);
+  orTop.rotation.x = Math.PI / 2;
+  orTop.position.y = len * 0.42;
+  group.add(orTop);
+  const orBottom = new THREE.Mesh(new THREE.TorusGeometry(od * 0.34, 1.5 * U, 8, 22), matRubber);
+  orBottom.rotation.x = Math.PI / 2;
+  orBottom.position.y = -len * 0.42;
+  group.add(orBottom);
+
   return group;
 }
 
@@ -6391,40 +6425,94 @@ function _turbineBladeGeom(d, THREE) {
 
 // Turbocharger assembly — turbine housing, compressor housing, CHRA, wheels, shaft
 function _turbochargerGeom(d, THREE) {
-  const U   = UARE_CAD_UNIT;
-  const trR = (d.turbineR || 55) * U;
-  const cpR = (d.compR || 48) * U;
-  const hLen= (d.L || 220) * U;
-  const group= new THREE.Group();
-  const matCast = new THREE.MeshStandardMaterial({ color: 0x787070, metalness: 0.60, roughness: 0.55 });
-  const matAl   = new THREE.MeshStandardMaterial({ color: 0xa0b0c0, metalness: 0.65, roughness: 0.35 });
-  const matSteel= new THREE.MeshStandardMaterial({ color: 0xd0d8e0, metalness: 0.90, roughness: 0.15 });
-  const matWheel= new THREE.MeshStandardMaterial({ color: 0xc8d0d8, metalness: 0.88, roughness: 0.12 });
-  // Turbine housing (cast iron volute scroll)
-  const tVolPts = [];
-  for (let i = 0; i <= 30; i++) {
-    const t = i/30;
-    tVolPts.push(new THREE.Vector2(trR*1.15+trR*0.55*(1-t), (t-0.5)*trR*1.2));
+  const U = UARE_CAD_UNIT;
+  const ncyl = d.cylinders || 4;
+  const bore = (d.bore || 86) * U;
+  const pitch = (d.pitch || 100) * U;
+  const stroke = (d.stroke || 86) * U;
+  const blockW = pitch * (ncyl - 1) + bore * 1.74;
+  const blockD = (d.depth || 220) * U;
+  const crankY = 0;
+  const deckY = stroke * 1.55;
+  const skirtY = -stroke * 0.78;
+  const blockH = deckY - skirtY;
+  const mainBR = ((d.mainBoreD || 58) / 2) * U;
+
+  const matCast = new THREE.MeshStandardMaterial({ color: 0x5b6267, metalness: 0.40, roughness: 0.73 });
+  const matMachined = new THREE.MeshStandardMaterial({ color: 0x9ea8b2, metalness: 0.72, roughness: 0.26 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x121417, metalness: 0.30, roughness: 0.86 });
+  const matBolt = new THREE.MeshStandardMaterial({ color: 0x9ca6b0, metalness: 0.88, roughness: 0.17 });
+  const group = new THREE.Group();
+
+  const upper = new THREE.Mesh(new THREE.BoxGeometry(blockW, blockH * 0.62, blockD), matCast);
+  upper.position.y = skirtY + blockH * 0.69;
+  group.add(upper);
+
+  const bedplate = new THREE.Mesh(new THREE.BoxGeometry(blockW * 0.98, blockH * 0.26, blockD * 0.94), matCast);
+  bedplate.position.y = skirtY + blockH * 0.17;
+  group.add(bedplate);
+
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(blockW * 1.02, 10 * U, blockD * 1.01), matMachined);
+  deck.position.y = deckY;
+  group.add(deck);
+
+  const cylCenters = [];
+  for (let i = 0; i < ncyl; i++) {
+    const xC = -((ncyl - 1) * pitch) / 2 + i * pitch;
+    cylCenters.push(xC);
+    const liner = new THREE.Mesh(new THREE.CylinderGeometry(bore * 0.50, bore * 0.50, deckY - crankY + 16 * U, 34), matDark);
+    liner.position.set(xC, (deckY + crankY) * 0.5, 0);
+    group.add(liner);
+    const fireRing = new THREE.Mesh(new THREE.TorusGeometry(bore * 0.50 + 2.2 * U, 1.2 * U, 8, 26), matMachined);
+    fireRing.rotation.x = Math.PI / 2;
+    fireRing.position.set(xC, deckY + 1.2 * U, 0);
+    group.add(fireRing);
   }
-  const turbHousing = new THREE.Mesh(new THREE.LatheGeometry(tVolPts, 24), matCast);
-  turbHousing.position.y = -hLen*0.32;
-  group.add(turbHousing);
-  // Turbine inlet flange (V-band, Inconel)
-  const tFlange = new THREE.Mesh(new THREE.TorusGeometry(trR*1.15, 5*U, 8, 24), matSteel);
-  tFlange.rotation.x = Math.PI/2;
-  tFlange.position.y = -hLen*0.32-trR*0.60;
-  group.add(tFlange);
-  // Turbine wheel (radial-flow, 11 blades)
-  const tWheel = new THREE.Group();
-  tWheel.add(new THREE.Mesh(new THREE.CylinderGeometry(trR*0.30, trR*0.50, trR*0.90, 16), matWheel));
-  for (let i = 0; i < 11; i++) {
-    const a = (i/11)*Math.PI*2;
-    const tb = new THREE.Mesh(new THREE.BoxGeometry(trR*0.60, trR*0.80, 4*U), matWheel);
-    tb.position.set(Math.cos(a)*trR*0.62, 0, Math.sin(a)*trR*0.62);
-    tb.rotation.y = a+Math.PI/2; tb.rotation.z = -0.35;
-    tWheel.add(tb);
+
+  const waterRail = new THREE.Mesh(new THREE.BoxGeometry(blockW * 0.90, 18 * U, 18 * U), matCast);
+  waterRail.position.set(0, deckY - 20 * U, blockD * 0.44);
+  group.add(waterRail);
+  const waterRail2 = waterRail.clone();
+  waterRail2.position.z = -blockD * 0.44;
+  group.add(waterRail2);
+
+  const mainCount = ncyl + 1;
+  for (let i = 0; i < mainCount; i++) {
+    const xM = -((mainCount - 1) * pitch) / 2 + i * pitch;
+    const saddle = new THREE.Mesh(new THREE.CylinderGeometry(mainBR * 1.28, mainBR * 1.28, blockD * 0.84, 28), matCast);
+    saddle.rotation.z = Math.PI / 2;
+    saddle.position.set(xM, crankY, 0);
+    group.add(saddle);
+
+    const boreMain = new THREE.Mesh(new THREE.CylinderGeometry(mainBR, mainBR, blockD * 0.86, 24), matDark);
+    boreMain.rotation.z = Math.PI / 2;
+    boreMain.position.set(xM, crankY, 0);
+    group.add(boreMain);
+
+    const cap = new THREE.Mesh(new THREE.BoxGeometry(mainBR * 3.0, 22 * U, mainBR * 2.2), matCast);
+    cap.position.set(xM, skirtY + 16 * U, 0);
+    group.add(cap);
+
+    for (const zO of [-blockD * 0.28, blockD * 0.28]) {
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(4.6 * U, 4.6 * U, 36 * U, 10), matBolt);
+      bolt.rotation.x = Math.PI / 2;
+      bolt.position.set(xM, skirtY + 16 * U, zO);
+      group.add(bolt);
+    }
   }
-  tWheel.position.y = -hLen*0.32;
+
+  for (let i = 0; i < cylCenters.length; i++) {
+    const x = cylCenters[i];
+    const boss = new THREE.Mesh(new THREE.CylinderGeometry(8 * U, 8 * U, 20 * U, 12), matCast);
+    boss.rotation.z = Math.PI / 2;
+    boss.position.set(x, deckY - 44 * U, blockD * 0.54);
+    group.add(boss);
+    const boss2 = boss.clone();
+    boss2.position.z = -blockD * 0.54;
+    group.add(boss2);
+  }
+
+  return group;
   group.add(tWheel);
   // CHRA (center section, aluminium)
   group.add(new THREE.Mesh(new THREE.CylinderGeometry(trR*0.75, trR*0.75, hLen*0.44, 20), matAl));
@@ -6498,39 +6586,75 @@ function _turbochargerGeom(d, THREE) {
 
 // Gerotor oil pump — outer/inner rotor, body, cover plate, ports
 function _oilPumpGeom(d, THREE) {
-  const U      = UARE_CAD_UNIT;
-  const outerR = (d.outerR || 28) * U;
-  const bodyT  = (d.t || 18) * U;
-  const group  = new THREE.Group();
-  const matBody  = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.70, roughness: 0.40 });
-  const matRotor = new THREE.MeshStandardMaterial({ color: 0x9aabbc, metalness: 0.80, roughness: 0.25 });
-  const matDark  = new THREE.MeshStandardMaterial({ color: 0x080808, metalness: 0.20, roughness: 0.90 });
-  // Pump body
-  group.add(new THREE.Mesh(new THREE.CylinderGeometry(outerR*1.40, outerR*1.40, bodyT, 24), matBody));
-  // Outer rotor (9-lobe epitrochoid)
-  const nOuter = 9;
-  const outerShape = new THREE.Shape();
-  for (let i = 0; i <= nOuter*16; i++) {
-    const a = (i/(nOuter*16))*Math.PI*2;
-    const r = outerR*(1.0+0.115*Math.cos(nOuter*a));
-    const pt = new THREE.Vector2(Math.cos(a)*r, Math.sin(a)*r);
-    if (i===0) outerShape.moveTo(pt.x, pt.y); else outerShape.lineTo(pt.x, pt.y);
+  const U = UARE_CAD_UNIT;
+  const cylinders = d.cylinders || 4;
+  const journalD = d.jD || 26;
+  const journalR = (journalD / 2) * U;
+  const journalW = (d.jW || 17) * U;
+  const baseR = (d.baseR || 16) * U;
+  const lift = (d.lift || 10) * U;
+  const lobeW = (d.lobeW || 14) * U;
+  const L = (d.L || 360) * U;
+  const camEvents = cylinders * 4;
+  const matCore = new THREE.MeshStandardMaterial({ color: 0x4b5561, metalness: 0.82, roughness: 0.24 });
+  const matLobe = new THREE.MeshStandardMaterial({ color: 0x65707c, metalness: 0.88, roughness: 0.16 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x121416, metalness: 0.30, roughness: 0.82 });
+  const group = new THREE.Group();
+
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(journalR * 0.92, journalR * 0.92, L, 26), matCore);
+  core.rotation.z = Math.PI / 2;
+  group.add(core);
+
+  const journalCount = cylinders + 1;
+  const jPitch = L / (journalCount - 1);
+  for (let i = 0; i < journalCount; i++) {
+    const x = -L / 2 + i * jPitch;
+    const journal = new THREE.Mesh(new THREE.CylinderGeometry(journalR, journalR, journalW, 24), matCore);
+    journal.rotation.z = Math.PI / 2;
+    journal.position.x = x;
+    group.add(journal);
+
+    const oilHole = new THREE.Mesh(new THREE.CylinderGeometry(0.9 * U, 0.9 * U, journalR * 1.5, 8), matDark);
+    oilHole.rotation.z = Math.PI / 2;
+    oilHole.position.set(x, journalR * 0.74, 0);
+    group.add(oilHole);
   }
-  const outerRotor = new THREE.Mesh(
-    new THREE.ExtrudeGeometry(outerShape, { depth: bodyT*0.88, bevelEnabled: false }), matRotor);
-  outerRotor.rotation.x = Math.PI/2;
-  outerRotor.position.y = -bodyT*0.44+bodyT*0.06;
-  group.add(outerRotor);
-  // Inner rotor (8-lobe hypotrochoid, offset)
-  const nInner = 8;
-  const innerShape = new THREE.Shape();
-  const innerR = outerR*0.72;
-  for (let i = 0; i <= nInner*16; i++) {
-    const a = (i/(nInner*16))*Math.PI*2;
-    const r = innerR*(1.0+0.135*Math.cos(nInner*a));
-    const pt = new THREE.Vector2(Math.cos(a)*r, Math.sin(a)*r);
-    if (i===0) innerShape.moveTo(pt.x, pt.y); else innerShape.lineTo(pt.x, pt.y);
+
+  const sprocketSnout = new THREE.Mesh(new THREE.CylinderGeometry(journalR * 0.78, journalR * 0.78, 28 * U, 20), matCore);
+  sprocketSnout.rotation.z = Math.PI / 2;
+  sprocketSnout.position.x = -L / 2 - 14 * U;
+  group.add(sprocketSnout);
+
+  const thrustPlate = new THREE.Mesh(new THREE.CylinderGeometry(journalR * 1.25, journalR * 1.25, 6 * U, 20), matLobe);
+  thrustPlate.rotation.z = Math.PI / 2;
+  thrustPlate.position.x = -L / 2 + 8 * U;
+  group.add(thrustPlate);
+
+  const lobePitch = (L * 0.84) / Math.max(1, camEvents - 1);
+  const lobeStart = -L * 0.42;
+  const separation = ((d.lobeSeparationDeg || 112) * Math.PI) / 180;
+  for (let i = 0; i < camEvents; i++) {
+    const x = lobeStart + i * lobePitch;
+    const phase = (i % 2 === 0) ? 0 : separation;
+    const lobeShape = new THREE.Shape();
+    const pts = [];
+    for (let s = 0; s <= 64; s++) {
+      const t = (s / 64) * Math.PI * 2 - Math.PI;
+      const flank = Math.max(0, Math.cos(t - phase));
+      const accel = Math.pow(flank, 2.4);
+      const r = baseR + lift * accel;
+      pts.push(new THREE.Vector2(Math.cos(t) * r, Math.sin(t) * r));
+    }
+    lobeShape.setFromPoints(pts);
+    const lg = new THREE.ExtrudeGeometry(lobeShape, { depth: lobeW, bevelEnabled: true, bevelSize: 0.4 * U, bevelThickness: 0.4 * U, bevelSegments: 2 });
+    const lobe = new THREE.Mesh(lg, matLobe);
+    lobe.rotation.x = Math.PI / 2;
+    lobe.rotation.y = phase;
+    lobe.position.set(x, 0, -lobeW * 0.5);
+    group.add(lobe);
   }
+
+  return group;
   const innerRotor = new THREE.Mesh(
     new THREE.ExtrudeGeometry(innerShape, { depth: bodyT*0.88, bevelEnabled: false }), matRotor);
   innerRotor.rotation.x = Math.PI/2;
@@ -6633,6 +6757,145 @@ function _waterPumpGeom(d, THREE) {
   return group;
 }
 
+function _thermostatHousingGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const w = (d.w || 70) * U;
+  const h = (d.h || 55) * U;
+  const dep = (d.d || 55) * U;
+  const neckR = Math.max(8 * U, dep * 0.22);
+  const group = new THREE.Group();
+  const matBody = new THREE.MeshStandardMaterial({ color: 0x3a3f45, metalness: 0.22, roughness: 0.74 });
+  const matSeal = new THREE.MeshStandardMaterial({ color: 0x111417, metalness: 0.06, roughness: 0.94 });
+  const matBolt = new THREE.MeshStandardMaterial({ color: 0xc9d2db, metalness: 0.88, roughness: 0.15 });
+
+  const chamber = new THREE.Mesh(new THREE.CylinderGeometry(dep * 0.38, dep * 0.42, h * 0.68, 20), matBody);
+  chamber.rotation.z = Math.PI / 2;
+  group.add(chamber);
+
+  const outlet = new THREE.Mesh(new THREE.CylinderGeometry(neckR, neckR * 1.05, w * 0.42, 18), matBody);
+  outlet.rotation.x = Math.PI / 2;
+  outlet.position.set(w * 0.26, h * 0.05, 0);
+  group.add(outlet);
+
+  const flange = new THREE.Mesh(new THREE.CylinderGeometry(dep * 0.52, dep * 0.52, h * 0.16, 22), matBody);
+  flange.rotation.z = Math.PI / 2;
+  flange.position.x = -w * 0.22;
+  group.add(flange);
+
+  const seat = new THREE.Mesh(new THREE.TorusGeometry(dep * 0.30, 1.8 * U, 8, 18), matSeal);
+  seat.rotation.y = Math.PI / 2;
+  seat.position.x = -w * 0.16;
+  group.add(seat);
+
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2;
+    const bolt = new THREE.Mesh(new THREE.CylinderGeometry(2.5 * U, 2.5 * U, h * 0.28, 8), matBolt);
+    bolt.rotation.z = Math.PI / 2;
+    bolt.position.set(-w * 0.20, Math.cos(a) * dep * 0.24, Math.sin(a) * dep * 0.24);
+    group.add(bolt);
+  }
+
+  return group;
+}
+
+function _thermostatValveGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const dia = (d.d || 44) * U;
+  const h = (d.h || 25) * U;
+  const group = new THREE.Group();
+  const matBrass = new THREE.MeshStandardMaterial({ color: 0xc8924a, metalness: 0.78, roughness: 0.24 });
+  const matSteel = new THREE.MeshStandardMaterial({ color: 0xc4ccd4, metalness: 0.90, roughness: 0.14 });
+
+  const disc = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.5, dia * 0.5, h * 0.20, 24), matBrass);
+  group.add(disc);
+
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(2.2 * U, 2.2 * U, h * 0.90, 10), matSteel);
+  stem.position.y = h * 0.40;
+  group.add(stem);
+
+  const springSeat = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.18, dia * 0.22, h * 0.18, 16), matBrass);
+  springSeat.position.y = h * 0.78;
+  group.add(springSeat);
+
+  const waxCan = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.24, dia * 0.24, h * 0.30, 14), matBrass);
+  waxCan.position.y = h * 0.95;
+  group.add(waxCan);
+
+  return group;
+}
+
+function _ignitionCoilGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const w = (d.w || 42) * U;
+  const h = (d.h || 108) * U;
+  const dep = (d.d || 42) * U;
+  const group = new THREE.Group();
+  const matBody = new THREE.MeshStandardMaterial({ color: 0x1b1f26, metalness: 0.08, roughness: 0.86 });
+  const matRubber = new THREE.MeshStandardMaterial({ color: 0x111418, metalness: 0.05, roughness: 0.95 });
+  const matCore = new THREE.MeshStandardMaterial({ color: 0xcfd7df, metalness: 0.90, roughness: 0.12 });
+
+  const cap = new THREE.Mesh(new THREE.BoxGeometry(w * 0.92, h * 0.36, dep * 0.86), matBody);
+  cap.position.y = h * 0.20;
+  group.add(cap);
+
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(dep * 0.20, dep * 0.24, h * 0.28, 16), matBody);
+  neck.position.y = -h * 0.08;
+  group.add(neck);
+
+  const boot = new THREE.Mesh(new THREE.CylinderGeometry(dep * 0.16, dep * 0.10, h * 0.44, 14), matRubber);
+  boot.position.y = -h * 0.44;
+  group.add(boot);
+
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(dep * 0.08, dep * 0.08, h * 0.34, 12), matCore);
+  core.position.y = -h * 0.38;
+  group.add(core);
+
+  const connector = new THREE.Mesh(new THREE.BoxGeometry(w * 0.34, h * 0.10, dep * 0.36), matBody);
+  connector.position.set(w * 0.47, h * 0.20, 0);
+  group.add(connector);
+
+  return group;
+}
+
+function _engineSensorGeom(d, THREE, sensorType) {
+  const U = UARE_CAD_UNIT;
+  const dia = (d.d || d.diameter || 20) * U;
+  const len = (d.L || d.h || 32) * U;
+  const type = String(sensorType || 'engine_sensor');
+  const group = new THREE.Group();
+  const matBody = new THREE.MeshStandardMaterial({ color: 0x252a31, metalness: 0.14, roughness: 0.80 });
+  const matMetal = new THREE.MeshStandardMaterial({ color: 0xd1d8e0, metalness: 0.90, roughness: 0.14 });
+  const matBrass = new THREE.MeshStandardMaterial({ color: 0xc7934f, metalness: 0.78, roughness: 0.28 });
+
+  const shellMat = /coolant_temp_sensor|o2_sensor|oil_pressure_sensor/.test(type) ? matBrass : matMetal;
+  const shell = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.44, dia * 0.46, len * 0.58, 18), shellMat);
+  shell.rotation.z = Math.PI / 2;
+  group.add(shell);
+
+  const tip = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.20, dia * 0.16, len * 0.26, 14), matMetal);
+  tip.rotation.z = Math.PI / 2;
+  tip.position.x = len * 0.38;
+  group.add(tip);
+
+  const connector = new THREE.Mesh(new THREE.BoxGeometry(dia * 0.54, dia * 0.38, dia * 0.46), matBody);
+  connector.position.x = -len * 0.34;
+  group.add(connector);
+
+  const hex = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.30, dia * 0.30, len * 0.14, 6), shellMat);
+  hex.rotation.z = Math.PI / 2;
+  hex.position.x = len * 0.12;
+  group.add(hex);
+
+  if (type === 'o2_sensor') {
+    const vent = new THREE.Mesh(new THREE.CylinderGeometry(dia * 0.10, dia * 0.10, len * 0.12, 8), matMetal);
+    vent.rotation.x = Math.PI / 2;
+    vent.position.set(len * 0.36, dia * 0.16, 0);
+    group.add(vent);
+  }
+
+  return group;
+}
+
 // Clutch disc — organic friction faces, torsion spring hub, 18× rivets, splined hub
 function _clutchDiscGeom(d, THREE) {
   const U      = UARE_CAD_UNIT;
@@ -6702,6 +6965,198 @@ function _clutchDiscGeom(d, THREE) {
     head2.position.set(Math.cos(a)*r, -thick*0.32, Math.sin(a)*r);
     group.add(head2);
   }
+  return group;
+}
+
+// Pressure plate — stamped cover, diaphragm spring fingers, clamp ring and strap windows
+function _pressurePlateGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const outerR = ((d.d || d.outerD || 250) / 2) * U;
+  const innerR = Math.max(36 * U, outerR * 0.34);
+  const h = (d.h || d.t || 45) * U;
+  const group = new THREE.Group();
+  const matCover = new THREE.MeshStandardMaterial({ color: 0x666e78, metalness: 0.75, roughness: 0.28 });
+  const matSpring = new THREE.MeshStandardMaterial({ color: 0xc8d0d8, metalness: 0.90, roughness: 0.14 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x121212, metalness: 0.20, roughness: 0.88 });
+
+  const cover = new THREE.Mesh(new THREE.CylinderGeometry(outerR, outerR * 0.98, h * 0.52, 28), matCover);
+  cover.position.y = h * 0.12;
+  group.add(cover);
+
+  const clampRing = new THREE.Mesh(new THREE.TorusGeometry(outerR * 0.79, h * 0.09, 10, 30), matCover);
+  clampRing.rotation.x = Math.PI / 2;
+  clampRing.position.y = -h * 0.14;
+  group.add(clampRing);
+
+  const springCone = new THREE.Mesh(new THREE.CylinderGeometry(innerR * 1.16, innerR * 0.88, h * 0.18, 24), matSpring);
+  springCone.position.y = h * 0.04;
+  group.add(springCone);
+
+  const fingers = 24;
+  for (let i = 0; i < fingers; i++) {
+    const a = (i / fingers) * Math.PI * 2;
+    const finger = new THREE.Mesh(new THREE.BoxGeometry(h * 0.10, h * 0.14, outerR * 0.42), matSpring);
+    finger.position.set(Math.cos(a) * innerR * 0.82, h * 0.02, Math.sin(a) * innerR * 0.82);
+    finger.rotation.y = a;
+    group.add(finger);
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2;
+    const strap = new THREE.Mesh(new THREE.BoxGeometry(h * 0.18, h * 0.16, outerR * 0.24), matDark);
+    strap.position.set(Math.cos(a) * outerR * 0.65, h * 0.14, Math.sin(a) * outerR * 0.65);
+    strap.rotation.y = a;
+    group.add(strap);
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    const bolt = new THREE.Mesh(new THREE.CylinderGeometry(2.8 * U, 2.8 * U, h * 0.42, 8), matSpring);
+    bolt.position.set(Math.cos(a) * outerR * 0.86, h * 0.10, Math.sin(a) * outerR * 0.86);
+    group.add(bolt);
+  }
+
+  return group;
+}
+
+// Starter motor — DC motor can, reduction nose, solenoid and pinion
+function _starterMotorGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const bodyL = (d.w || d.L || 160) * U;
+  const bodyR = ((d.h || d.d || 90) * 0.28) * U;
+  const noseL = bodyL * 0.32;
+  const group = new THREE.Group();
+  const matBody = new THREE.MeshStandardMaterial({ color: 0x5a616b, metalness: 0.72, roughness: 0.32 });
+  const matSteel = new THREE.MeshStandardMaterial({ color: 0xc8d0d8, metalness: 0.90, roughness: 0.15 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x101316, metalness: 0.25, roughness: 0.85 });
+
+  const motorCan = new THREE.Mesh(new THREE.CylinderGeometry(bodyR, bodyR, bodyL * 0.58, 24), matBody);
+  motorCan.rotation.z = Math.PI / 2;
+  group.add(motorCan);
+
+  const nose = new THREE.Mesh(new THREE.CylinderGeometry(bodyR * 0.86, bodyR * 0.58, noseL, 22), matBody);
+  nose.rotation.z = Math.PI / 2;
+  nose.position.x = bodyL * 0.35;
+  group.add(nose);
+
+  const pinion = new THREE.Mesh(new THREE.CylinderGeometry(7 * U, 7 * U, 16 * U, 12), matSteel);
+  pinion.rotation.z = Math.PI / 2;
+  pinion.position.x = bodyL * 0.49;
+  group.add(pinion);
+
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(4 * U, 4 * U, 26 * U, 10), matSteel);
+  shaft.rotation.z = Math.PI / 2;
+  shaft.position.x = bodyL * 0.43;
+  group.add(shaft);
+
+  const solenoid = new THREE.Mesh(new THREE.CylinderGeometry(bodyR * 0.36, bodyR * 0.36, bodyL * 0.44, 18), matDark);
+  solenoid.rotation.z = Math.PI / 2;
+  solenoid.position.set(bodyL * 0.04, bodyR * 0.92, 0);
+  group.add(solenoid);
+
+  const solenoidCap = new THREE.Mesh(new THREE.CylinderGeometry(bodyR * 0.30, bodyR * 0.30, 14 * U, 14), matSteel);
+  solenoidCap.rotation.z = Math.PI / 2;
+  solenoidCap.position.set(-bodyL * 0.18, bodyR * 0.92, 0);
+  group.add(solenoidCap);
+
+  const mountEarA = new THREE.Mesh(new THREE.BoxGeometry(18 * U, 14 * U, 20 * U), matBody);
+  mountEarA.position.set(bodyL * 0.23, -bodyR * 0.70, bodyR * 0.74);
+  group.add(mountEarA);
+  const mountEarB = mountEarA.clone();
+  mountEarB.position.z = -bodyR * 0.74;
+  group.add(mountEarB);
+
+  return group;
+}
+
+// Connecting rod bearing shell — split shell profile with oil groove cue
+function _rodBearingGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const innerD = (d.innerD || 48) * U;
+  const width = (d.width || d.h || 18) * U;
+  const shellT = Math.max(1.3 * U, ((d.outerD || 53) - (d.innerD || 48)) * 0.5 * U);
+  const R = innerD * 0.5 + shellT * 0.5;
+  const group = new THREE.Group();
+  const matShell = new THREE.MeshStandardMaterial({ color: 0xc8a860, metalness: 0.55, roughness: 0.32 });
+  const matOverlay = new THREE.MeshStandardMaterial({ color: 0xe0d2a2, metalness: 0.45, roughness: 0.36 });
+
+  const arc = Math.PI * 1.72;
+  const shell = new THREE.Mesh(new THREE.TorusGeometry(R, shellT * 0.5, 14, 34, arc), matShell);
+  shell.rotation.y = Math.PI / 2;
+  shell.rotation.z = Math.PI;
+  group.add(shell);
+
+  const overlay = new THREE.Mesh(new THREE.TorusGeometry(innerD * 0.5 + shellT * 0.18, shellT * 0.14, 10, 28, arc * 0.96), matOverlay);
+  overlay.rotation.y = Math.PI / 2;
+  overlay.rotation.z = Math.PI;
+  group.add(overlay);
+
+  const lugA = new THREE.Mesh(new THREE.BoxGeometry(shellT * 0.95, width * 0.22, shellT * 1.2), matShell);
+  lugA.position.set(0, width * 0.39, innerD * 0.42);
+  group.add(lugA);
+  const lugB = lugA.clone();
+  lugB.position.y = -width * 0.39;
+  group.add(lugB);
+
+  return group;
+}
+
+// Valve collet/keeper — split tapered wedge around valve stem lock groove
+function _valveColletGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const innerD = (d.innerD || 5.5) * U;
+  const outerR = (d.outerR || ((d.outerD || 16) * 0.5)) * U;
+  const h = (d.h || 5) * U;
+  const group = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x767e88, metalness: 0.78, roughness: 0.20 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x20252b, metalness: 0.40, roughness: 0.55 });
+
+  const wedge = new THREE.Mesh(new THREE.CylinderGeometry(outerR * 0.88, outerR, h, 18, 1, false, 0, Math.PI * 0.90), mat);
+  wedge.rotation.y = Math.PI * 0.55;
+  group.add(wedge);
+
+  const bore = new THREE.Mesh(new THREE.CylinderGeometry(innerD * 0.5, innerD * 0.5, h * 1.1, 14), matDark);
+  group.add(bore);
+
+  const groove = new THREE.Mesh(new THREE.TorusGeometry(innerD * 0.56, innerD * 0.10, 8, 18), matDark);
+  groove.rotation.x = Math.PI / 2;
+  groove.position.y = -h * 0.10;
+  group.add(groove);
+
+  return group;
+}
+
+// Hydraulic lash adjuster — tappet body, plunger, check-valve cap and oil feed hole
+function _lashAdjusterGeom(d, THREE) {
+  const U = UARE_CAD_UNIT;
+  const bodyD = (d.d || d.outerD || 23) * U;
+  const h = (d.h || d.L || 30) * U;
+  const group = new THREE.Group();
+  const matBody = new THREE.MeshStandardMaterial({ color: 0x6d7480, metalness: 0.78, roughness: 0.26 });
+  const matPlunger = new THREE.MeshStandardMaterial({ color: 0xcfd6dd, metalness: 0.92, roughness: 0.12 });
+  const matDark = new THREE.MeshStandardMaterial({ color: 0x101418, metalness: 0.32, roughness: 0.82 });
+
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(bodyD * 0.5, bodyD * 0.5, h, 20), matBody);
+  group.add(body);
+
+  const plunger = new THREE.Mesh(new THREE.CylinderGeometry(bodyD * 0.38, bodyD * 0.38, h * 0.48, 18), matPlunger);
+  plunger.position.y = h * 0.19;
+  group.add(plunger);
+
+  const seat = new THREE.Mesh(new THREE.CylinderGeometry(bodyD * 0.30, bodyD * 0.20, h * 0.12, 14), matPlunger);
+  seat.position.y = h * 0.42;
+  group.add(seat);
+
+  const oilHole = new THREE.Mesh(new THREE.CylinderGeometry(1.3 * U, 1.3 * U, bodyD * 0.7, 8), matDark);
+  oilHole.rotation.z = Math.PI / 2;
+  oilHole.position.y = -h * 0.10;
+  group.add(oilHole);
+
+  const checkValve = new THREE.Mesh(new THREE.TorusGeometry(bodyD * 0.20, 1.2 * U, 6, 14), matDark);
+  checkValve.rotation.x = Math.PI / 2;
+  checkValve.position.y = -h * 0.36;
+  group.add(checkValve);
+
   return group;
 }
 
@@ -7484,6 +7939,9 @@ function _mergeGeometries(geoms, THREE) {
 }
 
 /* ── §33b  KERNEL STL LOADER ─────────────────────────────────────────────── */
+const MAX_KERNEL_STL_AUTOLOAD_BYTES = 48 * 1024 * 1024;
+const MAX_KERNEL_STL_AUTOLOAD_TRIANGLES = 1500000;
+
 // Parses binary or ASCII STL ArrayBuffer → THREE.BufferGeometry
 function parseSTLBytes(buffer, THREE) {
   THREE = THREE || window.THREE;
@@ -7515,6 +7973,9 @@ function parseSTLBytes(buffer, THREE) {
   } else {
     // Binary STL: 80-byte header + 4-byte tri count + 50-byte triangles
     const triCount = view.getUint32(80, true);
+    if (triCount > MAX_KERNEL_STL_AUTOLOAD_TRIANGLES) {
+      throw new Error('STL triangle count exceeds browser autoload limit');
+    }
     positions = new Float32Array(triCount * 9);
     normals   = new Float32Array(triCount * 9);
     let offset = 84;
@@ -7561,7 +8022,14 @@ async function loadKernelSTL(url, label) {
 
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const contentLength = Number(resp.headers.get('content-length') || 0);
+    if (contentLength > MAX_KERNEL_STL_AUTOLOAD_BYTES) {
+      throw new Error('STL exceeds browser autoload memory limit');
+    }
     const buffer = await resp.arrayBuffer();
+    if (buffer.byteLength > MAX_KERNEL_STL_AUTOLOAD_BYTES) {
+      throw new Error('STL exceeds browser autoload memory limit');
+    }
     const geo = parseSTLBytes(buffer, THREE);
     if (!geo || geo.getAttribute('position').count === 0) throw new Error('Empty geometry');
 

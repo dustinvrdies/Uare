@@ -3,7 +3,8 @@ import path from 'node:path';
 
 const root = process.cwd();
 const removed = [];
-for (const rel of ['data', 'logs']) {
+const removeAllExceptGitkeep = ['data', 'logs', 'artifacts', 'backups', 'object_storage_mirror', 'object_storage_mirror_test'];
+for (const rel of removeAllExceptGitkeep) {
   const target = path.join(root, rel);
   if (fs.existsSync(target)) {
     for (const entry of fs.readdirSync(target)) {
@@ -14,11 +15,21 @@ for (const rel of ['data', 'logs']) {
   }
 }
 
+for (const entry of fs.readdirSync(root)) {
+  const full = path.join(root, entry);
+  if (!fs.statSync(full).isFile()) continue;
+  if (/\.log$/i.test(entry) || /_out\.txt$/i.test(entry) || /_output\.txt$/i.test(entry) || /_results\.txt$/i.test(entry) || /^regression_.*\.txt$/i.test(entry) || /^test_.*\.txt$/i.test(entry)) {
+    fs.rmSync(full, { force: true });
+    removed.push(entry);
+  }
+}
+
 const summary = {
   cleaned: removed,
   preparedAt: new Date().toISOString(),
   notes: [
     'Runtime data cleaned',
+    'Generated artifacts/logs cleaned',
     'Dependencies are not bundled in release zip',
     'Use npm ci after unpacking',
   ],

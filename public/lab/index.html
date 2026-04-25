@@ -61,6 +61,21 @@
 
         <div id="suggestions-row"></div>
 
+        <section id="derived-spec-panel" class="hidden" aria-label="Derived CAD spec review">
+          <div class="derived-spec-head">
+            <div>
+              <div class="derived-spec-title">Derived CAD Spec</div>
+              <div id="derived-spec-status" class="derived-spec-status">Review before execution</div>
+            </div>
+            <button class="tb-btn ghost sm" id="btn-derived-spec-dismiss">Dismiss</button>
+          </div>
+          <div id="derived-spec-summary" class="derived-spec-summary"></div>
+          <div id="derived-spec-grid" class="derived-spec-grid"></div>
+          <div class="derived-spec-actions">
+            <button class="tb-btn accent" id="btn-derived-spec-execute">Generate CAD</button>
+          </div>
+        </section>
+
         <div id="chat-input-area">
           <textarea id="chat-input" rows="3"
             placeholder="Describe your design&hellip; e.g. &quot;Design a turbocharged 4-cylinder engine with forged steel pistons, cast aluminum block, and dual overhead cams&quot;"
@@ -135,6 +150,30 @@
           <span id="hud-scale">1:1</span>
         </div>
 
+        <section id="engineering-qa-panel" class="hidden" aria-label="Engineering QA">
+          <div class="qa-head">
+            <span class="qa-title">Engineering QA</span>
+            <span id="qa-score" class="qa-score">--/100</span>
+          </div>
+          <div class="qa-metrics">
+            <div class="qa-metric"><span>Dimensional Deviation</span><strong id="qa-dim-dev">-- mm</strong></div>
+            <div class="qa-metric"><span>Mate Violations</span><strong id="qa-mate-violations">--</strong></div>
+            <div class="qa-metric"><span>Geometry Warnings</span><strong id="qa-geom-warnings">--</strong></div>
+          </div>
+          <div class="qa-section">
+            <div class="qa-section-title">Dimensional Checks</div>
+            <div id="qa-dimension-list" class="qa-list"></div>
+          </div>
+          <div class="qa-section">
+            <div class="qa-section-title">Mate Violations</div>
+            <div id="qa-mate-list" class="qa-list"></div>
+          </div>
+          <div class="qa-section">
+            <div class="qa-section-title">Geometry Realism Warnings</div>
+            <div id="qa-geometry-list" class="qa-list"></div>
+          </div>
+        </section>
+
         <!-- Empty state -->
         <div id="viewport-empty">
           <div class="empty-icon">&#9672;</div>
@@ -156,6 +195,28 @@
         <button class="sim-btn" id="btn-fea" title="Run Finite Element Analysis">&#9889; FEA</button>
         <button class="sim-btn" id="btn-stress" title="Stress heatmap">&#127777; Stress Map</button>
         <button class="sim-btn" id="btn-thermal" title="Thermal analysis">&#128293; Thermal</button>
+      </div>
+      <div id="engine-bench-panel" class="hidden" aria-label="Engine test bench controls">
+        <div class="bench-control">
+          <label for="engine-throttle">Throttle</label>
+          <input id="engine-throttle" type="range" min="0" max="100" step="1" value="28">
+          <span id="engine-throttle-val" class="bench-val">28%</span>
+        </div>
+        <div class="bench-control">
+          <label for="engine-load">Load</label>
+          <input id="engine-load" type="range" min="0" max="260" step="5" value="45">
+          <span id="engine-load-val" class="bench-val">45 N·m</span>
+        </div>
+        <div class="bench-control compact">
+          <label for="engine-rpm-target">RPM Target</label>
+          <input id="engine-rpm-target" type="number" min="700" max="7600" step="50" value="1200">
+        </div>
+        <div id="engine-bench-readout">
+          <span id="engine-power-readout">0.0 kW</span>
+          <span id="engine-torque-readout">0 N·m</span>
+          <span id="engine-oil-readout">0.0 bar</span>
+          <span id="engine-coolant-readout">20 C</span>
+        </div>
       </div>
       <div id="sim-metrics">
         <div class="metric"><span class="m-label">Parts</span><span class="m-val" id="m-parts">0</span></div>

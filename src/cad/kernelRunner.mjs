@@ -4,6 +4,27 @@ import { spawnSync } from 'child_process';
 import { resolveFromImportMeta } from '../platform/paths.mjs';
 import { buildPythonArgs, resolvePythonInvocation } from '../platform/process.mjs';
 
+function parseJsonPayload(stdout = '') {
+  const output = String(stdout || '').trim();
+  if (!output) return null;
+
+  try {
+    return JSON.parse(output);
+  } catch {}
+
+  // Some Python environments print warnings/banner lines before JSON.
+  const lines = output.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  for (let index = lines.length - 1; index >= 0; index -= 1) {
+    const candidate = lines[index];
+    if (!candidate.startsWith('{') && !candidate.startsWith('[')) continue;
+    try {
+      return JSON.parse(candidate);
+    } catch {}
+  }
+
+  return null;
+}
+
 function runPython(runtime, artifactStore, executionId, scriptName, logger, pythonBin) {
   const planPath = path.join(artifactStore.executionDir(executionId), 'plan.json');
   const runnerPath = resolveFromImportMeta(import.meta.url, `../../cad_runner/${scriptName}`);
@@ -39,6 +60,27 @@ function runPython(runtime, artifactStore, executionId, scriptName, logger, pyth
   const stdout = String(result.stdout || '').trim();
   const stderr = String(result.stderr || '').trim();
 
+  try {
+    artifactStore.writeText(
+      executionId,
+      'kernel_runner.log',
+      [
+        `engine=${scriptName}`,
+        `python_command=${pythonCommand}`,
+        `python_args=${pythonArgs.join(' ')}`,
+        `exit_code=${result.status}`,
+        '',
+        '--- stdout ---',
+        stdout,
+        '',
+        '--- stderr ---',
+        stderr,
+      ].join('\n'),
+    );
+  } catch {
+    // Non-blocking: kernel diagnostics should not break execution flow.
+  }
+
   if (result.status !== 0) {
     logger.warn('cad.kernel.nonzero_exit', {
       execution_id: executionId,
@@ -50,12 +92,13 @@ function runPython(runtime, artifactStore, executionId, scriptName, logger, pyth
     return { ok: false, reason: stderr || stdout || `Cad kernel exited ${result.status}` };
   }
 
-  try {
-    return JSON.parse(stdout || '{}');
-  } catch {
+  const payload = parseJsonPayload(stdout);
+  if (!payload) {
     logger.warn('cad.kernel.bad_json', { execution_id: executionId, stdout });
     return { ok: false, reason: 'Unable to parse CAD kernel runner output' };
   }
+
+  return payload;
 }
 
 export function tryCadKernelExecution(runtime, artifactStore, executionId, logger) {

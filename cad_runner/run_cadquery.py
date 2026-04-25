@@ -76,6 +76,106 @@ def ensure_assembly_document(plan_path: Path, plan: dict):
     }
 
 
+def _to_float(value, fallback):
+    try:
+        parsed = float(value)
+        if math.isfinite(parsed):
+            return parsed
+    except (TypeError, ValueError):
+        pass
+    return float(fallback)
+
+
+def _resolve_precision_profile(plan: dict, assembly_document: dict):
+    recipe_params = ((plan.get("recipe") or {}).get("parameters") or {})
+    quality = (
+        plan.get("precision_profile")
+        or recipe_params.get("precision_profile")
+        or plan.get("mesh_quality")
+        or recipe_params.get("mesh_quality")
+        or assembly_document.get("precision_profile")
+        or "high"
+    )
+    profile_key = str(quality).strip().lower()
+
+    profiles = {
+        "draft": {
+            "label": "draft",
+            "linear_deflection_mm": 0.18,
+            "angular_tolerance_deg": 0.32,
+            "heal_solids": False,
+        },
+        "balanced": {
+            "label": "balanced",
+            "linear_deflection_mm": 0.08,
+            "angular_tolerance_deg": 0.20,
+            "heal_solids": True,
+        },
+        "high": {
+            "label": "high",
+            "linear_deflection_mm": 0.04,
+            "angular_tolerance_deg": 0.12,
+            "heal_solids": True,
+        },
+        "ultra": {
+            "label": "ultra",
+            "linear_deflection_mm": 0.02,
+            "angular_tolerance_deg": 0.08,
+            "heal_solids": True,
+        },
+    }
+
+    selected = dict(profiles.get(profile_key, profiles["high"]))
+    selected["label"] = profile_key if profile_key in profiles else "high"
+
+    selected["linear_deflection_mm"] = _to_float(
+        plan.get("stl_linear_deflection_mm") or recipe_params.get("stl_linear_deflection_mm"),
+        selected["linear_deflection_mm"],
+    )
+    selected["angular_tolerance_deg"] = _to_float(
+        plan.get("stl_angular_tolerance_deg") or recipe_params.get("stl_angular_tolerance_deg"),
+        selected["angular_tolerance_deg"],
+    )
+
+    selected["linear_deflection_mm"] = max(0.005, selected["linear_deflection_mm"])
+    selected["angular_tolerance_deg"] = max(0.02, selected["angular_tolerance_deg"])
+    return selected
+
+
+def _build_assembly_geometry(cq, solids):
+    """Prefer compound export to preserve assembly topology; fallback to union."""
+    if not solids:
+        return None, "empty"
+
+    try:
+        compound = cq.Compound.makeCompound([solid.val() for solid in solids])
+        return compound, "compound"
+    except Exception:
+        pass
+
+    merged = solids[0]
+    for solid in solids[1:]:
+        merged = merged.union(solid)
+    try:
+        return merged.val(), "union"
+    except Exception:
+        return merged, "union"
+
+
+def _export_kernel_artifacts(exporters, geometry, step_path: Path, stl_path: Path, precision: dict):
+    exporters.export(geometry, str(step_path))
+    try:
+        exporters.export(
+            geometry,
+            str(stl_path),
+            tolerance=float(precision.get("linear_deflection_mm", 0.04)),
+            angularTolerance=float(precision.get("angular_tolerance_deg", 0.12)),
+        )
+    except TypeError:
+        # Older CadQuery exporter signatures may not accept tolerance kwargs.
+        exporters.export(geometry, str(stl_path))
+
+
 # ─── Geometry primitives ──────────────────────────────────────────────────────
 
 def _geo_box(cq, d):
@@ -1554,6 +1654,11 @@ def shape_for_part(cq, part):
     solid, feature_report = _apply_feature_timeline(solid, cq, part)
     part["_kernel_feature_report"] = feature_report
 
+    try:
+        solid = solid.clean()
+    except Exception:
+        pass
+
     tx = float((part.get("transform_mm") or part.get("position") or [0, 0, 0])[0] if isinstance(
         part.get("transform_mm") or part.get("position"), list
     ) else (part.get("transform_mm") or {}).get("x", 0))
@@ -1735,6 +1840,7 @@ def main():
         fail(f"CadQuery runtime unavailable: {exc}")
 
     assembly_document = ensure_assembly_document(plan_path, plan)
+    precision = _resolve_precision_profile(plan, assembly_document)
 
     # ── Validate + normalise via CAD DSL ─────────────────────────────────────
     if _HAS_DSL:
@@ -1750,8 +1856,16 @@ def main():
     parts = assembly_document.get("parts") or []
     solids = []
     part_manifest = []
+    healed_count = 0
     for part in parts:
         solid = shape_for_part(cq, part)
+        if precision.get("heal_solids"):
+            try:
+                repaired = solid.clean()
+                solid = repaired
+                healed_count += 1
+            except Exception:
+                pass
         solids.append(solid)
         dims = part.get("dimensions_mm") or {}
         bbox_mm = _bbox_from_solid_or_part(solid, part)
@@ -1769,18 +1883,29 @@ def main():
     if not solids:
         fail("No parts available in assembly document")
 
-    assembly = solids[0]
-    for solid in solids[1:]:
-        assembly = assembly.union(solid)
+    assembly, assembly_mode = _build_assembly_geometry(cq, solids)
+    if assembly is None:
+        fail("Failed to build assembly geometry")
 
     step_path = out_dir / "assembly.step"
     stl_path = out_dir / "assembly_kernel.stl"
+    quality_report_path = out_dir / "kernel_quality_report.json"
 
-    exporters.export(assembly, str(step_path))
-    exporters.export(assembly, str(stl_path))
+    _export_kernel_artifacts(exporters, assembly, step_path, stl_path, precision)
 
     with open(out_dir / "kernel_part_manifest.json", "w", encoding="utf-8") as f:
         json.dump({"parts": part_manifest}, f, indent=2)
+
+    with open(quality_report_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "precision_profile": precision.get("label"),
+            "linear_deflection_mm": precision.get("linear_deflection_mm"),
+            "angular_tolerance_deg": precision.get("angular_tolerance_deg"),
+            "heal_solids": bool(precision.get("heal_solids")),
+            "healed_part_count": healed_count,
+            "assembly_mode": assembly_mode,
+            "part_count": len(solids),
+        }, f, indent=2)
 
     print(json.dumps({
         "ok": True,
@@ -1789,7 +1914,8 @@ def main():
         "artifacts": [
             {"type": "step", "filename": "assembly.step"},
             {"type": "stl_kernel", "filename": "assembly_kernel.stl"},
-            {"type": "kernel_part_manifest", "filename": "kernel_part_manifest.json"}
+            {"type": "kernel_part_manifest", "filename": "kernel_part_manifest.json"},
+            {"type": "kernel_quality_report", "filename": "kernel_quality_report.json"}
         ]
     }))
 

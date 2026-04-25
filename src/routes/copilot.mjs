@@ -260,6 +260,25 @@ function getMat(prompt) {
 
 function extractDimensions(text) {
   const dims = [];
+  const contextualPatterns = [
+    { key: 'length', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:long|length)\b/gi },
+    { key: 'width', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:wide|width)\b/gi },
+    { key: 'height', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:tall|high|height)\b/gi },
+    { key: 'wall_thickness', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:wall(?:s)?|wall thickness|thick(?:ness)?)\b/gi },
+    { key: 'diameter', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:diameter|dia|od|i\.d\.|o\.d\.)\b/gi },
+    { key: 'hole_diameter', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:hole(?:s)?|mounting holes?|bolt holes?)\b/gi },
+    { key: 'bolt_circle', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:bolt circle|bcd|pcd|pitch circle(?: diameter)?)\b/gi },
+    { key: 'hole_spacing', re: /(\d+(?:\.\d+)?)\s*mm\s*(?:hole spacing|spacing|pitch)\b/gi },
+  ];
+
+  for (const pattern of contextualPatterns) {
+    for (const match of text.matchAll(pattern.re)) {
+      dims.push({ key: pattern.key, value: parseFloat(match[1]), unit: 'mm' });
+    }
+  }
+
+  if (dims.length) return dims;
+
   // match patterns like 120x40x25, 120×40×25, 120mm, 40 mm
   const cross = text.match(/(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)\s*(?:[x×]\s*(\d+(?:\.\d+)?))?/i);
   if (cross) {
@@ -275,6 +294,257 @@ function extractDimensions(text) {
     standalone.slice(0, 4).forEach((m, i) => dims.push({ key: keys[i] || 'dim', value: parseFloat(m[1]), unit: 'mm' }));
   }
   return dims;
+}
+
+function featureFromWindow(windowText = '') {
+  const cleaned = String(windowText || '').replace(/\s+/g, ' ').trim();
+  if (!cleaned) return null;
+  const featureMatch = cleaned.match(/(?:for|on|at)\s+([a-z0-9 _\-/]{3,40})$/i);
+  return featureMatch ? featureMatch[1].trim() : null;
+}
+
+function inferFitType(designation = '', windowText = '') {
+  const text = `${designation} ${windowText}`.toLowerCase();
+  if (/press|interference|shrink/.test(text)) return 'interference';
+  if (/transition/.test(text)) return 'transition';
+  if (/clearance|slip|running/.test(text)) return 'clearance';
+  if (/[psru]\d/i.test(designation)) return 'interference';
+  if (/[kmn]\d/i.test(designation)) return 'transition';
+  return 'clearance';
+}
+
+function extractFits(text) {
+  const fits = [];
+  const designationRe = /\b([A-Z]\d\/[a-z]\d|[A-Z]\d\/[A-Z]\d|[a-z]\d\/[a-z]\d)\b/g;
+  for (const match of text.matchAll(designationRe)) {
+    const start = Math.max(0, match.index - 40);
+    const end = Math.min(text.length, match.index + match[0].length + 40);
+    const windowText = text.slice(start, end);
+    fits.push({
+      designation: match[1],
+      type: inferFitType(match[1], windowText),
+      feature: featureFromWindow(windowText),
+      source: 'prompt',
+    });
+  }
+
+  const fitWordRe = /(clearance|transition|interference|press|slip|running)\s+fit(?:\s+(?:for|on|at)\s+([a-z0-9 _\-/]{3,40}))?/gi;
+  for (const match of text.matchAll(fitWordRe)) {
+    const kind = String(match[1] || '').toLowerCase();
+    fits.push({
+      designation: null,
+      type: kind === 'press' ? 'interference' : kind,
+      feature: match[2] ? match[2].trim() : null,
+      source: 'prompt',
+    });
+  }
+
+  return fits;
+}
+
+function normalizeToleranceUnit(unit = '') {
+  const raw = String(unit || '').toLowerCase();
+  if (raw === 'um' || raw === 'μm' || raw === 'micron' || raw === 'microns') return { unit: 'μm', mm: 0.001 };
+  return { unit: 'mm', mm: 1 };
+}
+
+function extractTolerances(text) {
+  const tolerances = [];
+  const plusMinusRe = /(±|\+\/-)\s*(\d+(?:\.\d+)?)\s*(mm|μm|um|micron(?:s)?)\b/gi;
+  for (const match of text.matchAll(plusMinusRe)) {
+    const unitInfo = normalizeToleranceUnit(match[3]);
+    tolerances.push({
+      kind: 'plus_minus',
+      feature: null,
+      value: Number(match[2]),
+      unit: unitInfo.unit,
+      value_mm: Number((Number(match[2]) * unitInfo.mm).toFixed(4)),
+      source: 'prompt',
+    });
+  }
+
+  const gdntRe = /(flatness|parallelism|perpendicularity|runout|concentricity|position|profile)\s*(?:of|to)?\s*(\d+(?:\.\d+)?)\s*(mm|μm|um|micron(?:s)?)\b/gi;
+  for (const match of text.matchAll(gdntRe)) {
+    const unitInfo = normalizeToleranceUnit(match[3]);
+    tolerances.push({
+      kind: String(match[1]).toLowerCase(),
+      feature: null,
+      value: Number(match[2]),
+      unit: unitInfo.unit,
+      value_mm: Number((Number(match[2]) * unitInfo.mm).toFixed(4)),
+      source: 'prompt',
+    });
+  }
+
+  const namedTolRe = /([a-z0-9 _\-/]{3,40})\s+tolerance\s*(?:of|to)?\s*(\d+(?:\.\d+)?)\s*(mm|μm|um|micron(?:s)?)\b/gi;
+  for (const match of text.matchAll(namedTolRe)) {
+    const unitInfo = normalizeToleranceUnit(match[3]);
+    tolerances.push({
+      kind: 'feature_tolerance',
+      feature: match[1].trim(),
+      value: Number(match[2]),
+      unit: unitInfo.unit,
+      value_mm: Number((Number(match[2]) * unitInfo.mm).toFixed(4)),
+      source: 'prompt',
+    });
+  }
+
+  return tolerances;
+}
+
+function extractHolePatterns(text) {
+  const holePatterns = [];
+  const boltCircleRe = /(\d+)\s*[x×]\s*(M?\d+(?:\.\d+)?)\s*(?:holes?|bolt holes?|mounting holes?)?\s*(?:on|@)\s*(\d+(?:\.\d+)?)\s*mm\s*(?:bolt circle|bcd|pcd|pitch circle(?: diameter)?)/gi;
+  for (const match of text.matchAll(boltCircleRe)) {
+    const nominal = String(match[2]);
+    holePatterns.push({
+      pattern: 'bolt_circle',
+      hole_count: Number(match[1]),
+      hole_diameter_mm: Number(nominal.replace(/^M/i, '')),
+      thread_spec: nominal.startsWith('M') ? nominal : null,
+      bolt_circle_mm: Number(match[3]),
+      source: 'prompt',
+    });
+  }
+
+  const simpleBoltCircleRe = /(\d+)\s*(?:holes?|bolts?)\s*(?:on|@)\s*(\d+(?:\.\d+)?)\s*mm\s*(?:bolt circle|bcd|pcd|pitch circle(?: diameter)?)/gi;
+  for (const match of text.matchAll(simpleBoltCircleRe)) {
+    if (match.index > 0 && /[A-Za-z]/.test(text[match.index - 1])) continue;
+    holePatterns.push({
+      pattern: 'bolt_circle',
+      hole_count: Number(match[1]),
+      hole_diameter_mm: null,
+      thread_spec: null,
+      bolt_circle_mm: Number(match[2]),
+      source: 'prompt',
+    });
+  }
+
+  const spacingRe = /(\d+)\s*[x×]\s*(\d+(?:\.\d+)?)\s*mm\s*(?:holes?|mounting holes?)\s*(?:with|at)?\s*(\d+(?:\.\d+)?)\s*mm\s*(?:spacing|pitch)/gi;
+  for (const match of text.matchAll(spacingRe)) {
+    holePatterns.push({
+      pattern: 'linear',
+      hole_count: Number(match[1]),
+      hole_diameter_mm: Number(match[2]),
+      thread_spec: null,
+      spacing_mm: Number(match[3]),
+      source: 'prompt',
+    });
+  }
+
+  return holePatterns;
+}
+
+function reduceDimensionList(dims = []) {
+  return dims.reduce((acc, entry) => {
+    if (!acc[entry.key]) acc[entry.key] = entry.value;
+    return acc;
+  }, {});
+}
+
+function inferPlanEnvelope(plan = {}) {
+  const params = plan?.recipe?.parameters || {};
+  if (params.bracket_length_mm || params.bracket_width_mm || params.bracket_height_mm) {
+    return {
+      length_mm: Number(params.bracket_length_mm || params.length_mm || 0) || null,
+      width_mm: Number(params.bracket_width_mm || params.width_mm || 0) || null,
+      height_mm: Number(params.bracket_height_mm || params.height_mm || 0) || null,
+      wall_thickness_mm: Number(params.wall_thickness_mm || 0) || null,
+      hole_diameter_mm: Number(params.bolt_hole_diameter_mm || params.hole_diameter_mm || 0) || null,
+      bolt_circle_mm: Number(params.bolt_circle_diameter_mm || 0) || null,
+      hole_spacing_mm: Number(params.hole_spacing_mm || 0) || null,
+    };
+  }
+
+  const parts = Array.isArray(plan?.parts) ? plan.parts : [];
+  if (!parts.length) return {};
+  const scored = parts.map((part) => {
+    const dims = Object.assign({}, part?.dims || {}, part?.dimensions_mm || {});
+    const x = Number(dims.x ?? dims.length ?? dims.width ?? dims.outer_diameter ?? dims.diameter ?? 0) || 0;
+    const y = Number(dims.y ?? dims.width ?? dims.depth ?? dims.outer_diameter ?? dims.diameter ?? 0) || 0;
+    const z = Number(dims.z ?? dims.height ?? dims.thickness ?? dims.length ?? 0) || 0;
+    return { part, x, y, z, score: x * y * z };
+  }).sort((a, b) => b.score - a.score);
+  const primary = scored[0];
+  if (!primary) return {};
+  const partDims = Object.assign({}, primary.part?.dims || {}, primary.part?.dimensions_mm || {});
+  return {
+    length_mm: primary.x || null,
+    width_mm: primary.y || null,
+    height_mm: primary.z || null,
+    wall_thickness_mm: Number(partDims.wall_thickness ?? partDims.wall_t ?? partDims.thickness ?? 0) || null,
+    hole_diameter_mm: Number(partDims.hole_diameter_mm ?? partDims.hole_diameter ?? 0) || null,
+    bolt_circle_mm: Number(partDims.bolt_circle ?? partDims.bcd ?? partDims.pcd ?? 0) || null,
+    hole_spacing_mm: Number(partDims.hole_spacing ?? partDims.spacing ?? 0) || null,
+  };
+}
+
+function buildDerivedCadSpec(prompt, plan = null) {
+  const dimensions = reduceDimensionList(extractDimensions(prompt));
+  const fits = extractFits(prompt);
+  const tolerances = extractTolerances(prompt);
+  const holePatterns = extractHolePatterns(prompt);
+  const planEnvelope = inferPlanEnvelope(plan || {});
+  const params = plan?.recipe?.parameters || {};
+  const material = params.material_name || plan?.material_name || plan?.parts?.find?.((part) => part.material)?.material || getMat(prompt).name;
+  const process = params.process || plan?.parts?.find?.((part) => part.process)?.process || null;
+  const primaryHolePattern = holePatterns[0] || {};
+  const primaryTolerance = tolerances.find((entry) => entry.kind === 'plus_minus') || tolerances[0] || null;
+  const primaryFit = fits[0] || null;
+
+  return {
+    source: 'prompt_inference',
+    material_name: material,
+    process,
+    dimensions: {
+      length_mm: dimensions.length || planEnvelope.length_mm || null,
+      width_mm: dimensions.width || planEnvelope.width_mm || null,
+      height_mm: dimensions.height || planEnvelope.height_mm || null,
+      wall_thickness_mm: dimensions.wall_thickness || planEnvelope.wall_thickness_mm || null,
+      diameter_mm: dimensions.diameter || null,
+      hole_diameter_mm: dimensions.hole_diameter || primaryHolePattern.hole_diameter_mm || planEnvelope.hole_diameter_mm || null,
+      bolt_circle_mm: dimensions.bolt_circle || primaryHolePattern.bolt_circle_mm || planEnvelope.bolt_circle_mm || null,
+      hole_spacing_mm: dimensions.hole_spacing || primaryHolePattern.spacing_mm || planEnvelope.hole_spacing_mm || null,
+    },
+    fits,
+    tolerances,
+    hole_patterns: holePatterns,
+    normalized_parameters: {
+      bracket_length_mm: dimensions.length || planEnvelope.length_mm || null,
+      bracket_width_mm: dimensions.width || planEnvelope.width_mm || null,
+      bracket_height_mm: dimensions.height || planEnvelope.height_mm || null,
+      wall_thickness_mm: dimensions.wall_thickness || planEnvelope.wall_thickness_mm || null,
+      bolt_hole_diameter_mm: dimensions.hole_diameter || primaryHolePattern.hole_diameter_mm || planEnvelope.hole_diameter_mm || null,
+      bolt_circle_diameter_mm: dimensions.bolt_circle || primaryHolePattern.bolt_circle_mm || planEnvelope.bolt_circle_mm || null,
+      hole_spacing_mm: dimensions.hole_spacing || primaryHolePattern.spacing_mm || planEnvelope.hole_spacing_mm || null,
+      hole_count: primaryHolePattern.hole_count || null,
+      hole_pattern_type: primaryHolePattern.pattern || null,
+      fit_designation: primaryFit?.designation || null,
+      fit_type: primaryFit?.type || null,
+      tolerance_general_mm: primaryTolerance?.value_mm || null,
+      material_name: material || null,
+      process: process || null,
+    },
+  };
+}
+
+function applyDerivedCadSpecToPlan(plan = {}, derivedCadSpec = null) {
+  if (!derivedCadSpec) return plan;
+  const next = JSON.parse(JSON.stringify(plan || {}));
+  const recipe = next.recipe && typeof next.recipe === 'object' ? next.recipe : {};
+  const params = recipe.parameters && typeof recipe.parameters === 'object' ? recipe.parameters : {};
+  const normalized = derivedCadSpec.normalized_parameters || {};
+  next.recipe = {
+    ...recipe,
+    name: recipe.name || next.name || null,
+    description: recipe.description || next.description || null,
+    parameters: {
+      ...params,
+      ...Object.fromEntries(Object.entries(normalized).filter(([, value]) => value !== null && value !== undefined)),
+    },
+  };
+  next.derived_cad_spec = derivedCadSpec;
+  return next;
 }
 
 function pickInventionTheme(text) {
@@ -1626,6 +1896,8 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
       const actor = await resolveActor(req, runtime);
       requireActor(actor);
       const prompt = String(req.body?.prompt || req.body?.message || '');
+      const sourcePrompt = String(req.body?.current_prompt || req.body?.message || req.body?.prompt || '');
+      const autoExecuteCad = req.body?.auto_execute_cad === true;
       // Client can send its own rich system prompt — use it if provided
       const systemPrompt = req.body?.system_prompt || null;
       const ctx = {
@@ -1642,31 +1914,34 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         enki = await tryOllama(prompt, systemPrompt);
         usedOllama = true;
       } catch {
-        enki = generateEnkiNarrative(prompt, ctx);
+        enki = generateEnkiNarrative(sourcePrompt, ctx);
       }
 
       // If Ollama responded but didn't include an assembly JSON block for a
       // design request, override with the richer builtin assembly plan so the
       // 3-D viewer can render full parts.
-      if (usedOllama && isDesignRequest(prompt)) {
+      if (usedOllama && isDesignRequest(sourcePrompt)) {
         const hasAssemblyJson = /```(?:json)?\s*\{[\s\S]*?"assembly"\s*:\s*true[\s\S]*?```/.test(enki.narrative || '');
         if (!hasAssemblyJson) {
-          enki = generateEnkiNarrative(prompt, ctx);
+          enki = generateEnkiNarrative(sourcePrompt, ctx);
           usedOllama = false;
         }
       }
+
+      const derivedCadSpec = buildDerivedCadSpec(sourcePrompt, enki._plan || null);
+      if (enki._plan) enki._plan = applyDerivedCadSpecToPlan(enki._plan, derivedCadSpec);
 
       // Legacy structured data
       const legacy = inferSuggestions({
         selected_part: ctx.selected_part,
         assembly:      req.body?.assembly || null,
         simulation:    ctx.simulation,
-        prompt,
+        prompt: sourcePrompt,
       });
 
       // ── Background CAD execution for design requests ───────────────────
       let cadExecutionId = null;
-      if (enki._plan && cadExecutionService) {
+      if (autoExecuteCad && enki._plan && cadExecutionService) {
         const execPromise = cadExecutionService.execute(enki._plan, actor)
           .then((manifest) => manifest.execution_id)
           .catch(() => null);
@@ -1685,6 +1960,7 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         suggestions:  [...new Set([...(enki.suggestions || []), ...legacy.suggestions])],
         cad_execution_id: cadExecutionId || null,
         assembly_plan:    enki._plan || null,
+        derived_cad_spec: derivedCadSpec,
       });
     } catch (error) {
       return res.status(error.statusCode || 500).json({ ok: false, error: error.message });

@@ -2,10 +2,24 @@ node_modules/
 .env
 .env.*
 /data/
+/artifacts/
+/backups/
+/.cad311/
 /object_storage_mirror/
+/object_storage_mirror_test/
+/logs/
 *.log
+*_out.txt
+*_output.txt
+*_results.txt
+regression_*.txt
+test_*.txt
 coverage/
+playwright-report/
+test-results/
 dist/
 .DS_Store
+cad_runner/__pycache__/
+**/*.pyc
 
 backups/*.bundle

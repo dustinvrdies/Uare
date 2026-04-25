@@ -68,5 +68,14 @@ async function _checkHealth() {
     }
   }
 
+  const executionId = params.get('execution_id');
+  if (executionId && window.UARE_ENKI.loadExecution) {
+    try {
+      await window.UARE_ENKI.loadExecution(executionId);
+    } catch (error) {
+      console.warn('[UARE app.js] Failed to load execution in unified shell:', error.message);
+    }
+  }
+
   console.log('[UARE Workstation] Boot complete. User:', window.__uare_userId, '| Role:', window.__uare_userRole);
 })();

@@ -1,19 +1,10 @@
 {
   "name": "uare-custom-backend",
   "private": true,
-  "description": "Backend API for the UARE platform with auth, billing, orgs, CAD execution, workflows, workers, analytics, and ops tooling.",
   "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dustinvrdies/Uare.git"
-  },
-  "license": "UNLICENSED",
   "scripts": {
-    "dev": "node --max-old-space-size=4096 --env-file-if-exists=.env server.mjs",
-    "start": "node --max-old-space-size=4096 --env-file-if-exists=.env server.mjs",
+    "dev": "node --env-file-if-exists=.env server.mjs",
+    "start": "node --env-file-if-exists=.env server.mjs",
     "test:smoke": "node tests/smoke.mjs",
     "test:cad": "node tests/cadExecuteRoute.test.mjs && node tests/cadStatusRoute.test.mjs && node tests/cadArtifactServingPlan.test.mjs && node tests/httpCadExecuteRoute.test.mjs && node tests/httpCadStatusRoute.test.mjs && node tests/httpCadArtifactRoute.test.mjs && node tests/httpCadKernelRegression.test.mjs && node tests/cloudStorageAdapter.test.mjs && node tests/cadExecutionStore.test.mjs && node tests/solverRoutes.test.mjs && node tests/learningRoutes.test.mjs && node tests/learningAutoCapture.test.mjs && node tests/patentRoutes.test.mjs && node tests/patentProviderModes.test.mjs && node tests/platformRuntime.test.mjs && node tests/solverLocalWorker.test.mjs && node tests/workerQueueLifecycle.test.mjs && node tests/taskStoreDurability.test.mjs && node tests/workerProgressRoutes.test.mjs && node tests/autonomousWorker.test.mjs && node tests/workerStatusAndStreamAuth.test.mjs && node tests/jobStorePersistence.test.mjs && node tests/patentExternalProvider.test.mjs && node tests/metricsShipping.test.mjs && node tests/eventBusCrossInstance.test.mjs && node tests/eventReplay.test.mjs && node tests/brokerAdapters.test.mjs && node tests/fleetRoutes.test.mjs && node tests/eventReplayRetention.test.mjs && node tests/replayArchiveRoutes.test.mjs && node tests/brokerRedisIntegration.test.mjs && node tests/brokerNatsIntegration.test.mjs && node tests/analyticsRoutes.test.mjs && node tests/productRoutes.test.mjs && node tests/sessionAuthRoutes.test.mjs && node tests/orgRoutes.test.mjs",
     "worker:auto": "node worker.mjs",

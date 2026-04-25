@@ -138,6 +138,145 @@ function inferBoundingEnvelope(shape, rawDims = {}) {
   };
 }
 
+function classifyFitFromInterface(iface = {}) {
+  const type = String(iface?.type || iface?.fit || 'clearance').toLowerCase();
+  if (['interference', 'press', 'press_fit'].includes(type)) return 'interference';
+  if (['transition', 'line_to_line', 'line-fit'].includes(type)) return 'transition';
+  return 'clearance';
+}
+
+function buildConstraintGraph(plan = {}, parts = []) {
+  const interfaces = Array.isArray(plan?.interfaces)
+    ? plan.interfaces
+    : Array.isArray(plan?.mates)
+      ? plan.mates
+      : [];
+  const partIds = new Set(parts.map((part) => String(part.id || '')));
+  const nodes = parts.map((part) => ({
+    id: part.id,
+    name: part.name,
+    kind: part.kind,
+  }));
+  const edges = interfaces
+    .map((iface, index) => {
+      const a = String(iface?.part_a || iface?.a || '');
+      const b = String(iface?.part_b || iface?.b || '');
+      if (!partIds.has(a) || !partIds.has(b)) return null;
+      return {
+        id: iface?.id || `mate-${index + 1}`,
+        source: a,
+        target: b,
+        fit_class: classifyFitFromInterface(iface),
+        relation: String(iface?.relation || iface?.type || 'mate'),
+        axis: String(iface?.axis || 'x').toLowerCase(),
+        target_clearance_mm: Number(iface?.target_clearance_mm || 0),
+      };
+    })
+    .filter(Boolean);
+
+  return {
+    generated_at: new Date().toISOString(),
+    node_count: nodes.length,
+    edge_count: edges.length,
+    fit_class_counts: {
+      clearance: edges.filter((edge) => edge.fit_class === 'clearance').length,
+      transition: edges.filter((edge) => edge.fit_class === 'transition').length,
+      interference: edges.filter((edge) => edge.fit_class === 'interference').length,
+    },
+    nodes,
+    edges,
+  };
+}
+
+function axisIndex(axis = 'x') {
+  const a = String(axis || 'x').toLowerCase();
+  if (a === 'y') return 1;
+  if (a === 'z') return 2;
+  return 0;
+}
+
+function getAxisExtent(part = {}, axis = 0) {
+  const dims = part?.dimensions_mm || {};
+  const values = [
+    Number(dims.x || 0),
+    Number(dims.y || 0),
+    Number(dims.z || 0),
+  ];
+  const value = values[axis];
+  return Number.isFinite(value) && value > 0 ? value : 1;
+}
+
+function ensureTransform(part = {}) {
+  const tr = part?.transform_mm || {};
+  return {
+    x: Number.isFinite(Number(tr.x)) ? Number(tr.x) : 0,
+    y: Number.isFinite(Number(tr.y)) ? Number(tr.y) : 0,
+    z: Number.isFinite(Number(tr.z)) ? Number(tr.z) : 0,
+  };
+}
+
+function solveMatingConstraints(plan = {}, parts = []) {
+  const interfaces = Array.isArray(plan?.interfaces)
+    ? plan.interfaces
+    : Array.isArray(plan?.mates)
+      ? plan.mates
+      : [];
+  if (!interfaces.length || !parts.length) {
+    return { parts, solvedInterfaces: [] };
+  }
+
+  const byId = new Map(parts.map((part, idx) => [String(part.id || `part-${idx}`), part]));
+  const solvedInterfaces = [];
+
+  for (const iface of interfaces) {
+    const idA = String(iface?.part_a || iface?.a || '');
+    const idB = String(iface?.part_b || iface?.b || '');
+    const a = byId.get(idA);
+    const b = byId.get(idB);
+    if (!a || !b) {
+      solvedInterfaces.push({ id: iface?.id || null, solved: false, reason: 'unknown_parts' });
+      continue;
+    }
+
+    const axis = axisIndex(iface?.axis || 'x');
+    const clearance = Number.isFinite(Number(iface?.target_clearance_mm)) ? Number(iface.target_clearance_mm) : 0;
+    const direction = String(iface?.direction || 'positive').toLowerCase() === 'negative' ? -1 : 1;
+
+    const trA = ensureTransform(a);
+    const trB = ensureTransform(b);
+    const dimA = getAxisExtent(a, axis);
+    const dimB = getAxisExtent(b, axis);
+    const desiredDelta = (dimA / 2) + (dimB / 2) + clearance;
+
+    const keys = ['x', 'y', 'z'];
+    const axisKey = keys[axis];
+    const next = {
+      x: trB.x,
+      y: trB.y,
+      z: trB.z,
+    };
+    next[axisKey] = trA[axisKey] + (desiredDelta * direction);
+
+    if (iface?.lock_other_axes === true) {
+      for (const key of keys) {
+        if (key === axisKey) continue;
+        next[key] = trA[key];
+      }
+    }
+
+    b.transform_mm = next;
+    solvedInterfaces.push({
+      id: iface?.id || `${idA}-${idB}`,
+      solved: true,
+      axis: axisKey,
+      clearance_mm: clearance,
+      direction: direction > 0 ? 'positive' : 'negative',
+    });
+  }
+
+  return { parts, solvedInterfaces };
+}
+
 function buildMechanicalParts(params = {}) {
   const length = mm(params.bracket_length_mm, 120);
   const width = mm(params.bracket_width_mm, 40);
@@ -149,7 +288,7 @@ function buildMechanicalParts(params = {}) {
       id: `part-${stableId(`body-${length}-${width}-${height}`)}`,
       name: 'Main bracket body',
       kind: 'mechanical',
-      shape: 'box',
+      shape: 'bracket',
       dimensions_mm: { x: length, y: width, z: height },
       transform_mm: { x: 0, y: 0, z: height / 2 },
       material,
@@ -164,7 +303,7 @@ function buildMechanicalParts(params = {}) {
       id: `part-${stableId(`mount-${length}-${width}-${thickness}`)}`,
       name: 'Mounting plate',
       kind: 'mechanical',
-      shape: 'plate',
+      shape: 'flange',
       dimensions_mm: { x: length * 0.72, y: width, z: thickness },
       transform_mm: { x: 0, y: 0, z: height + thickness / 2 },
       material,
@@ -383,13 +522,18 @@ export function buildAssemblyDocument(plan = {}) {
     netlist = electrical.netlist;
   }
 
-  const bbox = parts.reduce((acc, part) => {
+  const solved = solveMatingConstraints(plan, parts);
+  const solvedParts = solved.parts;
+
+  const bbox = solvedParts.reduce((acc, part) => {
     const dims = part.dimensions_mm || { x: 0, y: 0, z: 0 };
     acc.x = Math.max(acc.x, dims.x || 0);
     acc.y = Math.max(acc.y, dims.y || 0);
     acc.z = Math.max(acc.z, (part.transform_mm?.z || 0) + (dims.z || 0));
     return acc;
   }, { x: 0, y: 0, z: 0 });
+
+  const constraintGraph = buildConstraintGraph(plan, solvedParts);
 
   return {
     schema_version: 1,
@@ -401,18 +545,20 @@ export function buildAssemblyDocument(plan = {}) {
       project_id: projectId,
       workflow_run_id: plan?.workflow_run_id || null,
     },
-    parts,
+    parts: solvedParts,
     wiring,
     netlist,
+    constraint_graph: constraintGraph,
+    solved_constraints: solved.solvedInterfaces,
     hierarchy: rawParts
-      ? [{ id: 'root', name: plan?.name || 'Assembly', children: parts.map((p) => p.id) }]
+      ? [{ id: 'root', name: plan?.name || 'Assembly', children: solvedParts.map((p) => p.id) }]
       : [
           {
             id: 'root',
             name: 'Invented system',
             children: [
-              { id: 'electrical', name: 'Electrical subsystem', children: [parts[0]?.id, ...parts.slice(1, 5).map((item) => item.id)] },
-              { id: 'mechanical', name: 'Mechanical subsystem', children: parts.slice(5).map((item) => item.id) },
+              { id: 'electrical', name: 'Electrical subsystem', children: [solvedParts[0]?.id, ...solvedParts.slice(1, 5).map((item) => item.id)] },
+              { id: 'mechanical', name: 'Mechanical subsystem', children: solvedParts.slice(5).map((item) => item.id) },
             ],
           },
         ],
@@ -453,6 +599,7 @@ export function buildViewerManifest(assemblyDocument = {}) {
     })),
     wires: assemblyDocument.wiring || [],
     netlist: assemblyDocument.netlist || [],
+    constraint_graph: assemblyDocument.constraint_graph || { node_count: 0, edge_count: 0, nodes: [], edges: [] },
     bounding_box_mm: assemblyDocument.bounding_box_mm || null,
     engineering_domains: assemblyDocument.engineering_domains || [],
   };

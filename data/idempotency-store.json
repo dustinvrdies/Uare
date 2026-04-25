@@ -8,7 +8,7 @@
       "response_body_json": {
         "ok": true,
         "session": {
-          "checkout_session_id": "chk-1776696768845-0ab9c715",
+          "checkout_session_id": "chk-1777046768627-01a52675",
           "user_id": "idem-user",
           "plan_id": "pro",
           "status": "pending",
@@ -19,12 +19,12 @@
             "created_by": "idem-user",
             "org_id": null
           },
-          "created_at": "2026-04-20T14:52:48.845Z"
+          "created_at": "2026-04-24T16:06:08.627Z"
         },
         "provider": "mock"
       },
-      "expires_at": "2026-04-21T14:52:48.849Z",
-      "created_at": "2026-04-20T14:52:48.849Z"
+      "expires_at": "2026-04-25T16:06:08.634Z",
+      "created_at": "2026-04-24T16:06:08.634Z"
     }
   ]
 }

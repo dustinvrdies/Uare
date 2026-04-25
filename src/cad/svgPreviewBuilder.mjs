@@ -45,7 +45,7 @@ const ARROW_MARKER = `<defs><marker id="arr" markerWidth="6" markerHeight="6" re
  * Build an SVG 3-view orthographic drawing accurately sized for the given dimensions.
  * Automatically adapts labels and shape profiles to part type.
  */
-export function buildSvgPreview({ length = 120, width = 40, height = 30, hole = 8, executionId = 'exec', partType = '', partName = '', totalParts = 1 } = {}) {
+export function buildSvgPreview({ length = 120, width = 40, height = 30, hole = 8, executionId = 'exec', partType = '', partName = '', totalParts = 1, singleView = null } = {}) {
   // Scale so the longest dimension fits within ~320px
   const maxDim = Math.max(length, width, height, 1);
   const scale = Math.min(3.0, 280 / maxDim);
@@ -58,17 +58,26 @@ export function buildSvgPreview({ length = 120, width = 40, height = 30, hole = 
   const isCylindrical = ['engine_block','piston','crankshaft','shaft','cylinder','impeller','bearing','flywheel','camshaft','turbocharger','spring','gear'].some(k => (partType||'').includes(k));
   const isSheet = ['gasket','washer','plate','pcb','shim'].some(k => (partType||'').includes(k));
 
-  // SVG canvas: 900 × 500
-  const SVG_W = 900, SVG_H = 500;
+  const mode = singleView ? String(singleView).toLowerCase() : null;
+  const showTop = !mode || mode === 'top';
+  const showFront = !mode || mode === 'front';
+  const showSide = !mode || mode === 'side';
+
+  // SVG canvas: 900 × 500 (compact for single views)
+  const SVG_W = mode ? 560 : 900;
+  const SVG_H = mode ? 360 : 500;
   const pad = 40;
 
   // ── View origins (top-left of each view rect) ────────────────────────────
-  const topX = pad, topY = pad + 30;               // top view (L × W)
-  const frontX = pad, frontY = topY + W + 60;      // front view (L × H)
-  const sideX = pad + L + 60, sideY = topY;         // side view (W × H)
+  const topX = pad;
+  const topY = pad + 30;
+  const frontX = mode ? pad : pad;
+  const frontY = mode ? pad + 30 : topY + W + 60;
+  const sideX = mode ? pad : pad + L + 60;
+  const sideY = mode ? pad + 30 : topY;
 
   // ── Top view ─────────────────────────────────────────────────────────────
-  const topView = [
+  const topView = showTop ? [
     rect(topX, topY, L, W),
     isCylindrical ? circle(topX + L/2, topY + W/2, Math.min(L, W)/2, { fill:'#eef2ff', stroke:'#4a9eff' }) : '',
     isSheet ? '' : circle(topX + L/2, topY + W/2, holeR, { fill:'#e0e7ff' }),
@@ -76,28 +85,28 @@ export function buildSvgPreview({ length = 120, width = 40, height = 30, hole = 
     dim(topX, topY, topX, topY + W, `${width} mm`, -18),
     text(topX + L/2, topY + W/2 + 4, isCylindrical ? '⊙' : '', { size: 16, fill:'#4a9eff' }),
     text(topX + L/2, topY - 6, 'TOP', { size: 10, fill:'#6b7280', bold: true }),
-  ].filter(Boolean).join('\n');
+  ].filter(Boolean).join('\n') : '';
 
   // ── Front view ───────────────────────────────────────────────────────────
-  const frontView = [
+  const frontView = showFront ? [
     rect(frontX, frontY, L, H),
     isCylindrical ? '' : line(frontX + L*0.2, frontY, frontX + L*0.2, frontY + H),
     isCylindrical ? '' : line(frontX + L*0.8, frontY, frontX + L*0.8, frontY + H),
     dim(frontX, frontY, frontX + L, frontY, `${length} mm`, -18),
     dim(frontX, frontY + H, frontX, frontY, `${height} mm`, -18),
     text(frontX + L/2, frontY - 6, 'FRONT', { size: 10, fill:'#6b7280', bold: true }),
-  ].filter(Boolean).join('\n');
+  ].filter(Boolean).join('\n') : '';
 
   // ── Side view ─────────────────────────────────────────────────────────────
-  const sideView = [
+  const sideView = showSide ? [
     isCylindrical ? circle(sideX + W/2, sideY + H/2, Math.min(W, H)/2, { fill:'#eef2ff', stroke:'#4a9eff' }) : rect(sideX, sideY, W, H),
     dim(sideX, sideY, sideX + W, sideY, `${width} mm`, -18),
     dim(sideX + W, sideY, sideX + W, sideY + H, `${height} mm`, 14),
     text(sideX + W/2, sideY - 6, 'SIDE', { size: 10, fill:'#6b7280', bold: true }),
-  ].filter(Boolean).join('\n');
+  ].filter(Boolean).join('\n') : '';
 
   // ── Info panel ────────────────────────────────────────────────────────────
-  const infoX = Math.max(sideX + W + 40, pad + L + 100);
+  const infoX = mode ? pad : Math.max(sideX + W + 40, pad + L + 100);
   const infoPanel = [
     text(infoX, pad + 30, 'UARE CAD — Execution Preview', { size: 14, bold: true, fill:'#0f172a' }),
     text(infoX, pad + 52, `ID: ${executionId}`, { size: 11, fill:'#6b7280' }),
@@ -106,8 +115,7 @@ export function buildSvgPreview({ length = 120, width = 40, height = 30, hole = 
     text(infoX, pad + 118, `L × W × H  (mm)`, { size: 11, fill:'#6b7280' }),
     text(infoX, pad + 134, `${length} × ${width} × ${height}`, { size: 13, bold: true, fill:'#1e40af' }),
     hole > 0 && !isSheet ? text(infoX, pad + 154, `Bore/Hole: Ø${hole} mm`, { size: 11, fill:'#374151' }) : '',
-    text(infoX, SVG_H - 50, '⚠ Envelope preview — kernel geometry', { size: 10, fill:'#9ca3af' }),
-    text(infoX, SVG_H - 34, 'in assembly_kernel.stl / assembly.step', { size: 10, fill:'#9ca3af' }),
+    text(infoX, SVG_H - 50, mode ? `View mode: ${mode}` : 'Envelope preview; kernel geometry in assembly_kernel.stl / assembly.step', { size: 10, fill:'#9ca3af' }),
   ].filter(Boolean).join('\n');
 
   return [

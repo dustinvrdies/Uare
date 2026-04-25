@@ -60,6 +60,7 @@ export function readBackendRuntime(env = process.env) {
     idempotencyTtlMs: Math.max(Number(env.IDEMPOTENCY_TTL_MS || 24 * 60 * 60 * 1000), 60_000),
     requiredProdVars: parseCsv(env.REQUIRED_PROD_VARS || 'SESSION_SECRET,APP_BASE_URL,DATABASE_URL,REDIS_URL,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET'),
     cadKernelEnabled: env.CAD_KERNEL_ENABLED === 'true',
+    cadGuardrailOverrideToken: env.CAD_GUARDRAIL_OVERRIDE_TOKEN || '',
     cadPythonBin: env.CAD_PYTHON_BIN || env.PYTHON || '',
     cadPythonCandidates: parseCsv(env.CAD_PYTHON_CANDIDATES || ''),
     cadKernelEngine: env.CAD_KERNEL_ENGINE || 'cadquery',

@@ -10,6 +10,21 @@ import { buildExecutionAdapterPlan } from '../workers/adapters.mjs';
 export function buildCadRoutes(runtime, cadExecutionService, artifactStore, learningStore, taskStore, jobStore) {
   const router = Router();
 
+  function createArchive(tmpBase, executionId, zipPath) {
+    if (process.platform === 'win32') {
+      const sourcePath = path.join(tmpBase, executionId);
+      const ps = spawnSync('powershell', [
+        '-NoProfile',
+        '-Command',
+        `Compress-Archive -Path "${sourcePath}\\*" -DestinationPath "${zipPath}" -Force`,
+      ]);
+      return ps.status === 0 && fs.existsSync(zipPath);
+    }
+
+    const zipped = spawnSync('zip', ['-r', '-q', zipPath, executionId], { cwd: tmpBase });
+    return zipped.status === 0 && fs.existsSync(zipPath);
+  }
+
   router.post('/execute', async (req, res) => {
     try {
       const actor = await resolveActor(req, runtime);
@@ -20,6 +35,13 @@ export function buildCadRoutes(runtime, cadExecutionService, artifactStore, lear
 
       if (executionTarget !== 'in_process') {
         const manifest = cadExecutionService.buildQueuedManifest(plan, actor, { executionTarget });
+        if (manifest.status === 'blocked') {
+          return res.status(422).json({
+            ok: false,
+            error: 'CAD execution blocked by critical engineering guardrails.',
+            manifest,
+          });
+        }
         const dispatch = buildExecutionAdapterPlan('cad', executionTarget, { execution_id: manifest.execution_id, plan }, runtime);
         manifest.dispatch = dispatch;
         await cadExecutionService.persistManifest(manifest);
@@ -63,7 +85,29 @@ export function buildCadRoutes(runtime, cadExecutionService, artifactStore, lear
 
       return res.json({ ok: true, manifest: { ...manifest, learning_event_id: learningEvent.event_id }, learning_event: learningEvent, message: 'Deterministic CAD execution completed.' });
     } catch (error) {
-      return res.status(error.statusCode || 500).json({ ok: false, error: error.message });
+      return res.status(error.statusCode || 500).json({
+        ok: false,
+        error: error.message,
+        code: error.code || null,
+        details: error.details || null,
+        suggestions: error.suggestions || null,
+      });
+    }
+  });
+
+  router.post('/analyze', async (req, res) => {
+    try {
+      const actor = await resolveActor(req, runtime);
+      requireActor(actor);
+      const plan = req.body?.plan || {};
+      const analysis = cadExecutionService.analyze(plan, actor);
+      return res.status(analysis.ok ? 200 : 422).json({ ok: analysis.ok, analysis });
+    } catch (error) {
+      return res.status(error.statusCode || 500).json({
+        ok: false,
+        error: error.message,
+        code: error.code || null,
+      });
     }
   });
 
@@ -71,6 +115,20 @@ export function buildCadRoutes(runtime, cadExecutionService, artifactStore, lear
     const manifest = cadExecutionService.getStatus(req.params.executionId);
     if (!manifest) return res.status(404).json({ ok: false, error: 'Execution not found' });
     return res.json({ ok: true, manifest });
+  });
+
+  router.get('/kernel-health', async (req, res) => {
+    try {
+      const health = cadExecutionService.getKernelHealth();
+      const ok = Boolean(health?.kernel_enabled) && Boolean(health?.probes?.version_ok) && Boolean(health?.probes?.modules_ok);
+      return res.status(ok ? 200 : 503).json({ ok, health });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        error: error.message,
+        code: 'CAD_KERNEL_HEALTH_ERROR',
+      });
+    }
   });
 
 
@@ -131,8 +189,7 @@ export function buildCadRoutes(runtime, cadExecutionService, artifactStore, lear
     };
     fs.writeFileSync(path.join(stageDir, 'package_manifest.json'), JSON.stringify(summary, null, 2));
     const zipPath = path.join(tmpBase, `${executionId}-manufacturing-package.zip`);
-    const zipped = spawnSync('zip', ['-r', '-q', zipPath, executionId], { cwd: tmpBase });
-    if (zipped.status !== 0 || !fs.existsSync(zipPath)) {
+    if (!createArchive(tmpBase, executionId, zipPath)) {
       return res.status(500).json({ ok: false, error: 'Failed to build package archive' });
     }
     res.download(zipPath, `${executionId}-manufacturing-package.zip`, () => {
@@ -143,6 +200,13 @@ export function buildCadRoutes(runtime, cadExecutionService, artifactStore, lear
   router.get('/artifacts/:executionId/:filename', async (req, res) => {
     const executionId = req.params.executionId;
     const filename = req.params.filename;
+
+    // Keep CAD viewing inside the unified app shell instead of standalone preview pages.
+    if (String(filename).toLowerCase() === 'preview.html') {
+      const query = new URLSearchParams({ execution_id: executionId }).toString();
+      return res.redirect(302, `/lab/?${query}`);
+    }
+
     const filePath = path.join(artifactStore.executionDir(executionId), filename);
 
     if (!fs.existsSync(filePath)) return res.status(404).json({ ok: false, error: 'Artifact not found' });

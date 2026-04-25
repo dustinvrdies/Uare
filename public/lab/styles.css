@@ -225,6 +225,99 @@ textarea, input { font: inherit; }
 }
 .sug-chip:hover { background: rgba(124,92,255,.2); color: #c5b8ff; transform: translateY(-1px); }
 
+/* ── Derived CAD Spec Panel ── */
+#derived-spec-panel {
+  margin: 0 16px 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,212,255,.18);
+  background: linear-gradient(180deg, rgba(12,18,32,.96), rgba(8,13,26,.96));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+  flex-shrink: 0;
+}
+.derived-spec-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.derived-spec-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cyan2);
+}
+.derived-spec-status {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text3);
+}
+.derived-spec-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.derived-spec-chip {
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(84,215,255,.15);
+  background: rgba(84,215,255,.08);
+  color: var(--text2);
+  font-size: 10.5px;
+}
+.derived-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.derived-spec-section {
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+  padding: 9px 10px;
+  min-height: 88px;
+}
+.derived-spec-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.derived-spec-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.derived-spec-row:last-child { border-bottom: none; }
+.derived-spec-label {
+  font-size: 10px;
+  color: var(--text3);
+  white-space: nowrap;
+}
+.derived-spec-value {
+  font-size: 10px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  text-align: right;
+  word-break: break-word;
+}
+.derived-spec-empty {
+  font-size: 10px;
+  color: var(--text3);
+}
+.derived-spec-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
 /* ── Chat Input ── */
 #chat-input-area {
   border-top: 1px solid var(--border);
@@ -404,6 +497,108 @@ textarea, input { font: inherit; }
   backdrop-filter: blur(8px); z-index: 20;
 }
 
+#engineering-qa-panel {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: min(410px, calc(100% - 28px));
+  max-height: calc(100% - 84px);
+  overflow: auto;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(8,13,26,.90);
+  border: 1px solid rgba(0,212,255,.22);
+  backdrop-filter: blur(10px);
+  z-index: 21;
+}
+.qa-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.qa-title {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cyan2);
+  font-weight: 700;
+}
+.qa-score {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  border: 1px solid rgba(84,215,255,.2);
+  background: rgba(84,215,255,.10);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.qa-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.qa-metric {
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 8px;
+  padding: 6px;
+  background: rgba(255,255,255,.03);
+}
+.qa-metric span {
+  display: block;
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.qa-metric strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text);
+}
+.qa-section {
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 8px;
+  background: rgba(255,255,255,.02);
+  margin-bottom: 7px;
+}
+.qa-section-title {
+  padding: 6px 8px;
+  font-size: 10px;
+  color: var(--text2);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.qa-list {
+  padding: 4px 8px 7px;
+}
+.qa-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: 10px;
+}
+.qa-item:last-child {
+  border-bottom: none;
+}
+.qa-item span {
+  color: var(--text3);
+}
+.qa-item strong {
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  text-align: right;
+}
+.qa-empty {
+  font-size: 10px;
+  color: var(--text3);
+  padding: 3px 0;
+}
+
 /* ── Viewport Empty State ── */
 #viewport-empty {
   position: absolute; inset: 0;
@@ -446,6 +641,40 @@ textarea, input { font: inherit; }
   background: linear-gradient(135deg, rgba(0,212,255,.3), rgba(124,92,255,.3));
 }
 .sim-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+#engine-bench-panel {
+  display: flex; align-items: center; gap: 12px;
+  min-width: 0; padding: 5px 10px;
+  border-radius: 10px; border: 1px solid rgba(0,212,255,.14);
+  background: rgba(8,13,26,.72); flex: 1;
+}
+#engine-bench-panel.hidden { display: none; }
+.bench-control {
+  display: flex; align-items: center; gap: 7px; min-width: 0;
+}
+.bench-control.compact input[type="number"] { width: 82px; }
+.bench-control label {
+  font-size: 10px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: .05em; white-space: nowrap;
+}
+.bench-control input[type="range"] {
+  width: 104px; accent-color: #26d7ff;
+}
+.bench-control input[type="number"] {
+  background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  color: var(--text); border-radius: 7px; padding: 5px 7px;
+  font-size: 11px; font-family: 'JetBrains Mono', monospace;
+}
+.bench-val {
+  min-width: 48px; color: var(--cyan2); text-align: right;
+  font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+}
+#engine-bench-readout {
+  display: flex; align-items: center; gap: 10px; margin-left: auto; min-width: 0;
+}
+#engine-bench-readout span {
+  color: var(--text2); font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; white-space: nowrap;
+}
 #sim-metrics {
   display: flex; gap: 18px; flex: 1; justify-content: center; align-items: center;
 }
@@ -475,5 +704,10 @@ textarea, input { font: inherit; }
 /* ── Responsive: narrow screens ── */
 @media (max-width: 900px) {
   #split { grid-template-columns: 1fr; }
+  #sim-bar { height: auto; min-height: 46px; padding: 8px 12px; flex-wrap: wrap; }
+  #engine-bench-panel { order: 3; width: 100%; flex-wrap: wrap; }
+  #engine-bench-readout { width: 100%; margin-left: 0; flex-wrap: wrap; }
+  #engineering-qa-panel { position: absolute; top: 12px; left: 12px; right: 12px; width: auto; max-height: 42%; }
+  .qa-metrics { grid-template-columns: 1fr; }
   #viewport-panel { display: none; }
 }
