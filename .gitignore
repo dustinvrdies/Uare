@@ -8,6 +8,7 @@ node_modules/
 /object_storage_mirror/
 /object_storage_mirror_test/
 /logs/
+.uare-launch-state.json
 *.log
 *_out.txt
 *_output.txt

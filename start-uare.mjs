@@ -10,7 +10,7 @@ import crypto from 'node:crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const repoRoot = path.dirname(__filename);
-const backendDir = path.join(repoRoot, 'custom_backend');
+const backendDir = repoRoot;
 const logsDir = path.join(repoRoot, 'logs');
 const stateFile = path.join(repoRoot, '.uare-launch-state.json');
 fs.mkdirSync(logsDir, { recursive: true });
@@ -244,6 +244,7 @@ function ensureDirs() {
 function shouldInstallDependencies(state, versions) {
   if (mode.forceInstall) return true;
   if (!fs.existsSync(path.join(backendDir, 'node_modules'))) return true;
+  if (!state.lockHash) return false;
   const lockHash = fileHash(path.join(backendDir, 'package-lock.json'));
   return !(
     state.lockHash &&
@@ -257,7 +258,14 @@ function installDependencies(state, versions) {
   const hasLock = fs.existsSync(path.join(backendDir, 'package-lock.json'));
   if (!shouldInstallDependencies(state, versions)) {
     log('Dependencies look current. Skipping reinstall.');
-    return state;
+    const next = {
+      ...state,
+      lockHash: fileHash(path.join(backendDir, 'package-lock.json')),
+      nodeVersion: versions.nodeVersion,
+      npmVersion: versions.npmVersion,
+    };
+    writeState(next);
+    return next;
   }
   const preferred = hasLock ? [npmCmd, ['ci']] : [npmCmd, ['install']];
   let res = run(preferred[0], preferred[1]);
