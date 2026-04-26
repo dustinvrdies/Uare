@@ -1,7 +1,8 @@
 node_modules/
 .env
 .env.*
-/data/
+/data/*
+!/data/training_corpus.jsonl
 /artifacts/
 /backups/
 /.cad311/
