@@ -203,8 +203,10 @@ async function tryOllama(prompt, systemPrompt) {
       ],
       stream:  false,
       options: {
-        temperature:  0.65,
+        temperature:  0.82,
         top_p:        0.9,
+        repeat_penalty: 1.2,
+        seed: Date.now() % 2147483647,
         num_predict:  8192,
         num_ctx:      16384,
         stop:         ['<|im_end|>', '<|eot_id|>'],
@@ -443,6 +445,189 @@ function reduceDimensionList(dims = []) {
   }, {});
 }
 
+function unitScale(unit = 'mm') {
+  const normalized = String(unit || 'mm').trim().toLowerCase();
+  if (normalized === 'cm') return 10;
+  if (normalized === 'm') return 1000;
+  if (normalized === 'in' || normalized === 'inch' || normalized === 'inches') return 25.4;
+  return 1;
+}
+
+function normalizePartDims(part = {}, defaultUnit = 'mm') {
+  const source = Object.assign({}, part?.dims || {}, part?.dimensions_mm || {});
+  const scale = unitScale(part?.unit || part?.units || defaultUnit);
+  const toPositive = (value, fallback) => {
+    const n = Number(value);
+    return Number.isFinite(n) && n > 0 ? Number((n * scale).toFixed(4)) : fallback;
+  };
+  const x = toPositive(source.x ?? source.length ?? source.width ?? source.outer_diameter ?? source.diameter, 40);
+  const y = toPositive(source.y ?? source.width ?? source.depth ?? source.outer_diameter ?? source.diameter, 30);
+  const z = toPositive(source.z ?? source.height ?? source.thickness ?? source.length, 20);
+  return { x, y, z };
+}
+
+function normalizePartPosition(part = {}, index = 0, defaultUnit = 'mm') {
+  const scale = unitScale(part?.unit || part?.units || defaultUnit);
+  if (Array.isArray(part?.position)) {
+    return [
+      Number((Number(part.position[0] || 0) * scale).toFixed(4)),
+      Number((Number(part.position[1] || 0) * scale).toFixed(4)),
+      Number((Number(part.position[2] || 0) * scale).toFixed(4)),
+    ];
+  }
+  const tr = part?.transform_mm && typeof part.transform_mm === 'object' ? part.transform_mm : {};
+  if (tr.x !== undefined || tr.y !== undefined || tr.z !== undefined) {
+    return [
+      Number((Number(tr.x || 0) * scale).toFixed(4)),
+      Number((Number(tr.y || 0) * scale).toFixed(4)),
+      Number((Number(tr.z || 0) * scale).toFixed(4)),
+    ];
+  }
+  return [index * 70, 0, 0];
+}
+
+function enforceAssemblyPlanContract(plan = {}, prompt = '') {
+  const input = plan && typeof plan === 'object' ? JSON.parse(JSON.stringify(plan)) : {};
+  const warnings = [];
+  const defaultUnit = input?.unit || input?.units || 'mm';
+  const rawParts = Array.isArray(input.parts) ? input.parts : [];
+  const seenIds = new Set();
+
+  const parts = rawParts.map((part, index) => {
+    const normalizedDims = normalizePartDims(part, defaultUnit);
+    const idBase = String(part?.id || `${String(part?.type || 'part').toLowerCase().replace(/[^a-z0-9]+/g, '_')}_${index + 1}`);
+    let id = idBase;
+    let suffix = 2;
+    while (seenIds.has(id)) {
+      id = `${idBase}_${suffix}`;
+      suffix += 1;
+    }
+    seenIds.add(id);
+    return {
+      ...part,
+      id,
+      type: String(part?.type || part?.shape || 'box').toLowerCase(),
+      material: part?.material || getMat(prompt).name,
+      dims: normalizedDims,
+      dimensions_mm: normalizedDims,
+      unit: 'mm',
+      units: 'mm',
+      position: normalizePartPosition(part, index, defaultUnit),
+      quantity: Number.isFinite(Number(part?.quantity)) && Number(part.quantity) > 0 ? Number(part.quantity) : 1,
+    };
+  });
+
+  if (!parts.length) {
+    warnings.push('No parts found in generated plan. Injected a default primary body for CAD continuity.');
+    parts.push({
+      id: 'body_1',
+      name: 'Primary body',
+      type: 'housing',
+      material: getMat(prompt).name,
+      dims: { x: 120, y: 80, z: 50 },
+      dimensions_mm: { x: 120, y: 80, z: 50 },
+      position: [0, 0, 0],
+      unit: 'mm',
+      units: 'mm',
+      quantity: 1,
+    });
+  }
+
+  return {
+    plan: {
+      ...input,
+      assembly: true,
+      parts,
+      unit: 'mm',
+      units: 'mm',
+    },
+    warnings,
+  };
+}
+
+const PROMPT_COMPONENT_LIBRARY = [
+  { re: /shaft|axle|spindle/i, type: 'shaft', name: 'Drive Shaft', dims: { x: 28, y: 28, z: 180 }, material: 'steel_4340' },
+  { re: /gear|pinion|sprocket/i, type: 'gear', name: 'Power Gear', dims: { x: 90, y: 90, z: 24 }, material: 'steel_4340' },
+  { re: /bearing/i, type: 'bearing', name: 'Rolling Bearing', dims: { x: 52, y: 52, z: 16 }, material: 'steel' },
+  { re: /housing|enclosure|case|shell/i, type: 'housing', name: 'Main Housing', dims: { x: 220, y: 140, z: 100 }, material: 'aluminum_6061_t6' },
+  { re: /bracket|mount|clamp|fixture/i, type: 'bracket', name: 'Mount Bracket', dims: { x: 120, y: 70, z: 40 }, material: 'aluminum_6061_t6' },
+  { re: /impeller|pump/i, type: 'impeller', name: 'Impeller Rotor', dims: { x: 110, y: 110, z: 30 }, material: 'stainless_316l' },
+  { re: /valve|manifold|fluid|hydraulic|pneumatic/i, type: 'valve_body', name: 'Flow Control Body', dims: { x: 160, y: 90, z: 70 }, material: 'stainless_316l' },
+  { re: /motor|actuator|servo/i, type: 'housing', name: 'Motor Can', dims: { x: 90, y: 90, z: 140 }, material: 'steel' },
+  { re: /pcb|board|controller|sensor|electronics/i, type: 'pcb', name: 'Control PCB', dims: { x: 120, y: 80, z: 1.6 }, material: 'fr4' },
+  { re: /heat|thermal|radiator|cooler|sink/i, type: 'heat_sink', name: 'Heat Sink Module', dims: { x: 140, y: 100, z: 55 }, material: 'aluminum_6061_t6' },
+  { re: /wing|aircraft|airframe|aero/i, type: 'plate', name: 'Aero Skin Panel', dims: { x: 600, y: 220, z: 8 }, material: 'carbon_fiber' },
+  { re: /bridge|truss|beam|tower/i, type: 'beam', name: 'Primary Beam', dims: { x: 800, y: 140, z: 120 }, material: 'steel' },
+  { re: /rocket|nozzle|thruster|combustion/i, type: 'nozzle', name: 'Nozzle Body', dims: { x: 180, y: 180, z: 260 }, material: 'inconel_718' },
+];
+
+function generatePromptDrivenAssemblyPlan(prompt = '') {
+  const t = String(prompt || '');
+  if (!t.trim()) return null;
+
+  const dims = reduceDimensionList(extractDimensions(t));
+  const material = getMat(t).name;
+  const selected = PROMPT_COMPONENT_LIBRARY.filter((entry) => entry.re.test(t));
+  if (!selected.length) return null;
+
+  const baseLength = Number(dims.length || dims.diameter || 220);
+  const baseWidth = Number(dims.width || Math.max(60, baseLength * 0.55));
+  const baseHeight = Number(dims.height || Math.max(40, baseLength * 0.4));
+
+  const parts = [];
+  parts.push({
+    id: 'primary_body_1',
+    name: 'Primary Body',
+    type: 'housing',
+    material,
+    dims: { x: baseLength, y: baseWidth, z: baseHeight },
+    position: [0, 0, baseHeight / 2],
+    quantity: 1,
+    notes: 'Prompt-derived envelope body.',
+  });
+
+  let offsetX = Math.max(80, baseLength * 0.7);
+  selected.slice(0, 10).forEach((entry, index) => {
+    parts.push({
+      id: `${entry.type}_${index + 1}`,
+      name: entry.name,
+      type: entry.type,
+      material: entry.material || material,
+      dims: {
+        x: Number((entry.dims.x * (baseLength / 220)).toFixed(3)),
+        y: Number((entry.dims.y * (baseWidth / 120)).toFixed(3)),
+        z: Number((entry.dims.z * (baseHeight / 80)).toFixed(3)),
+      },
+      position: [offsetX, index * 70, Number((entry.dims.z / 2).toFixed(3))],
+      quantity: 1,
+      notes: `Prompt-derived component matched by keyword: ${entry.type}.`,
+    });
+    offsetX += Math.max(70, entry.dims.x * 0.6);
+  });
+
+  for (let i = 0; i < 4; i += 1) {
+    parts.push({
+      id: `fastener_m8_${i + 1}`,
+      name: `Fastener M8-${i + 1}`,
+      type: 'bolt_hex',
+      material: 'steel_4340',
+      dims: { x: 8, y: 8, z: 30 },
+      position: [Number((baseLength * 0.35).toFixed(3)), (i - 1.5) * (baseWidth * 0.22), Number((baseHeight * 0.5).toFixed(3))],
+      quantity: 1,
+      notes: 'Auto-generated mounting fastener for assembly completeness.',
+    });
+  }
+
+  return {
+    assembly: true,
+    name: `${pickInventionTheme(t)} — prompt-derived assembly`,
+    description: `Prompt-derived plan with ${parts.length} explicit components generated from request intent.`,
+    total_mass_kg: Number((parts.length * 0.18).toFixed(3)),
+    parts,
+    bom_notes: `Generated from prompt intent: "${t.slice(0, 160)}"`,
+  };
+}
+
 function inferPlanEnvelope(plan = {}) {
   const params = plan?.recipe?.parameters || {};
   if (params.bracket_length_mm || params.bracket_width_mm || params.bracket_height_mm) {
@@ -572,6 +757,8 @@ function safetyFactorNote(youngs, yield_, force = 120, area = 1000) {
 // ─── Fallback assembly plan generator (when Ollama not running) ────────────
 function generateFallbackAssemblyPlan(prompt) {
   const t = prompt.toLowerCase();
+  const promptDriven = generatePromptDrivenAssemblyPlan(prompt);
+  if (promptDriven) return promptDriven;
 
   // ── Internal combustion engine / car engine ──────────────────────────────
   if (/\b(internal combustion|car engine|v8|v6|inline|four.?cylinder|piston engine|reciprocating)\b/.test(t) ||
@@ -2002,7 +2189,13 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
       }
 
       const derivedCadSpec = buildDerivedCadSpec(sourcePrompt, enki._plan || null);
-      if (enki._plan) enki._plan = applyDerivedCadSpecToPlan(enki._plan, derivedCadSpec);
+      let planValidationWarnings = [];
+      if (enki._plan) {
+        enki._plan = applyDerivedCadSpecToPlan(enki._plan, derivedCadSpec);
+        const enforced = enforceAssemblyPlanContract(enki._plan, sourcePrompt);
+        enki._plan = enforced.plan;
+        planValidationWarnings = enforced.warnings;
+      }
 
       // Legacy structured data
       const legacy = inferSuggestions({
@@ -2030,6 +2223,7 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         narrative:    enki.narrative,
         insights:     [...new Set([...(enki.insights  || []), ...legacy.insights])],
         warnings:     [...new Set([...(enki.warnings  || []), ...legacy.warnings])],
+        assembly_plan_warnings: planValidationWarnings,
         suggestions:  [...new Set([...(enki.suggestions || []), ...legacy.suggestions])],
         cad_execution_id: cadExecutionId || null,
         assembly_plan:    enki._plan || null,

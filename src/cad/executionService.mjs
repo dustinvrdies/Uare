@@ -505,7 +505,8 @@ function applyDomainPreset(plan = {}) {
 
   const selectedDomain = domains.length ? String(domains[0]).toLowerCase() : 'general';
   const hasParts = Array.isArray(candidate.parts) && candidate.parts.length > 0;
-  if (!hasParts && selectedDomain !== 'general') {
+  const allowPresetAutofill = candidate?.allow_domain_autofill === true;
+  if (!hasParts && selectedDomain !== 'general' && allowPresetAutofill) {
     candidate.parts = [partPresetFactory(selectedDomain, 0), partPresetFactory(selectedDomain, 1), partPresetFactory(selectedDomain, 2)];
   }
 
@@ -533,9 +534,11 @@ function applyDomainPreset(plan = {}) {
       generated_at: new Date().toISOString(),
       domain: selectedDomain,
       explicit_domains: domains,
-      preset_applied: !hasParts && selectedDomain !== 'general',
+      preset_applied: !hasParts && selectedDomain !== 'general' && allowPresetAutofill,
       part_count: Array.isArray(candidate.parts) ? candidate.parts.length : 0,
-      preset_source: selectedDomain !== 'general' ? 'domain_template_library' : 'none',
+      preset_source: !hasParts && selectedDomain !== 'general' && allowPresetAutofill
+        ? 'domain_template_library'
+        : 'none',
     },
   };
 }
