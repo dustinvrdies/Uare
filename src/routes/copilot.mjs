@@ -6,10 +6,21 @@ import { getEnhancedSystemPrompt } from '../enki/enhancedPrompt.mjs';
 // ─── Ollama LLM integration ──────────────────────────────────
 const OLLAMA_URL   = process.env.OLLAMA_URL   || 'http://127.0.0.1:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3';
+const DEFAULT_OLLAMA_MODELS = ['llama3.1:8b', 'llama3.1:70b', 'qwen2.5-coder:14b', 'llama3'];
 const OLLAMA_MODELS = String(process.env.OLLAMA_MODELS || '')
   .split(',')
   .map((entry) => entry.trim())
   .filter(Boolean);
+const OLLAMA_MODEL_CHAIN = OLLAMA_MODELS.length ? OLLAMA_MODELS : DEFAULT_OLLAMA_MODELS;
+let ollamaStartupLogged = false;
+
+function logOllamaStartupConfigOnce() {
+  if (ollamaStartupLogged) return;
+  ollamaStartupLogged = true;
+  console.info(
+    `[copilot] Ollama route configured: url=${OLLAMA_URL} default_model=${OLLAMA_MODEL} model_chain=${OLLAMA_MODEL_CHAIN.join(',')}`,
+  );
+}
 
 // ─── Enki's full canonical system prompt ─────────────────────
 // This is THE brain. Client can override per-request via req.body.system_prompt.
@@ -254,7 +265,7 @@ function getOllamaModelCandidates(preferredModel = null) {
   };
   pushUnique(preferredModel);
   pushUnique(OLLAMA_MODEL);
-  for (const model of OLLAMA_MODELS) pushUnique(model);
+  for (const model of OLLAMA_MODEL_CHAIN) pushUnique(model);
   if (!candidates.length) candidates.push('llama3');
   return candidates;
 }
@@ -2313,6 +2324,7 @@ function inferSuggestions({ selected_part, assembly, simulation, prompt }) {
 
 export function buildCopilotRoutes(runtime, cadExecutionService = null) {
   const router = Router();
+  logOllamaStartupConfigOnce();
 
   router.post('/contextual-analysis', async (req, res) => {
     try {
@@ -2343,6 +2355,13 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         enki = generateEnkiNarrative(sourcePrompt, ctx);
         fallbackReason = ollamaResult.reason || 'ollama_failed';
       }
+
+      const attemptSummary = Array.isArray(ollamaResult.attempts)
+        ? ollamaResult.attempts.map((attempt) => `${attempt.model}:${attempt.ok ? 'ok' : 'fail'}`).join('|')
+        : '';
+      console.info(
+        `[copilot/contextual-analysis] provider=${usedOllama ? 'ollama' : 'builtin_fallback'} selected_model=${ollamaResult.selected_model || 'none'} preferred_model=${preferredOllamaModel || 'none'} fallback_reason=${fallbackReason || 'none'} attempts=${attemptSummary || 'none'}`,
+      );
 
       // Preserve conversational Ollama narrative. If a design request lacks a
       // parsable assembly plan, synthesize only the plan with builtin logic.
