@@ -1,0 +1,41 @@
+# deploy/render/render.yaml — Render.com Blueprint for UARE backend
+# Deploy with: Connect your repo in Render dashboard and select this file.
+
+services:
+  - type: web
+    name: uare-backend
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8787"
+      - key: CUSTOM_BACKEND_MODE
+        value: postgres
+      - key: RATE_LIMIT_MODE
+        value: redis
+      - key: EVENT_BUS_MODE
+        value: redis
+      - key: EVENT_REPLAY_STORE_MODE
+        value: postgres
+      - key: WORKER_STORE_MODE
+        value: postgres
+      - key: JOB_STORE_MODE
+        value: postgres
+      - key: ALLOW_DEV_HEADER_AUTH
+        value: "false"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: PUBLIC_HEALTH_DETAILS
+        value: "false"
+    secretFiles:
+      - key: DATABASE_URL
+        path: /app/db_url
+      - key: REDIS_URL
+        path: /app/redis_url
+      - key: SESSION_SECRET
+        path: /app/session_secret

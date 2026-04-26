@@ -1,0 +1,29 @@
+# deploy/railway/railway.toml — Railway deployment config for UARE backend
+# Deploy with: railway up (from project root)
+
+[build]
+  builder = "dockerfile"
+  dockerfilePath = "Dockerfile"
+
+[deploy]
+  startCommand = "node scripts/runMigrations.mjs && node server.mjs"
+  healthcheckPath = "/health"
+  healthcheckTimeout = 30
+  restartPolicyType = "on_failure"
+  restartPolicyMaxRetries = 3
+
+[environments.production.variables]
+  NODE_ENV                 = "production"
+  PORT                     = "8787"
+  CUSTOM_BACKEND_MODE      = "postgres"
+  RATE_LIMIT_MODE          = "redis"
+  EVENT_BUS_MODE           = "redis"
+  EVENT_REPLAY_STORE_MODE  = "postgres"
+  WORKER_STORE_MODE        = "postgres"
+  JOB_STORE_MODE           = "postgres"
+  ALLOW_DEV_HEADER_AUTH    = "false"
+  TRUST_PROXY              = "true"
+  PUBLIC_HEALTH_DETAILS    = "false"
+  # Set DATABASE_URL and REDIS_URL from Railway plugin vars (auto-injected)
+  # Set SESSION_SECRET, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
+  # OPS_METRICS_TOKEN, APP_BASE_URL, CORS_ALLOWED_ORIGINS as Railway secrets.
