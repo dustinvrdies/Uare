@@ -923,6 +923,49 @@ function pickInventionTheme(text) {
   return 'precision mechanical component';
 }
 
+function inferPromptIntent(prompt = '') {
+  const t = String(prompt || '').toLowerCase();
+  if (/^(hi|hello|hey|yo|greetings|sup|what'?s up)\b/.test(t)) return 'greeting';
+  if (/^(how|what|why|explain|tell me|describe|can you|do you)\b/.test(t)) return 'explanation_request';
+  if (isDesignRequest(prompt)) return 'design_request';
+  if (/\b(export|download|save|get)\b/.test(t) && /\b(stl|step|obj|cad|model|file)\b/.test(t)) return 'export_request';
+  if (/\b(stress|load|force|deflect|deform|factor|fea|fem|analyse|analyze|simulation)\b/.test(t)) return 'analysis_request';
+  return 'general_request';
+}
+
+function buildConstraintHighlights(prompt = '') {
+  const dimensions = extractDimensions(prompt);
+  const fits = extractFits(prompt);
+  const tolerances = extractTolerances(prompt);
+  const holePatterns = extractHolePatterns(prompt);
+  const highlights = [];
+  if (dimensions.length) highlights.push(`${dimensions.length} dimensional constraint(s)`);
+  if (fits.length) highlights.push(`${fits.length} fit requirement(s)`);
+  if (tolerances.length) highlights.push(`${tolerances.length} tolerance requirement(s)`);
+  if (holePatterns.length) highlights.push(`${holePatterns.length} hole pattern requirement(s)`);
+  if (!highlights.length) highlights.push('No explicit fit/tolerance constraints detected');
+  return { dimensions, fits, tolerances, holePatterns, highlights };
+}
+
+function buildFollowupQuestions(prompt = '', constraints = null) {
+  const t = String(prompt || '').toLowerCase();
+  const state = constraints || buildConstraintHighlights(prompt);
+  const questions = [];
+  if (!state.dimensions.length) questions.push('What envelope should I enforce (L x W x H in mm)?');
+  if (!/\b(aluminum|aluminium|steel|stainless|titanium|inconel|peek|nylon|carbon|composite|cast iron)\b/.test(t)) {
+    questions.push('Which material grade should be baseline?');
+  }
+  if (!state.tolerances.length) questions.push('Do you want a general tolerance class or explicit plus/minus values?');
+  if (/\b(shaft|bearing|gear|journal|bore|fit|press)\b/.test(t) && !state.fits.length) {
+    questions.push('Should shaft/bore interfaces be clearance, transition, or interference fits?');
+  }
+  return questions.slice(0, 3);
+}
+
+function uniqueList(values = []) {
+  return [...new Set((values || []).filter(Boolean))];
+}
+
 function safetyFactorNote(youngs, yield_, force = 120, area = 1000) {
   const stress = (force / area) * 1e3;  // MPa (rough)
   const sf = yield_ / stress;
@@ -2175,6 +2218,9 @@ function generateEnkiNarrative(prompt, ctx = {}) {
   const mat = getMat(prompt);
   const dims = extractDimensions(prompt);
   const theme = pickInventionTheme(prompt);
+  const intent = inferPromptIntent(prompt);
+  const constraintState = buildConstraintHighlights(prompt);
+  const followupQuestions = buildFollowupQuestions(prompt, constraintState);
 
   // ── Greeting ──
   if (/^(hi|hello|hey|yo|greetings|sup|what'?s up)\b/.test(t)) {
@@ -2199,10 +2245,10 @@ function generateEnkiNarrative(prompt, ctx = {}) {
   // ── General explanation / question ──
   if (/^(how|what|why|explain|tell me|describe|can you|do you)\b/.test(t)) {
     return {
-      narrative: `Good question. Let me walk through the engineering perspective.\n\nThe ${theme} you're asking about involves ${getExplanation(prompt)}.\n\nFrom a manufacturing standpoint, the primary constraints are tolerance stack-up, surface finish requirements, and process-specific minimum feature sizes. For most precision applications I'd start with a parametric CAD model so we can iterate quickly on dimensions before committing to material and process.\n\nShall I generate an initial concept model?`,
-      insights: ['Design space analysis ready', 'No dimensions provided — defaults will be used'],
+      narrative: `Good question. Here is the engineering view for this ${theme}.\n\nCore mechanism: ${getExplanation(prompt)}.\n\nDetected constraints: ${constraintState.highlights.join(', ')}.\n\nRecommended sequence: lock interfaces and envelope, then lock material/process, then run first-pass simulation to find weak regions.\n\nIf you want, I can generate a first concept now with these assumptions.`,
+      insights: ['Design space analysis ready', dims.length ? 'Prompt dimensions detected and prioritized' : 'No dimensions provided — defaults will be used', ...constraintState.highlights],
       warnings: [],
-      suggestions: ['Generate initial CAD concept', 'Define constraints and I\'ll optimise', 'Search patent landscape first'],
+      suggestions: uniqueList(['Generate initial CAD concept', 'Define constraints and I\'ll optimise', 'Search patent landscape first', ...followupQuestions]),
     };
   }
 
@@ -2263,13 +2309,23 @@ function generateEnkiNarrative(prompt, ctx = {}) {
   if (isDesignRequest(prompt)) {
     const plan = generateFallbackAssemblyPlan(prompt);
     const dimStr = dims.length ? dims.map(d => `${d.key}: ${d.value} ${d.unit}`).join(', ') : 'standard proportions';
+    const assumptions = followupQuestions.length
+      ? `Pending confirmations: ${followupQuestions.join(' ')}`
+      : 'Prompt includes enough constraints for immediate execution.';
     return {
-      narrative: `Generating **${plan.name}**.\n\n${plan.description || ''}\n\nMaterial: **${mat.name}** (E = ${mat.youngs} GPa, σ_y = ${mat.yield} MPa). ${dimStr}.\n\n${safetyFactorNote(mat.youngs, mat.yield)}\n\n\`\`\`json\n${JSON.stringify(plan, null, 2)}\n\`\`\``,
-      insights: [`Parts: ${plan.parts.length}`, `Mass: ${plan.total_mass_kg} kg`],
+      narrative: `Generating **${plan.name}**.\n\n${plan.description || ''}\n\nIntent classification: **${intent.replace(/_/g, ' ')}**. Material baseline: **${mat.name}** (E = ${mat.youngs} GPa, σ_y = ${mat.yield} MPa). ${dimStr}.\n\n${assumptions}\n\n${safetyFactorNote(mat.youngs, mat.yield)}\n\n\`\`\`json\n${JSON.stringify(plan, null, 2)}\n\`\`\``,
+      insights: [`Parts: ${plan.parts.length}`, `Mass: ${plan.total_mass_kg} kg`, ...constraintState.highlights],
       warnings: [],
-      suggestions: ['Run FEA stress analysis', 'Run physics simulation', 'Export as STEP file'],
+      suggestions: uniqueList([...followupQuestions, 'Run FEA stress analysis', 'Run physics simulation', 'Export as STEP file']),
       _source: 'builtin-design',
       _plan: plan,
+      _response_profile: {
+        intent,
+        theme,
+        has_dimensions: dims.length > 0,
+        highlights: constraintState.highlights,
+        pending_questions: followupQuestions,
+      },
     };
   }
 
@@ -2280,14 +2336,22 @@ function generateEnkiNarrative(prompt, ctx = {}) {
     : 'standard proportions (120 × 40 × 25 mm)';
 
   return {
-    narrative: `I've analysed your description. You're designing a **${theme}** — a good candidate for the UARE automated pipeline.\n\n**Engineering plan:**\n\n1. **CAD** — Generate parametric geometry using ${mat.name} with ${dimStr}. The model will include mounting features, fillet radii at stress concentrations, and export-ready tolerances.\n\n2. **Simulation** — Run structural static FEA. I'll apply a ${ctx.force || 120} N load case and report Von Mises stress distribution, maximum deflection, and safety factor.\n\n3. **Patent** — Search prior art in the mechanical domain and generate independent claims based on novel geometric or functional features.\n\n${safetyFactorNote(mat.youngs, mat.yield)}\n\nSay **"run the full pipeline"** and I'll execute all three steps automatically. Or I can start with just the CAD if you want to review the geometry first.`,
+    narrative: `I've analyzed your request as a **${theme}** with intent **${intent.replace(/_/g, ' ')}**.\n\nDetected constraints: ${constraintState.highlights.join(', ')}.\n\nRecommended next move:\n1. Lock geometry envelope and interfaces (${dimStr}).\n2. Freeze material/process (${mat.name}; ${mat.process}).\n3. Run structural baseline with ${ctx.force || 120} N plus one thermal or dynamic load case.\n\n${safetyFactorNote(mat.youngs, mat.yield)}\n\nSay **"run CAD"**, **"run FEA"**, or **"run full pipeline"** and I will execute it.`,
     insights: [
       `Component type: ${theme}`,
       hasDims ? `Dimensions extracted: ${dimStr}` : 'Default dimensions will be applied',
       `Material: ${mat.name} (E = ${mat.youngs} GPa)`,
+      ...constraintState.highlights,
     ],
     warnings: [],
-    suggestions: ['Run full pipeline now', 'Generate CAD first for review', `Search prior art for ${theme}`],
+    suggestions: uniqueList(['Run full pipeline now', 'Generate CAD first for review', `Search prior art for ${theme}`, ...followupQuestions]),
+    _response_profile: {
+      intent,
+      theme,
+      has_dimensions: hasDims,
+      highlights: constraintState.highlights,
+      pending_questions: followupQuestions,
+    },
   };
 }
 
@@ -2356,6 +2420,16 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         fallbackReason = ollamaResult.reason || 'ollama_failed';
       }
 
+      if (!enki._response_profile) {
+        enki._response_profile = {
+          intent: inferPromptIntent(sourcePrompt),
+          theme: pickInventionTheme(sourcePrompt),
+          has_dimensions: extractDimensions(sourcePrompt).length > 0,
+          highlights: [],
+          pending_questions: [],
+        };
+      }
+
       const attemptSummary = Array.isArray(ollamaResult.attempts)
         ? ollamaResult.attempts.map((attempt) => `${attempt.model}:${attempt.ok ? 'ok' : 'fail'}`).join('|')
         : '';
@@ -2422,6 +2496,7 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
           available_models: Array.isArray(ollamaResult.available_models) ? ollamaResult.available_models : [],
         },
         narrative:    enki.narrative,
+        response_profile: enki._response_profile || null,
         insights:     [...new Set([...(enki.insights  || []), ...legacy.insights])],
         warnings:     [...new Set([...(enki.warnings  || []), ...legacy.warnings])],
         assembly_plan_warnings: planValidationWarnings,
