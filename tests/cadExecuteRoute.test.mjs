@@ -4,7 +4,7 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
-const { cadExecutionService } = createCadTestHarness();
+const { cadExecutionService, artifactStore } = createCadTestHarness();
 
 const manifest = await cadExecutionService.execute({
   engine: 'cadquery',
@@ -86,5 +86,51 @@ const fastenerManifest = await cadExecutionService.execute({
 }, { id: 'tester' });
 
 assert(fastenerManifest.recipe?.parameters?.bolt_hole_diameter_mm === 12, 'fastener alias d/L should infer bolt hole diameter from d, not L');
+
+const explicitPlacementManifest = await cadExecutionService.execute({
+  engine: 'cadquery',
+  ready_for_execution: true,
+  manufacturability: { manufacturable: true },
+  parts: [
+    {
+      id: 'base-1',
+      name: 'Base block',
+      kind: 'mechanical',
+      type: 'box',
+      dims: { x: 100, y: 60, z: 20 },
+      transform_mm: { x: 250, y: -30, z: 10 },
+      material: 'steel',
+      tolerance: 0.2,
+    },
+    {
+      id: 'cap-1',
+      name: 'Cap block',
+      kind: 'mechanical',
+      type: 'box',
+      dims: { x: 80, y: 60, z: 20 },
+      transform_mm: { x: 250, y: -30, z: 35 },
+      material: 'steel',
+      tolerance: 0.2,
+    },
+  ],
+  script: 'print("placement")',
+}, { id: 'tester' });
+
+assert(
+  explicitPlacementManifest.auto_layout?.applied === false,
+  'auto-layout should not override explicitly provided part placements',
+);
+assert(
+  explicitPlacementManifest.auto_layout?.reason === 'explicit_positions_provided',
+  'auto-layout should report explicit placement bypass reason',
+);
+
+const placedAssembly = JSON.parse(artifactStore.readText(explicitPlacementManifest.execution_id, 'assembly_document.json'));
+const placedBase = placedAssembly.parts.find((part) => part.id === 'base-1');
+const placedCap = placedAssembly.parts.find((part) => part.id === 'cap-1');
+assert(placedBase?.transform_mm?.x === 250, 'assembly should preserve transform_mm x for base part');
+assert(placedBase?.transform_mm?.y === -30, 'assembly should preserve transform_mm y for base part');
+assert(placedBase?.transform_mm?.z === 10, 'assembly should preserve transform_mm z for base part');
+assert(placedCap?.transform_mm?.z === 35, 'assembly should preserve transform_mm z for cap part');
 
 console.log('cadExecuteRoute.test.mjs passed');

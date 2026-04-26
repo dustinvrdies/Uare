@@ -270,11 +270,28 @@ function detectOverlaps(parts = []) {
   return overlaps;
 }
 
+function hasExplicitPlacement(part = {}) {
+  if (Array.isArray(part?.position)) return true;
+  if (!part?.transform_mm || typeof part.transform_mm !== 'object') return false;
+  return ['x', 'y', 'z'].some((key) => part.transform_mm[key] !== undefined && part.transform_mm[key] !== null);
+}
+
 function autoLayoutPlan(plan = {}, options = {}) {
   const candidate = deepCloneJson(plan || {});
   const parts = Array.isArray(candidate?.parts) ? candidate.parts : [];
   if (parts.length <= 1) {
     return { applied: false, reason: 'single_part_or_empty', plan: candidate, overlap_count_before: 0, overlap_count_after: 0 };
+  }
+
+  if (parts.some((part) => hasExplicitPlacement(part))) {
+    const overlapCount = detectOverlaps(parts).length;
+    return {
+      applied: false,
+      reason: 'explicit_positions_provided',
+      plan: candidate,
+      overlap_count_before: overlapCount,
+      overlap_count_after: overlapCount,
+    };
   }
 
   const mates = Array.isArray(candidate?.interfaces)
@@ -969,7 +986,7 @@ function createBaseArtifacts(executionId, plan, options = {}) {
     asmMaxX = -Infinity; asmMaxY = -Infinity; asmMaxZ = -Infinity;
     for (const part of planParts) {
       const d = extractPartDims(part);
-      const pos = Array.isArray(part.position) ? part.position : [0, 0, 0];
+      const pos = extractPartPosition(part);
       const px = Number(pos[0]) || 0;
       const py = Number(pos[1]) || 0;
       const pz = Number(pos[2]) || 0;

@@ -482,7 +482,11 @@ export function buildAssemblyDocument(plan = {}) {
       if (dimensions_mm.y == null) dimensions_mm.y = envelope.y;
       if (dimensions_mm.z == null) dimensions_mm.z = envelope.z;
 
-      const pos = Array.isArray(p.position) ? p.position : [0, 0, 0];
+      const hasPositionArray = Array.isArray(p.position);
+      const sourceTransform = (p.transform_mm && typeof p.transform_mm === 'object') ? p.transform_mm : {};
+      const pos = hasPositionArray
+        ? p.position
+        : [sourceTransform.x ?? 0, sourceTransform.y ?? 0, sourceTransform.z ?? 0];
       const basePart = {
         id: p.id || `part-${stableId(`${shape}-${idx}`)}`,
         name: p.name || shape,
@@ -491,7 +495,11 @@ export function buildAssemblyDocument(plan = {}) {
         dimensions_mm,
         feature_timeline: Array.isArray(p.feature_timeline) ? p.feature_timeline : [],
         features: Array.isArray(p.features) ? p.features : [],
-        transform_mm: { x: Number(pos[0] || 0), y: Number(pos[1] || 0), z: Number(pos[2] || 0) },
+        transform_mm: {
+          x: Number.isFinite(Number(pos[0])) ? Number(pos[0]) : 0,
+          y: Number.isFinite(Number(pos[1])) ? Number(pos[1]) : 0,
+          z: Number.isFinite(Number(pos[2])) ? Number(pos[2]) : 0,
+        },
         material: p.material || params.material_name || 'steel',
         process: p.process || params.process || 'cnc',
         exploded_offset_mm: p.exploded_offset_mm || { x: 0, y: 0, z: Number(dimensions_mm.z || 0) * 0.2 },

@@ -51,8 +51,24 @@ function inferEnvelope(dims = {}) {
   return { x, y, z };
 }
 
+function getPositionVector(part = {}, scale = 1) {
+  if (Array.isArray(part?.position)) {
+    return [
+      toNumber(part.position[0], 0) * scale,
+      toNumber(part.position[1], 0) * scale,
+      toNumber(part.position[2], 0) * scale,
+    ];
+  }
+  const tr = (part?.transform_mm && typeof part.transform_mm === 'object') ? part.transform_mm : {};
+  return [
+    toNumber(tr.x, 0) * scale,
+    toNumber(tr.y, 0) * scale,
+    toNumber(tr.z, 0) * scale,
+  ];
+}
+
 function makeAabb(part = {}) {
-  const pos = Array.isArray(part.position) ? part.position : [0, 0, 0];
+  const pos = getPositionVector(part, 1);
   const dims = inferEnvelope(part.dims || part.dimensions_mm || {});
   const px = toNumber(pos[0], 0);
   const py = toNumber(pos[1], 0);
@@ -327,7 +343,7 @@ function aggregateMassProperties(partAnalytics = [], parts = []) {
   for (const row of partAnalytics) {
     const mass = toPositive(row.estimated_mass_kg, 0);
     const part = partMap.get(String(row.part_id || ''));
-    const pos = Array.isArray(part?.position) ? part.position : [0, 0, 0];
+    const pos = getPositionVector(part, 1);
     totalMass += mass;
     weightedX += mass * toNumber(pos[0], 0);
     weightedY += mass * toNumber(pos[1], 0);
@@ -368,19 +384,19 @@ export function applyEngineeringGuardrails(plan = {}) {
       warnings.push({ type: 'thin_feature_risk', part_index: index, part_id: safePart.id || null, min_dimension_mm: minDim });
     }
 
+    const position = getPositionVector(safePart, scale);
     return {
       ...safePart,
       dims: normalized,
       dimensions_mm: normalized,
       units: 'mm',
       unit: 'mm',
-      position: Array.isArray(safePart.position)
-        ? [
-            toNumber(safePart.position[0], 0) * scale,
-            toNumber(safePart.position[1], 0) * scale,
-            toNumber(safePart.position[2], 0) * scale,
-          ]
-        : [0, 0, 0],
+      position,
+      transform_mm: {
+        x: toNumber(position[0], 0),
+        y: toNumber(position[1], 0),
+        z: toNumber(position[2], 0),
+      },
     };
   });
 
