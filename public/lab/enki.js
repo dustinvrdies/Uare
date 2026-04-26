@@ -959,7 +959,7 @@ let $msgs, $sugg, $input, $sendBtn, $enkiSub, $actionOverlay, $actionText,
     $actionFill, $enkiLive, $enkiLiveMsg, $asmName, $partCount,
   $vpEmpty, $asmTreeContent, $asmBOM, $mParts, $mMass, $simResult,
   $derivedSpecPanel, $derivedSpecSummary, $derivedSpecGrid, $derivedSpecStatus,
-  $derivedSpecExecute, $derivedSpecDismiss,
+  $derivedSpecExecute, $derivedSpecDismiss, $derivedSpecQuestions,
   $engineBenchPanel, $engineThrottle, $engineThrottleVal, $engineLoad,
   $engineLoadVal, $engineRpmTarget, $enginePowerReadout, $engineTorqueReadout,
   $engineOilReadout, $engineCoolantReadout,
@@ -996,6 +996,7 @@ function _init(opts) {
   $derivedSpecStatus = document.getElementById('derived-spec-status');
   $derivedSpecExecute = document.getElementById('btn-derived-spec-execute');
   $derivedSpecDismiss = document.getElementById('btn-derived-spec-dismiss');
+  $derivedSpecQuestions = document.getElementById('derived-spec-questions');
   $engineBenchPanel = document.getElementById('engine-bench-panel');
   $engineThrottle = document.getElementById('engine-throttle');
   $engineThrottleVal = document.getElementById('engine-throttle-val');
@@ -1365,7 +1366,7 @@ async function _processMessage(text) {
       _resolveAssemblyConstraints(plan);
 
       _addMsg('assistant', _mdToHtml(_stripJsonBlock(response)));
-      _renderDerivedSpecPanel(resp.derived_cad_spec || plan.derived_cad_spec || null, plan);
+      _renderDerivedSpecPanel(resp.derived_cad_spec || plan.derived_cad_spec || null, plan, resp.response_profile || null);
 
       if (designIntent && _strictKernelMode) {
         let executionId = resp.cad_execution_id || null;
@@ -1469,6 +1470,7 @@ async function _callLLM(userText) {
     cad_execution_id: data.cad_execution_id || null,
     assembly_plan: data.assembly_plan || null,
     derived_cad_spec: data.derived_cad_spec || null,
+    response_profile: data.response_profile || null,
     insights: data.insights || [],
     suggestions: data.suggestions || [],
   };
@@ -2173,6 +2175,7 @@ function _resetDerivedSpecPanel() {
   if ($derivedSpecPanel) $derivedSpecPanel.classList.add('hidden');
   if ($derivedSpecSummary) $derivedSpecSummary.innerHTML = '';
   if ($derivedSpecGrid) $derivedSpecGrid.innerHTML = '';
+  if ($derivedSpecQuestions) $derivedSpecQuestions.innerHTML = '';
   if ($derivedSpecStatus) $derivedSpecStatus.textContent = 'Review before execution';
   if ($derivedSpecExecute) {
     $derivedSpecExecute.disabled = true;
@@ -3122,6 +3125,24 @@ function _renderEditableSpecSection(title, fields) {
     + '</section>';
 }
 
+function _renderPendingQuestionsSection(responseProfile) {
+  if (!$derivedSpecQuestions) return;
+  const pending = Array.isArray(responseProfile && responseProfile.pending_questions)
+    ? responseProfile.pending_questions.filter(Boolean)
+    : [];
+  if (!pending.length) {
+    $derivedSpecQuestions.innerHTML = '';
+    return;
+  }
+  $derivedSpecQuestions.innerHTML = '<section class="derived-spec-questions-block">'
+    + '<div class="derived-spec-section-title">Missing Inputs</div>'
+    + '<div class="derived-spec-empty">Confirm these before locking the CAD recipe.</div>'
+    + '<ul class="derived-spec-question-list">'
+    + pending.map((entry) => '<li class="derived-spec-question-item">' + esc(String(entry)) + '</li>').join('')
+    + '</ul>'
+    + '</section>';
+}
+
 function _coerceSpecInputValue(input) {
   if (!input) return null;
   if (input.type === 'number') {
@@ -3242,7 +3263,7 @@ function _bindDerivedSpecInputs() {
   });
 }
 
-function _renderDerivedSpecPanel(spec, plan) {
+function _renderDerivedSpecPanel(spec, plan, responseProfile) {
   if (!$derivedSpecPanel || !spec) return;
   _pendingCadPlan = plan ? JSON.parse(JSON.stringify(plan)) : null;
   _pendingDerivedCadSpec = JSON.parse(JSON.stringify(spec));
@@ -3259,6 +3280,7 @@ function _renderDerivedSpecPanel(spec, plan) {
       : 'Inspection only';
   }
   _syncDerivedSpecSummary();
+  _renderPendingQuestionsSection(responseProfile || null);
   if ($derivedSpecGrid) {
     $derivedSpecGrid.innerHTML = [
       _renderEditableSpecSection('Dimensions', [
@@ -3283,6 +3305,8 @@ function _renderDerivedSpecPanel(spec, plan) {
       _renderSpecSection('Review Notes', [
         ['Status', _pendingCadPlan ? 'Edits here will be applied to the reviewed CAD execution plan.' : 'Inspection only'],
         ['Source', _pendingDerivedCadSpec.source || 'prompt_inference'],
+        ['Intent', responseProfile && responseProfile.intent ? responseProfile.intent.replace(/_/g, ' ') : null],
+        ['Theme', responseProfile && responseProfile.theme ? responseProfile.theme : null],
       ]),
     ].join('');
     _bindDerivedSpecInputs();

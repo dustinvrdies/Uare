@@ -260,6 +260,25 @@ textarea, input { font: inherit; }
   gap: 6px;
   margin-bottom: 12px;
 }
+.derived-spec-questions-block {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,184,64,.18);
+  background: rgba(255,184,64,.05);
+}
+.derived-spec-question-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.derived-spec-question-item {
+  color: var(--text2);
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.derived-spec-question-item:last-child {
+  margin-bottom: 0;
+}
 .derived-spec-chip {
   padding: 4px 9px;
   border-radius: 999px;

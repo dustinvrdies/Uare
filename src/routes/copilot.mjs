@@ -738,67 +738,128 @@ const PROMPT_COMPONENT_LIBRARY = [
   { re: /rocket|nozzle|thruster|combustion/i, type: 'nozzle', name: 'Nozzle Body', dims: { x: 180, y: 180, z: 260 }, material: 'inconel_718' },
 ];
 
+function buildPromptPlanPart(id, name, type, material, dims, position, notes, extras = {}) {
+  return Object.assign({
+    id,
+    name,
+    type,
+    material,
+    dims,
+    position,
+    quantity: 1,
+    notes,
+  }, extras || {});
+}
+
+function scalePromptDims(source = {}, sx = 1, sy = 1, sz = 1) {
+  return {
+    x: Number(((source.x || 0) * sx).toFixed(3)),
+    y: Number(((source.y || 0) * sy).toFixed(3)),
+    z: Number(((source.z || 0) * sz).toFixed(3)),
+  };
+}
+
+function buildPromptFasteners(count, baseLength, baseWidth, baseHeight, threadSpec = 'M8') {
+  const holeCount = Math.max(4, Number(count || 0) || 4);
+  const fasteners = [];
+  for (let i = 0; i < holeCount; i += 1) {
+    fasteners.push(buildPromptPlanPart(
+      `fastener_${i + 1}`,
+      `Mounting Fastener ${threadSpec}-${i + 1}`,
+      'bolt_hex',
+      'steel_4340',
+      { x: 8, y: 8, z: Math.max(24, Math.round(baseHeight * 0.35)) },
+      [Number((baseLength * 0.34).toFixed(3)), Number(((i - (holeCount - 1) / 2) * (baseWidth * 0.16)).toFixed(3)), Number((baseHeight * 0.45).toFixed(3))],
+      'Prompt-derived mounting fastener.',
+      { standard: 'ISO 4762', thread_spec: threadSpec },
+    ));
+  }
+  return fasteners;
+}
+
+function buildDomainPromptParts(theme, selected, material, baseLength, baseWidth, baseHeight, holePatterns) {
+  const sx = baseLength / 220;
+  const sy = baseWidth / 120;
+  const sz = baseHeight / 80;
+  const primaryHolePattern = holePatterns[0] || {};
+  const threadSpec = primaryHolePattern.thread_spec || 'M8';
+  const parts = [];
+  const seenTypes = new Set();
+  const addPart = (part) => {
+    if (!part || !part.id) return;
+    parts.push(part);
+    seenTypes.add(String(part.type || ''));
+  };
+
+  if (theme === 'drivetrain / power transmission component') {
+    addPart(buildPromptPlanPart('gearbox_housing', 'Gearbox Housing', 'housing', material, { x: baseLength, y: baseWidth, z: baseHeight }, [0, 0, baseHeight / 2], 'Main torque-carrying housing envelope.'));
+    addPart(buildPromptPlanPart('input_shaft', 'Input Shaft', 'shaft', 'steel_4340', { x: 32, y: 32, z: Math.max(140, Math.round(baseLength * 0.62)) }, [-baseLength * 0.18, 0, baseHeight * 0.52], 'Prompt-derived input shaft.'));
+    addPart(buildPromptPlanPart('output_shaft', 'Output Shaft', 'shaft', 'steel_4340', { x: 38, y: 38, z: Math.max(160, Math.round(baseLength * 0.7)) }, [baseLength * 0.18, 0, baseHeight * 0.52], 'Prompt-derived output shaft.'));
+    addPart(buildPromptPlanPart('primary_gear', 'Primary Reduction Gear', 'gear', 'steel_4340', { x: Math.max(70, Math.round(baseWidth * 0.7)), y: Math.max(70, Math.round(baseWidth * 0.7)), z: Math.max(20, Math.round(baseHeight * 0.2)) }, [-baseLength * 0.06, 0, baseHeight * 0.52], 'Prompt-derived primary gear stage.'));
+    addPart(buildPromptPlanPart('secondary_gear', 'Secondary Reduction Gear', 'gear', 'steel_4340', { x: Math.max(96, Math.round(baseWidth * 0.92)), y: Math.max(96, Math.round(baseWidth * 0.92)), z: Math.max(24, Math.round(baseHeight * 0.24)) }, [baseLength * 0.1, 0, baseHeight * 0.52], 'Prompt-derived output gear stage.'));
+    addPart(buildPromptPlanPart('bearing_input_a', 'Input Bearing A', 'bearing', 'steel', { x: 52, y: 52, z: 16 }, [-baseLength * 0.24, 0, baseHeight * 0.52], 'Supports input shaft.'));
+    addPart(buildPromptPlanPart('bearing_output_a', 'Output Bearing A', 'bearing', 'steel', { x: 62, y: 62, z: 18 }, [baseLength * 0.25, 0, baseHeight * 0.52], 'Supports output shaft.'));
+    addPart(buildPromptPlanPart('seal_output', 'Output Oil Seal', 'lip_seal', 'nbr_rubber', { x: 58, y: 58, z: 8 }, [baseLength * 0.3, 0, baseHeight * 0.52], 'Retains lubricant at output shaft exit.'));
+  } else if (theme === 'fluid control component') {
+    addPart(buildPromptPlanPart('pump_casing', 'Pump Casing', 'housing', material, { x: baseLength, y: baseWidth, z: baseHeight }, [0, 0, baseHeight / 2], 'Pressure boundary and flow envelope.'));
+    addPart(buildPromptPlanPart('impeller_main', 'Primary Impeller', 'impeller', 'stainless_316l', { x: Math.max(90, Math.round(baseWidth * 0.9)), y: Math.max(90, Math.round(baseWidth * 0.9)), z: Math.max(22, Math.round(baseHeight * 0.18)) }, [0, 0, baseHeight * 0.5], 'Prompt-derived rotating impeller.'));
+    addPart(buildPromptPlanPart('pump_shaft', 'Pump Shaft', 'shaft', 'steel_4340', { x: 26, y: 26, z: Math.max(140, Math.round(baseLength * 0.7)) }, [0, 0, baseHeight * 0.5], 'Transmits torque into impeller.'));
+    addPart(buildPromptPlanPart('pump_bearing_a', 'Pump Bearing A', 'bearing', 'steel', { x: 52, y: 52, z: 16 }, [-baseLength * 0.2, 0, baseHeight * 0.5], 'Inboard shaft support.'));
+    addPart(buildPromptPlanPart('pump_bearing_b', 'Pump Bearing B', 'bearing', 'steel', { x: 52, y: 52, z: 16 }, [baseLength * 0.2, 0, baseHeight * 0.5], 'Outboard shaft support.'));
+    addPart(buildPromptPlanPart('primary_seal', 'Primary Mechanical Seal', 'lip_seal', 'ptfe', { x: 44, y: 44, z: 10 }, [baseLength * 0.1, 0, baseHeight * 0.5], 'Prompt-derived shaft sealing element.'));
+    addPart(buildPromptPlanPart('discharge_nozzle', 'Discharge Nozzle', 'valve_body', material, { x: Math.max(60, Math.round(baseLength * 0.24)), y: Math.max(40, Math.round(baseWidth * 0.3)), z: Math.max(40, Math.round(baseHeight * 0.28)) }, [baseLength * 0.34, 0, baseHeight * 0.62], 'Prompt-derived discharge interface.'));
+  } else if (theme === 'electronics mounting / sensor assembly') {
+    addPart(buildPromptPlanPart('enclosure_main', 'Electronics Enclosure', 'housing', material, { x: baseLength, y: baseWidth, z: baseHeight }, [0, 0, baseHeight / 2], 'Protective electronics enclosure envelope.'));
+    addPart(buildPromptPlanPart('control_pcb', 'Control PCB', 'pcb', 'fr4', { x: Math.max(90, Math.round(baseLength * 0.72)), y: Math.max(60, Math.round(baseWidth * 0.7)), z: 1.6 }, [0, 0, baseHeight * 0.34], 'Primary control board.'));
+    addPart(buildPromptPlanPart('power_stage', 'Motor Power Stage', 'ic_smd', 'fr4', { x: 42, y: 32, z: 6 }, [baseLength * 0.08, 0, baseHeight * 0.36], 'Motor-drive power electronics module.'));
+    addPart(buildPromptPlanPart('connector_power', 'Power Connector', 'connector_header', 'copper_pcb', { x: 22, y: 12, z: 12 }, [-baseLength * 0.28, -baseWidth * 0.18, baseHeight * 0.34], 'Power input connector.'));
+    addPart(buildPromptPlanPart('connector_signal', 'Signal Connector', 'connector_header', 'copper_pcb', { x: 18, y: 10, z: 10 }, [-baseLength * 0.28, baseWidth * 0.12, baseHeight * 0.34], 'Signal and communications connector.'));
+    addPart(buildPromptPlanPart('mount_standoff_a', 'PCB Standoff A', 'bracket', 'aluminum_6061_t6', { x: 10, y: 10, z: Math.max(16, Math.round(baseHeight * 0.18)) }, [-baseLength * 0.16, -baseWidth * 0.16, baseHeight * 0.18], 'Supports PCB mounting stack-up.'));
+    addPart(buildPromptPlanPart('mount_standoff_b', 'PCB Standoff B', 'bracket', 'aluminum_6061_t6', { x: 10, y: 10, z: Math.max(16, Math.round(baseHeight * 0.18)) }, [baseLength * 0.16, baseWidth * 0.16, baseHeight * 0.18], 'Supports PCB mounting stack-up.'));
+  } else {
+    addPart(buildPromptPlanPart('primary_body_1', 'Primary Body', 'housing', material, { x: baseLength, y: baseWidth, z: baseHeight }, [0, 0, baseHeight / 2], 'Prompt-derived envelope body.'));
+  }
+
+  selected.slice(0, 10).forEach((entry, index) => {
+    const scaled = scalePromptDims(entry.dims, sx, sy, sz);
+    const normalizedType = String(entry.type || 'custom');
+    const duplicateTypeAllowed = /bearing|gear|connector_header|bolt_hex|shaft/.test(normalizedType);
+    if (!duplicateTypeAllowed && seenTypes.has(normalizedType)) return;
+    addPart(buildPromptPlanPart(
+      `${normalizedType}_${index + 1}`,
+      entry.name,
+      normalizedType,
+      entry.material || material,
+      scaled,
+      [Number((baseLength * (0.18 + index * 0.08)).toFixed(3)), Number((((index % 3) - 1) * baseWidth * 0.24).toFixed(3)), Number((Math.max(8, scaled.z / 2)).toFixed(3))],
+      `Prompt-derived component matched by keyword: ${normalizedType}.`,
+    ));
+  });
+
+  buildPromptFasteners(primaryHolePattern.hole_count, baseLength, baseWidth, baseHeight, threadSpec).forEach(addPart);
+  return parts;
+}
+
 function generatePromptDrivenAssemblyPlan(prompt = '') {
   const t = String(prompt || '');
   if (!t.trim()) return null;
 
   const dims = reduceDimensionList(extractDimensions(t));
   const material = getMat(t).name;
+  const theme = pickInventionTheme(t);
+  const holePatterns = extractHolePatterns(t);
   const selected = PROMPT_COMPONENT_LIBRARY.filter((entry) => entry.re.test(t));
   if (!selected.length) return null;
 
   const baseLength = Number(dims.length || dims.diameter || 220);
   const baseWidth = Number(dims.width || Math.max(60, baseLength * 0.55));
   const baseHeight = Number(dims.height || Math.max(40, baseLength * 0.4));
-
-  const parts = [];
-  parts.push({
-    id: 'primary_body_1',
-    name: 'Primary Body',
-    type: 'housing',
-    material,
-    dims: { x: baseLength, y: baseWidth, z: baseHeight },
-    position: [0, 0, baseHeight / 2],
-    quantity: 1,
-    notes: 'Prompt-derived envelope body.',
-  });
-
-  let offsetX = Math.max(80, baseLength * 0.7);
-  selected.slice(0, 10).forEach((entry, index) => {
-    parts.push({
-      id: `${entry.type}_${index + 1}`,
-      name: entry.name,
-      type: entry.type,
-      material: entry.material || material,
-      dims: {
-        x: Number((entry.dims.x * (baseLength / 220)).toFixed(3)),
-        y: Number((entry.dims.y * (baseWidth / 120)).toFixed(3)),
-        z: Number((entry.dims.z * (baseHeight / 80)).toFixed(3)),
-      },
-      position: [offsetX, index * 70, Number((entry.dims.z / 2).toFixed(3))],
-      quantity: 1,
-      notes: `Prompt-derived component matched by keyword: ${entry.type}.`,
-    });
-    offsetX += Math.max(70, entry.dims.x * 0.6);
-  });
-
-  for (let i = 0; i < 4; i += 1) {
-    parts.push({
-      id: `fastener_m8_${i + 1}`,
-      name: `Fastener M8-${i + 1}`,
-      type: 'bolt_hex',
-      material: 'steel_4340',
-      dims: { x: 8, y: 8, z: 30 },
-      position: [Number((baseLength * 0.35).toFixed(3)), (i - 1.5) * (baseWidth * 0.22), Number((baseHeight * 0.5).toFixed(3))],
-      quantity: 1,
-      notes: 'Auto-generated mounting fastener for assembly completeness.',
-    });
-  }
+  const parts = buildDomainPromptParts(theme, selected, material, baseLength, baseWidth, baseHeight, holePatterns);
 
   return {
     assembly: true,
-    name: `${pickInventionTheme(t)} — prompt-derived assembly`,
-    description: `Prompt-derived plan with ${parts.length} explicit components generated from request intent.`,
+    name: `${theme} — prompt-derived assembly`,
+    description: `Prompt-derived ${theme} plan with ${parts.length} explicit components generated from request intent.`,
     total_mass_kg: Number((parts.length * 0.18).toFixed(3)),
     parts,
     bom_notes: `Generated from prompt intent: "${t.slice(0, 160)}"`,
