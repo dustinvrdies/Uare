@@ -1,6 +1,986 @@
 {
   "events": [
     {
+      "audit_id": "audit-1777215528234-de816694",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777215528234-829495f7",
+      "status": "success",
+      "request_id": "req-1777215528233-33ov81",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777215528226-f1705e92",
+        "user_id": "user-1777215528125-85f58d3a",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T14:58:48.234Z"
+    },
+    {
+      "audit_id": "audit-1777215528227-6f30b9fa",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777215528226-f1705e92",
+      "status": "success",
+      "request_id": "req-1777215528225-ydvtep",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-2463",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T14:58:48.227Z"
+    },
+    {
+      "audit_id": "audit-1777215528222-4c9d80f2",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215528178-f7fa3982",
+      "status": "success",
+      "request_id": "req-1777215528178-mtdo9i",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T14:58:48.222Z"
+    },
+    {
+      "audit_id": "audit-1777215528173-94867f89",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215528125-85f58d3a",
+      "status": "success",
+      "request_id": "req-1777215528125-4wa2ya",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T14:58:48.173Z"
+    },
+    {
+      "audit_id": "audit-1777215528120-3a365726",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215528070-43c4c28a",
+      "status": "success",
+      "request_id": "req-1777215528069-7u9vin",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T14:58:48.120Z"
+    },
+    {
+      "audit_id": "audit-1777215524549-d20b42f5",
+      "actor_id": "user-1777215524415-c9f28afa",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777215524415-c9f28afa",
+      "status": "success",
+      "request_id": "req-1777215524494-jjpulu",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T14:58:44.549Z"
+    },
+    {
+      "audit_id": "audit-1777215524488-6272c652",
+      "actor_id": "user-1777215524415-c9f28afa",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777215524415-c9f28afa",
+      "status": "success",
+      "request_id": "req-1777215524487-5du9k6",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777215524473-19308a3c"
+      },
+      "created_at": "2026-04-26T14:58:44.488Z"
+    },
+    {
+      "audit_id": "audit-1777215524474-5c6d4c48",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215524415-c9f28afa",
+      "status": "success",
+      "request_id": "req-1777215524413-aj5dc6",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T14:58:44.474Z"
+    },
+    {
+      "audit_id": "audit-1777215520844-40baf12e",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777215520843-74ad81c3",
+      "status": "success",
+      "request_id": "req-1777215520841-mye69e",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T14:58:40.844Z"
+    },
+    {
+      "audit_id": "audit-1777215098149-7ace4562",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777215098148-f2032091",
+      "status": "success",
+      "request_id": "req-1777215098147-83fob3",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777215098140-d03fa49c",
+        "user_id": "user-1777215098015-71e7cb46",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T14:51:38.149Z"
+    },
+    {
+      "audit_id": "audit-1777215098141-831f7db2",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777215098140-d03fa49c",
+      "status": "success",
+      "request_id": "req-1777215098138-dlbo18",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-6bca",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T14:51:38.141Z"
+    },
+    {
+      "audit_id": "audit-1777215098133-fefed35f",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215098076-3c07195d",
+      "status": "success",
+      "request_id": "req-1777215098076-lnjnvl",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T14:51:38.133Z"
+    },
+    {
+      "audit_id": "audit-1777215098071-0b5c4db2",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215098015-71e7cb46",
+      "status": "success",
+      "request_id": "req-1777215098015-7hv2k3",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T14:51:38.071Z"
+    },
+    {
+      "audit_id": "audit-1777215098007-e78f6b0c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215097929-c5ea73da",
+      "status": "success",
+      "request_id": "req-1777215097927-dzdga9",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T14:51:38.007Z"
+    },
+    {
+      "audit_id": "audit-1777215094353-b608d7fa",
+      "actor_id": "user-1777215094196-f5b9ef1c",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777215094196-f5b9ef1c",
+      "status": "success",
+      "request_id": "req-1777215094302-31u1s0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T14:51:34.353Z"
+    },
+    {
+      "audit_id": "audit-1777215094297-b0164a97",
+      "actor_id": "user-1777215094196-f5b9ef1c",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777215094196-f5b9ef1c",
+      "status": "success",
+      "request_id": "req-1777215094295-i1kpih",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777215094276-1084466a"
+      },
+      "created_at": "2026-04-26T14:51:34.297Z"
+    },
+    {
+      "audit_id": "audit-1777215094279-f60d7d2e",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777215094196-f5b9ef1c",
+      "status": "success",
+      "request_id": "req-1777215094193-pjl0v0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T14:51:34.279Z"
+    },
+    {
+      "audit_id": "audit-1777215090613-a00291ce",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777215090611-a5dd9451",
+      "status": "success",
+      "request_id": "req-1777215090609-vvqxo9",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T14:51:30.613Z"
+    },
+    {
+      "audit_id": "audit-1777207818293-a3dbef11",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777207818292-90435246",
+      "status": "success",
+      "request_id": "req-1777207818291-qc3y7n",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777207818286-64dcc0f9",
+        "user_id": "user-1777207818173-3b7cf11e",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T12:50:18.293Z"
+    },
+    {
+      "audit_id": "audit-1777207818287-0846e14c",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777207818286-64dcc0f9",
+      "status": "success",
+      "request_id": "req-1777207818286-80qrlp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-b7d6",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T12:50:18.287Z"
+    },
+    {
+      "audit_id": "audit-1777207818281-210aa1c8",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777207818230-f83bc017",
+      "status": "success",
+      "request_id": "req-1777207818230-f8grn3",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T12:50:18.282Z"
+    },
+    {
+      "audit_id": "audit-1777207818224-9fe7ece1",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777207818173-3b7cf11e",
+      "status": "success",
+      "request_id": "req-1777207818173-4ytlbh",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T12:50:18.224Z"
+    },
+    {
+      "audit_id": "audit-1777207818167-9711e0ab",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777207818110-ef365175",
+      "status": "success",
+      "request_id": "req-1777207818108-4z93zl",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T12:50:18.167Z"
+    },
+    {
+      "audit_id": "audit-1777207814562-12fd5557",
+      "actor_id": "user-1777207814435-607d67f2",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777207814435-607d67f2",
+      "status": "success",
+      "request_id": "req-1777207814513-fatqtr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T12:50:14.562Z"
+    },
+    {
+      "audit_id": "audit-1777207814508-689cf07e",
+      "actor_id": "user-1777207814435-607d67f2",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777207814435-607d67f2",
+      "status": "success",
+      "request_id": "req-1777207814506-bp8qr6",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777207814495-e6d1ec59"
+      },
+      "created_at": "2026-04-26T12:50:14.508Z"
+    },
+    {
+      "audit_id": "audit-1777207814497-47f91331",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777207814435-607d67f2",
+      "status": "success",
+      "request_id": "req-1777207814433-xf985v",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T12:50:14.497Z"
+    },
+    {
+      "audit_id": "audit-1777207810871-e6fae923",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777207810870-7e334594",
+      "status": "success",
+      "request_id": "req-1777207810868-1bazyb",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T12:50:10.871Z"
+    },
+    {
+      "audit_id": "audit-1777206763594-1aa35fb2",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777206763593-17b78efa",
+      "status": "success",
+      "request_id": "req-1777206763591-tum7nb",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777206763586-9caff5d2",
+        "user_id": "user-1777206763472-441ad22b",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T12:32:43.594Z"
+    },
+    {
+      "audit_id": "audit-1777206763586-bea4416a",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777206763586-9caff5d2",
+      "status": "success",
+      "request_id": "req-1777206763585-qo1l6z",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-5e4c",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T12:32:43.586Z"
+    },
+    {
+      "audit_id": "audit-1777206763581-c86e8a3d",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777206763531-a005dc37",
+      "status": "success",
+      "request_id": "req-1777206763531-cp7l1i",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T12:32:43.581Z"
+    },
+    {
+      "audit_id": "audit-1777206763525-e18641a9",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777206763472-441ad22b",
+      "status": "success",
+      "request_id": "req-1777206763471-dqwoz2",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T12:32:43.525Z"
+    },
+    {
+      "audit_id": "audit-1777206763464-30019b7c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777206763406-556c135f",
+      "status": "success",
+      "request_id": "req-1777206763404-idzl0l",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T12:32:43.464Z"
+    },
+    {
+      "audit_id": "audit-1777206759843-94d85dea",
+      "actor_id": "user-1777206759710-558acf2f",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777206759710-558acf2f",
+      "status": "success",
+      "request_id": "req-1777206759793-w4s4mw",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T12:32:39.843Z"
+    },
+    {
+      "audit_id": "audit-1777206759788-d675331e",
+      "actor_id": "user-1777206759710-558acf2f",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777206759710-558acf2f",
+      "status": "success",
+      "request_id": "req-1777206759786-m1opmo",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777206759774-b31cf402"
+      },
+      "created_at": "2026-04-26T12:32:39.788Z"
+    },
+    {
+      "audit_id": "audit-1777206759776-389af2fb",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777206759710-558acf2f",
+      "status": "success",
+      "request_id": "req-1777206759708-3ykbpk",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T12:32:39.776Z"
+    },
+    {
+      "audit_id": "audit-1777206756146-c8107583",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777206756145-c2b369f7",
+      "status": "success",
+      "request_id": "req-1777206756143-skl9u0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T12:32:36.146Z"
+    },
+    {
+      "audit_id": "audit-1777205614256-d2be77cd",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777205614255-9e7638ff",
+      "status": "success",
+      "request_id": "req-1777205614253-nyaavp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777205614245-4f5ac121",
+        "user_id": "user-1777205614128-1ae8c189",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T12:13:34.256Z"
+    },
+    {
+      "audit_id": "audit-1777205614246-4b8171e2",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777205614245-4f5ac121",
+      "status": "success",
+      "request_id": "req-1777205614244-us7uo5",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-1980",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T12:13:34.246Z"
+    },
+    {
+      "audit_id": "audit-1777205614239-052fa108",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777205614189-8445690e",
+      "status": "success",
+      "request_id": "req-1777205614189-q98fou",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T12:13:34.239Z"
+    },
+    {
+      "audit_id": "audit-1777205614183-b9d4c237",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777205614128-1ae8c189",
+      "status": "success",
+      "request_id": "req-1777205614127-rhzd8m",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T12:13:34.183Z"
+    },
+    {
+      "audit_id": "audit-1777205614120-1d96230c",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777205614062-3794ca04",
+      "status": "success",
+      "request_id": "req-1777205614060-02385y",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T12:13:34.120Z"
+    },
+    {
+      "audit_id": "audit-1777205610495-0d6f8621",
+      "actor_id": "user-1777205610359-fc149aae",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777205610359-fc149aae",
+      "status": "success",
+      "request_id": "req-1777205610443-dswgli",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T12:13:30.495Z"
+    },
+    {
+      "audit_id": "audit-1777205610436-87e78c8a",
+      "actor_id": "user-1777205610359-fc149aae",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777205610359-fc149aae",
+      "status": "success",
+      "request_id": "req-1777205610434-pkgtaj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777205610419-09d38b50"
+      },
+      "created_at": "2026-04-26T12:13:30.436Z"
+    },
+    {
+      "audit_id": "audit-1777205610421-db282fdd",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777205610359-fc149aae",
+      "status": "success",
+      "request_id": "req-1777205610354-uaupbc",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T12:13:30.421Z"
+    },
+    {
+      "audit_id": "audit-1777205606785-fcff5de6",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777205606784-d7c5665f",
+      "status": "success",
+      "request_id": "req-1777205606782-ufjoku",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T12:13:26.785Z"
+    },
+    {
+      "audit_id": "audit-1777201748619-3618c191",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777201748619-8f1cad22",
+      "status": "success",
+      "request_id": "req-1777201748618-g02nxl",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777201748611-5bae8826",
+        "user_id": "user-1777201748509-5a11f899",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T11:09:08.620Z"
+    },
+    {
+      "audit_id": "audit-1777201748612-6f8d30f8",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777201748611-5bae8826",
+      "status": "success",
+      "request_id": "req-1777201748610-p8pxf0",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-5550",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T11:09:08.612Z"
+    },
+    {
+      "audit_id": "audit-1777201748606-fb775f23",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201748559-3807b7a6",
+      "status": "success",
+      "request_id": "req-1777201748559-cle1fi",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T11:09:08.606Z"
+    },
+    {
+      "audit_id": "audit-1777201748555-b2f30ca7",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201748509-5a11f899",
+      "status": "success",
+      "request_id": "req-1777201748509-fck04e",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T11:09:08.555Z"
+    },
+    {
+      "audit_id": "audit-1777201748504-7b92efee",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201748458-d4189385",
+      "status": "success",
+      "request_id": "req-1777201748457-mrzbmj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T11:09:08.504Z"
+    },
+    {
+      "audit_id": "audit-1777201744934-495032d1",
+      "actor_id": "user-1777201744821-7cdb2d36",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777201744821-7cdb2d36",
+      "status": "success",
+      "request_id": "req-1777201744887-4wuulr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T11:09:04.934Z"
+    },
+    {
+      "audit_id": "audit-1777201744883-7830aa9d",
+      "actor_id": "user-1777201744821-7cdb2d36",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777201744821-7cdb2d36",
+      "status": "success",
+      "request_id": "req-1777201744882-5y3cuv",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777201744871-d8fcb97d"
+      },
+      "created_at": "2026-04-26T11:09:04.883Z"
+    },
+    {
+      "audit_id": "audit-1777201744872-b88cea69",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201744821-7cdb2d36",
+      "status": "success",
+      "request_id": "req-1777201744819-d15iog",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T11:09:04.872Z"
+    },
+    {
+      "audit_id": "audit-1777201741282-c346f8df",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777201741282-ccd9d4bf",
+      "status": "success",
+      "request_id": "req-1777201741280-dkaodp",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T11:09:01.282Z"
+    },
+    {
+      "audit_id": "audit-1777201174577-2eef55e2",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.member.upserted",
+      "target_type": "org_membership",
+      "target_id": "mem-1777201174577-b1d8a5c6",
+      "status": "success",
+      "request_id": "req-1777201174576-fh9kt7",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "org_id": "org-1777201174570-08736aae",
+        "user_id": "user-1777201174459-b2365779",
+        "role": "admin"
+      },
+      "created_at": "2026-04-26T10:59:34.577Z"
+    },
+    {
+      "audit_id": "audit-1777201174570-3ce86d12",
+      "actor_id": "user-admin",
+      "actor_role": "owner",
+      "action": "org.created",
+      "target_type": "org",
+      "target_id": "org-1777201174570-08736aae",
+      "status": "success",
+      "request_id": "req-1777201174569-4eq79j",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "slug": "skunkworks-d5b4",
+        "name": "Skunkworks"
+      },
+      "created_at": "2026-04-26T10:59:34.570Z"
+    },
+    {
+      "audit_id": "audit-1777201174562-403ebf7b",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201174515-7852d90a",
+      "status": "success",
+      "request_id": "req-1777201174515-8d4w0h",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "admin@example.com"
+      },
+      "created_at": "2026-04-26T10:59:34.562Z"
+    },
+    {
+      "audit_id": "audit-1777201174510-c65265c1",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201174459-b2365779",
+      "status": "success",
+      "request_id": "req-1777201174459-nwadhw",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "b@example.com"
+      },
+      "created_at": "2026-04-26T10:59:34.510Z"
+    },
+    {
+      "audit_id": "audit-1777201174453-a74c147b",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201174393-f4f099dc",
+      "status": "success",
+      "request_id": "req-1777201174392-4n6xzj",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "a@example.com"
+      },
+      "created_at": "2026-04-26T10:59:34.453Z"
+    },
+    {
+      "audit_id": "audit-1777201170796-25ab3613",
+      "actor_id": "user-1777201170665-58c8dda7",
+      "actor_role": "owner",
+      "action": "auth.login.succeeded",
+      "target_type": "user",
+      "target_id": "user-1777201170665-58c8dda7",
+      "status": "success",
+      "request_id": "req-1777201170747-5btdcr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T10:59:30.796Z"
+    },
+    {
+      "audit_id": "audit-1777201170742-8799b11f",
+      "actor_id": "user-1777201170665-58c8dda7",
+      "actor_role": "owner",
+      "action": "auth.logout",
+      "target_type": "user",
+      "target_id": "user-1777201170665-58c8dda7",
+      "status": "success",
+      "request_id": "req-1777201170740-hs8ca5",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "session_id": "sess-1777201170728-60aadc38"
+      },
+      "created_at": "2026-04-26T10:59:30.742Z"
+    },
+    {
+      "audit_id": "audit-1777201170729-3859967d",
+      "actor_id": null,
+      "actor_role": null,
+      "action": "auth.register",
+      "target_type": "user",
+      "target_id": "user-1777201170665-58c8dda7",
+      "status": "success",
+      "request_id": "req-1777201170663-0yi6zw",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "email": "owner@example.com"
+      },
+      "created_at": "2026-04-26T10:59:30.729Z"
+    },
+    {
+      "audit_id": "audit-1777201167094-feebf3f7",
+      "actor_id": "product-owner",
+      "actor_role": "owner",
+      "action": "billing.checkout_session.created",
+      "target_type": "checkout_session",
+      "target_id": "chk-1777201167093-1bfa92ef",
+      "status": "success",
+      "request_id": "req-1777201167091-4b3hdr",
+      "ip": "::ffff:127.0.0.1",
+      "metadata_json": {
+        "provider": "mock",
+        "plan_id": "pro",
+        "org_id": null
+      },
+      "created_at": "2026-04-26T10:59:27.094Z"
+    },
+    {
       "audit_id": "audit-1777128502066-fec38a55",
       "actor_id": "user-admin",
       "actor_role": "owner",

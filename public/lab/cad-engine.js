@@ -4219,7 +4219,7 @@ function _initPersistentScene(canvas) {
         mat.opacity = ops;
         if (m.t >= 1) { mat.transparent = false; mat.depthWrite = true; }
       });
-      if (m.t >= 1) { morphQueue.splice(i, 1); m.resolve && m.resolve(); }
+      if (m.t >= 1) { morphQueue.splice(i, 1); m.resolve && m.resolve(m.report); }
     }
     renderer.render(scene, camera);
   }
@@ -4274,14 +4274,16 @@ function _normalizeDims(partDef) {
 
   const w = pick('w', 'width', 'x');
   const h = pick('h', 'height', 'z', 'thickness');
+  const depth = pick('depth', 'y');
   const d = pick('d', 'depth', 'y');
   const L = pick('L', 'length', 'len', 'h', 'height', 'z');
-  const dia = pick('d', 'diameter', 'dia', 'outerD', 'outer_diameter', 'od');
+  const dia = pick('diameter', 'dia', 'outerD', 'outer_diameter', 'od', 'd');
 
   const out = Object.assign({}, src);
   if (w != null) out.w = w;
   if (h != null) out.h = h;
   if (d != null) out.d = d;
+  if (depth != null) out.depth = depth;
   if (L != null) out.L = L;
   if (dia != null) out.diameter = dia;
   if (out.d == null && dia != null) out.d = dia;
@@ -4294,14 +4296,129 @@ function _normalizeDims(partDef) {
   return out;
 }
 
+function _applyTypeAwareDimHints(type, dims) {
+  const t = String(type || '').toLowerCase();
+  const fastenerLike = /bolt|screw|stud|fastener|socket_head_screw|cap_screw|dowel_pin|pin/.test(t);
+  const cylindricalLike = /shaft|cylinder|tube|bearing|liner|spacer|washer|nut/.test(t);
+
+  if ((fastenerLike || cylindricalLike) && dims.diameter == null && dims.d != null) {
+    dims.diameter = dims.d;
+  }
+
+  if ((fastenerLike || cylindricalLike) && dims.diameter != null) {
+    dims.d = dims.diameter;
+  }
+
+  if (fastenerLike && dims.L == null) {
+    const axial = Number(dims.length || dims.len || dims.h || dims.height || dims.z);
+    if (Number.isFinite(axial) && axial > 0) dims.L = axial;
+  }
+
+  return dims;
+}
+
 function _normalizePartDef(partDef) {
   const p = Object.assign({}, partDef || {});
   p.type = String(p.type || p.shape || p.kind || 'custom').toLowerCase();
   p.dims = _normalizeDims(p);
+  p.dims = _applyTypeAwareDimHints(p.type, p.dims);
   p.dimensions_mm = Object.assign({}, p.dimensions_mm || {}, p.dims);
   p.position = _vec3From(p.position != null ? p.position : p.transform_mm, [0, 0, 0]);
   p.rotation = _vec3From(p.rotation, [0, 0, 0]);
   return p;
+}
+
+function _roundMm3(value) {
+  return Number.isFinite(value) ? Math.round(value * 1000) / 1000 : null;
+}
+
+function _pickDimValue(src) {
+  if (!src || typeof src !== 'object') return null;
+  for (let i = 1; i < arguments.length; i++) {
+    const key = arguments[i];
+    if (src[key] == null || src[key] === '') continue;
+    const value = Number(src[key]);
+    if (Number.isFinite(value)) return value;
+  }
+  return null;
+}
+
+function _measureMeshEnvelopeMm(mesh, THREE) {
+  const box = new THREE.Box3().setFromObject(mesh);
+  const size = box.getSize(new THREE.Vector3());
+  return {
+    x: _roundMm3(size.x / UARE_CAD_UNIT),
+    y: _roundMm3(size.y / UARE_CAD_UNIT),
+    z: _roundMm3(size.z / UARE_CAD_UNIT),
+  };
+}
+
+function _expectedEnvelopeMm(partDef) {
+  const dims = partDef && partDef.dims ? partDef.dims : {};
+  const diameter = _pickDimValue(dims, 'diameter', 'dia', 'outerD', 'outer_diameter', 'od');
+  const hasBoxEnvelope = _pickDimValue(dims, 'w', 'width', 'x') != null &&
+    _pickDimValue(dims, 'h', 'height', 'z', 'thickness') != null &&
+    _pickDimValue(dims, 'd', 'depth', 'y') != null;
+  const x = _pickDimValue(dims, 'w', 'width', 'x', 'outerD', 'outer_diameter', 'diameter', 'dia', 'od', 'd');
+  const y = _pickDimValue(dims, 'h', 'height', 'z', 'thickness', 'outerD', 'outer_diameter', 'diameter', 'dia', 'od');
+  const z = hasBoxEnvelope
+    ? _pickDimValue(dims, 'd', 'depth', 'y', 'L', 'length', 'len', 'height', 'h')
+    : _pickDimValue(dims, 'L', 'length', 'len', 'depth', 'd', 'y', 'height', 'h');
+  return {
+    x: _roundMm3(x != null ? x : diameter),
+    y: _roundMm3(y != null ? y : diameter),
+    z: _roundMm3(z != null ? z : diameter),
+  };
+}
+
+function _verifyMeshEnvelope(mesh, partDef, THREE) {
+  const measured = _measureMeshEnvelopeMm(mesh, THREE);
+  const expected = _expectedEnvelopeMm(partDef);
+  const tolerance = _roundMm3(Math.max(0.001, Number(partDef && partDef.verification_tolerance_mm) || 0.001));
+  const axes = ['x', 'y', 'z'];
+  const permutations = [
+    ['x', 'y', 'z'],
+    ['x', 'z', 'y'],
+    ['y', 'x', 'z'],
+    ['y', 'z', 'x'],
+    ['z', 'x', 'y'],
+    ['z', 'y', 'x'],
+  ];
+  let best = null;
+
+  permutations.forEach((mappedAxes) => {
+    const deviations = { x: null, y: null, z: null };
+    let checks = 0;
+    let maxDeviation = 0;
+    axes.forEach((axis, index) => {
+      const measuredAxis = mappedAxes[index];
+      if (!Number.isFinite(expected[axis]) || !Number.isFinite(measured[measuredAxis])) return;
+      const delta = _roundMm3(Math.abs(measured[measuredAxis] - expected[axis]));
+      deviations[axis] = delta;
+      maxDeviation = Math.max(maxDeviation, delta);
+      checks += 1;
+    });
+    if (!best || maxDeviation < best.maxDeviation || (maxDeviation === best.maxDeviation && checks > best.checks)) {
+      best = { mappedAxes, deviations, checks, maxDeviation: _roundMm3(maxDeviation) };
+    }
+  });
+
+  const deviations = best ? best.deviations : { x: null, y: null, z: null };
+  const checks = best ? best.checks : 0;
+  const maxDeviation = best ? best.maxDeviation : 0;
+
+  return {
+    precision_mm: 0.001,
+    tolerance_mm: tolerance,
+    measured_dimensions_mm: measured,
+    expected_envelope_mm: expected,
+    deviations_mm: deviations,
+    axis_mapping: best ? { x: best.mappedAxes[0], y: best.mappedAxes[1], z: best.mappedAxes[2] } : null,
+    checks_run: checks,
+    max_deviation_mm: _roundMm3(maxDeviation),
+    within_tolerance: checks > 0 ? maxDeviation <= tolerance : true,
+    verified: checks > 0 ? maxDeviation <= tolerance : true,
+  };
 }
 
 function morphAddPart(canvas, partDef) {
@@ -4310,8 +4427,14 @@ function morphAddPart(canvas, partDef) {
     if (!THREE) { resolve(); return; }
     const normPart = _normalizePartDef(partDef);
     const ps = _initPersistentScene(canvas);
+    if (normPart.id && ps.partMeshes[normPart.id]) {
+      ps.scene.remove(ps.partMeshes[normPart.id]);
+      delete ps.partMeshes[normPart.id];
+    }
     const mesh = _buildPartMesh(normPart);
     if (!mesh) { resolve(); return; }
+    const verification = _verifyMeshEnvelope(mesh, normPart, THREE);
+    normPart.verification = verification;
 
     // Position
     const pos = normPart.position || [0, 0, 0];
@@ -4332,11 +4455,13 @@ function morphAddPart(canvas, partDef) {
     mesh.userData.partId   = _tagId;
     mesh.userData.partDef  = normPart;
     mesh.userData.partName = normPart.name || _partType;
+    mesh.userData.partVerification = verification;
     mesh.traverse(function(c) {
       if (c !== mesh) {
         c.userData.partId   = _tagId;
         c.userData.partDef  = normPart;
         c.userData.partName = normPart.name || _tagId;
+        c.userData.partVerification = verification;
       }
       c.castShadow    = true;
       c.receiveShadow = true;
@@ -4345,7 +4470,17 @@ function morphAddPart(canvas, partDef) {
     // Re-center camera on assembly bounding box
     _fitCameraToScene(ps);
 
-    ps.morphQueue.push({ mesh, t: 0, duration: 0.65, resolve });
+    ps.morphQueue.push({
+      mesh,
+      t: 0,
+      duration: 0.65,
+      resolve,
+      report: {
+        partId: _tagId,
+        partName: normPart.name || _partType,
+        verification,
+      },
+    });
   });
 }
 
@@ -4731,6 +4866,9 @@ function _buildPartMesh(partDef) {
   const mesh = new THREE.Mesh(geom, mat);
   mesh.name = partDef.name || type;
   mesh._partDef = partDef;
+  if (type === 'housing' || type === 'cylinder' || type === 'valve_body') {
+    _decorateGearboxHousingMesh(mesh, partDef, THREE);
+  }
   return mesh;
 }
 
@@ -4820,6 +4958,69 @@ function _housingGeom(d, THREE) {
   // Rectangular housing: box with raised rib edges for visual depth
   return new THREE.BoxGeometry(w, h, dep, 3, 3, 3);
 }
+
+function _decorateGearboxHousingMesh(mesh, partDef, THREE) {
+  if (!mesh || !mesh.isMesh) return;
+  const d = Object.assign({}, partDef && partDef.dims);
+  const w = (d.w || 200) * UARE_CAD_UNIT;
+  const h = (d.h || 150) * UARE_CAD_UNIT;
+  const dep = (d.d || 120) * UARE_CAD_UNIT;
+  if (!(w > 0 && h > 0 && dep > 0)) return;
+
+  const baseMat = mesh.material || new THREE.MeshStandardMaterial({ color: 0x7a8795, metalness: 0.62, roughness: 0.44 });
+  const ribMat = baseMat.clone();
+  ribMat.roughness = Math.min(0.92, (ribMat.roughness != null ? ribMat.roughness : 0.45) + 0.08);
+  const bossMat = baseMat.clone();
+  bossMat.metalness = Math.max(0.2, (bossMat.metalness != null ? bossMat.metalness : 0.55) - 0.08);
+
+  const ribTh = Math.max(1.6 * UARE_CAD_UNIT, Math.min(w, dep) * 0.03);
+  const ribHt = Math.max(2.0 * UARE_CAD_UNIT, h * 0.08);
+  const splitY = 0;
+  const sideOffsets = [-dep * 0.43, dep * 0.43];
+  const xStations = [-w * 0.34, 0, w * 0.34];
+
+  // Horizontal split-case flange ridge
+  const splitFlange = new THREE.Mesh(
+    new THREE.BoxGeometry(w * 1.02, ribTh * 0.95, dep * 1.02),
+    ribMat
+  );
+  splitFlange.position.set(0, splitY, 0);
+  mesh.add(splitFlange);
+
+  // Longitudinal side ribs
+  sideOffsets.forEach((z) => {
+    const rib = new THREE.Mesh(new THREE.BoxGeometry(w * 0.88, ribHt, ribTh), ribMat);
+    rib.position.set(0, splitY + ribHt * 0.28, z);
+    mesh.add(rib);
+  });
+
+  // Vertical buttress ribs
+  xStations.forEach((x) => {
+    const ribFront = new THREE.Mesh(new THREE.BoxGeometry(ribTh, h * 0.86, ribTh * 1.25), ribMat);
+    ribFront.position.set(x, 0, dep * 0.43);
+    mesh.add(ribFront);
+    const ribBack = new THREE.Mesh(new THREE.BoxGeometry(ribTh, h * 0.86, ribTh * 1.25), ribMat);
+    ribBack.position.set(x, 0, -dep * 0.43);
+    mesh.add(ribBack);
+  });
+
+  // Bearing bosses on front/rear housing faces
+  const bossR = Math.max(6 * UARE_CAD_UNIT, Math.min(w, h) * 0.12);
+  const bossL = Math.max(4 * UARE_CAD_UNIT, dep * 0.18);
+  const shaftStations = [-w * 0.22, w * 0.22];
+  shaftStations.forEach((x) => {
+    const frontBoss = new THREE.Mesh(new THREE.CylinderGeometry(bossR, bossR * 0.94, bossL, 24, 1), bossMat);
+    frontBoss.rotation.x = Math.PI / 2;
+    frontBoss.position.set(x, 0, dep * 0.5 + bossL * 0.4);
+    mesh.add(frontBoss);
+
+    const rearBoss = new THREE.Mesh(new THREE.CylinderGeometry(bossR, bossR * 0.94, bossL, 24, 1), bossMat);
+    rearBoss.rotation.x = Math.PI / 2;
+    rearBoss.position.set(x, 0, -dep * 0.5 - bossL * 0.4);
+    mesh.add(rearBoss);
+  });
+}
+
 function _shaftGeom(d, THREE) {
   const r = (d.d || 30) / 2 * UARE_CAD_UNIT;
   const L = (d.L || 300) * UARE_CAD_UNIT;

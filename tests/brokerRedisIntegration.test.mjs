@@ -26,7 +26,7 @@ try {
   await probe.ping();
   await probe.quit();
 } catch (error) {
-  try { await probe?.quit(); } catch {}
+  try { probe?.disconnect?.(); } catch {}
   console.log(`brokerRedisIntegration.test.mjs skipped (${error.message})`);
   process.exit(0);
 }

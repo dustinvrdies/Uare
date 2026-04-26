@@ -60,4 +60,31 @@ assert(inferredManifest.recipe?.parameters?.bracket_width_mm === 95, 'parts-only
 assert(inferredManifest.recipe?.parameters?.bracket_height_mm === 82, 'parts-only execution should infer bracket height from the primary part');
 assert(inferredManifest.execution_summary?.estimated_stock_volume_mm3 === 2025400, 'execution summary should use inferred dimensions instead of the default envelope');
 
+const fastenerManifest = await cadExecutionService.execute({
+  engine: 'cadquery',
+  ready_for_execution: true,
+  manufacturability: { manufacturable: true },
+  name: 'Fastener alias normalization regression',
+  parts: [
+    {
+      id: 'housing-plate',
+      name: 'Main plate',
+      kind: 'mechanical',
+      type: 'plate',
+      dimensions_mm: { x: 180, y: 110, z: 16 },
+      position: [0, 0, 8],
+    },
+    {
+      id: 'bolt-main',
+      name: 'Socket head cap screw',
+      kind: 'fastener',
+      type: 'socket_head_screw',
+      dims: { d: 12, L: 85, pitch: 1.75 },
+      position: [0, 0, 0],
+    },
+  ],
+}, { id: 'tester' });
+
+assert(fastenerManifest.recipe?.parameters?.bolt_hole_diameter_mm === 12, 'fastener alias d/L should infer bolt hole diameter from d, not L');
+
 console.log('cadExecuteRoute.test.mjs passed');

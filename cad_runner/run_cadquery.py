@@ -1815,6 +1815,45 @@ def _kernel_metrics_from_solid(solid, part: dict, bbox_mm: dict):
         "center_mm": center_mm,
     }
 
+
+def _import_cadquery_with_optional_ivtk_shim():
+    """Import CadQuery while tolerating missing optional OCP IVtk symbols."""
+    import importlib
+
+    class _IVtkStub:
+        def __init__(self, *args, **kwargs):
+            pass
+
+    max_retries = 16
+    last_exc = None
+    for _ in range(max_retries):
+        try:
+            import cadquery as cq
+            from cadquery import exporters
+            return cq, exporters
+        except Exception as exc:
+            message = str(exc)
+            prefix = "cannot import name '"
+            marker = "' from 'OCP.IVtkOCC'"
+            start = message.find(prefix)
+            end = message.find(marker, start + len(prefix)) if start >= 0 else -1
+            if start < 0 or end < 0:
+                raise
+            missing_symbol = message[start + len(prefix):end].strip()
+            if not missing_symbol:
+                raise
+            ivtk_mod = importlib.import_module("OCP.IVtkOCC")
+            module_vars = vars(ivtk_mod)
+            if missing_symbol not in module_vars:
+                setattr(ivtk_mod, missing_symbol, _IVtkStub)
+            if "__getattr__" not in module_vars:
+                setattr(ivtk_mod, "__getattr__", lambda _name: _IVtkStub)
+            last_exc = exc
+
+    if last_exc is not None:
+        raise last_exc
+    raise RuntimeError("CadQuery runtime unavailable")
+
 def main():
     if len(sys.argv) < 2:
         fail("Plan path required")
@@ -1834,8 +1873,7 @@ def main():
             sf.write(script)
 
     try:
-        import cadquery as cq
-        from cadquery import exporters
+        cq, exporters = _import_cadquery_with_optional_ivtk_shim()
     except Exception as exc:
         fail(f"CadQuery runtime unavailable: {exc}")
 

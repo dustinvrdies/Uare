@@ -1,6 +1,7 @@
 
 import { Router } from 'express';
 import { resolveActor, requireActor } from '../auth/actorResolver.mjs';
+import { getEnhancedSystemPrompt } from '../enki/enhancedPrompt.mjs';
 
 // ─── Ollama LLM integration ──────────────────────────────────
 const OLLAMA_URL   = process.env.OLLAMA_URL   || 'http://127.0.0.1:11434';
@@ -183,7 +184,7 @@ function isDesignRequest(prompt) {
 }
 
 async function tryOllama(prompt, systemPrompt) {
-  const sys = systemPrompt || ENKI_SYSTEM_DEFAULT;
+  const sys = systemPrompt || getEnhancedSystemPrompt();
 
   // If this looks like a design request, append an explicit instruction
   let userContent = prompt;
@@ -752,75 +753,130 @@ function generateFallbackAssemblyPlan(prompt) {
   if (/\b(gearbox|transmission|gear.*box|reducer|drive.*train|differential|bevel gear|spur gear)\b/.test(t)) {
     return {
       assembly: true,
-      name: 'Helical Gearbox — 2-Stage 400 N·m / i=20:1',
-      description: '2-stage helical gear reducer. Input 1450 RPM, output 72.5 RPM. Rated torque 400 N·m. Centre distance 160/250 mm. Backlash ≤0.05 mm. ISO 6336 Class 6 gears.',
-      total_mass_kg: 58.0,
+      name: '2-Stage Helical Gearbox — Industrial Horizontal Split Case',
+      description: 'Industrial 2-stage horizontal helical reducer. Input 1450 RPM, output 72.5 RPM, nominal 400 N·m, ratio 20:1. Explicit shafts, gear mesh layout, split housing halves, six bearings, three seals, and structural mounting feet.',
+      total_mass_kg: 96.4,
       parts: [
-        { id:'cs001', name:'Gearbox Casing — Grey Iron', type:'housing', material:'cast_iron',
-          dims:{width:450, height:320, depth:280},
-          position:[0,0,0], color:'#6a7070', mass_kg:22.0,
-          standard:'EN 1561 EN-GJL-250', revision:'D',
+        { id:'cs001', name:'Lower Housing — EN-GJL-250', type:'housing', material:'cast_iron',
+          dims:{width:620, height:210, depth:500},
+          position:[0,-95,75], color:'#646c72', mass_kg:34.0,
+          standard:'EN 1561 EN-GJL-250', revision:'E',
           surface_finish:'Ra 1.6 μm bearing bores, Ra 3.2 μm split face',
-          tolerance:'Bearing bores H7, split face flatness 0.05 mm',
+          tolerance:'Bearing bores H7, split face flatness 0.04 mm',
           process:'casting', coating:'Internal: oil-resistant epoxy. External: primer + paint RAL 7035',
-          notes:'Horizontally split. Oil level indicator. Breather plug top. Drain plug M20 bottom.' },
-        { id:'g1p001', name:'Input Pinion — 18T Helical', type:'gear', material:'4340 steel',
-          dims:{module:3, num_teeth:18, face_width:55, helix_angle:15, pitch_diameter:54},
-          position:[-120,0,0], color:'#7a8a9a', mass_kg:1.2,
-          standard:'ISO 1328-1 Class 6', revision:'B',
+          notes:'Horizontal split lower case with oil sump, drain boss, and stiffening ribs.' },
+        { id:'cs002', name:'Upper Housing Cover — EN-GJL-250', type:'housing', material:'cast_iron',
+          dims:{width:620, height:170, depth:500},
+          position:[0,95,75], color:'#707982', mass_kg:23.0,
+          standard:'EN 1561 EN-GJL-250', revision:'E',
+          process:'casting', coating:'Internal anti-foam coating',
+          notes:'Upper clamshell cover with breather and inspection flange.' },
+        { id:'gs001', name:'Split-Plane Gasket — PTFE', type:'gasket', material:'ptfe',
+          dims:{width:620, depth:500, thickness:1.2},
+          position:[0,0,75], color:'#efefef', mass_kg:0.14,
+          standard:'ASME B16.21', notes:'Compressed PTFE sheet, laser cut to split profile.' },
+
+        { id:'sh1001', name:'Input Shaft — 4340 Q&T', type:'shaft', material:'4340 steel',
+          dims:{diameter:42, length:540},
+          position:[0,0,-130], rotation:[0,0,90], color:'#8a96a8', mass_kg:4.8,
+          standard:'ASTM A29 4340', surface_finish:'Ra 0.4 μm bearing seats', tolerance:'k5',
+          notes:'Input coupling journal at LH side.' },
+        { id:'sh2001', name:'Intermediate Shaft — 4340 Q&T', type:'shaft', material:'4340 steel',
+          dims:{diameter:58, length:520},
+          position:[0,0,30], rotation:[0,0,90], color:'#8794a6', mass_kg:6.4,
+          standard:'ASTM A29 4340', notes:'Integral two-gear shaft for stage transfer.' },
+        { id:'sh3001', name:'Output Shaft — 4340 Q&T', type:'shaft', material:'4340 steel',
+          dims:{diameter:72, length:560},
+          position:[0,0,280], rotation:[0,0,90], color:'#8390a0', mass_kg:9.1,
+          standard:'ASTM A29 4340', notes:'Output flange side at RH side, keyed backup.' },
+
+        { id:'g1p001', name:'Stage-1 Pinion — 18T Helical', type:'gear', material:'4340 steel',
+          dims:{module:3, num_teeth:18, face_width:58, helix_angle:15, pitch_diameter:54, diameter:62, length:58},
+          position:[-120,0,-130], color:'#77889a', mass_kg:1.4,
+          standard:'ISO 1328-1 Class 6', revision:'C',
           surface_finish:'Ra 0.4 μm tooth flank (ground)',
-          tolerance:'AGMA Class 11 tooth accuracy',
-          process:'grinding', heat_treatment:'Case carburize 1.0 mm, core 30–38 HRC, surface 58–62 HRC',
-          ndt:'MPI tooth roots after grind', notes:'Module 3, 18T, 15° helix LH. Ground after carburising.' },
+          process:'grinding', heat_treatment:'Case carburized 58-62 HRC',
+          notes:'LH helix, keyed fit on input shaft.' },
         { id:'g1w001', name:'Stage 1 Wheel — 72T Helical', type:'gear', material:'4340 steel',
-          dims:{module:3, num_teeth:72, face_width:50, helix_angle:15, pitch_diameter:216},
-          position:[0,0,0], color:'#7a8a9a', mass_kg:6.8,
-          standard:'ISO 1328-1 Class 6', revision:'B',
+          dims:{module:3, num_teeth:72, face_width:56, helix_angle:15, pitch_diameter:216, diameter:224, length:56},
+          position:[-120,0,30], color:'#8395a8', mass_kg:8.7,
+          standard:'ISO 1328-1 Class 6', revision:'C',
           surface_finish:'Ra 0.8 μm flank (hobbed+shaved)',
-          heat_treatment:'Through-hardened 42–48 HRC', process:'milling',
-          notes:'Integral with intermediate shaft. Stage 1 ratio 4:1.' },
+          heat_treatment:'Through-hardened 42-48 HRC', process:'milling',
+          notes:'4:1 stage-1 mesh with input pinion.' },
         { id:'g2p001', name:'Stage 2 Pinion — 20T Helical', type:'gear', material:'4340 steel',
-          dims:{module:5, num_teeth:20, face_width:75, helix_angle:12, pitch_diameter:100},
-          position:[0,0,0], color:'#7a8a9a', mass_kg:2.4,
-          standard:'ISO 1328-1 Class 6', revision:'B',
+          dims:{module:5, num_teeth:20, face_width:76, helix_angle:12, pitch_diameter:100, diameter:108, length:76},
+          position:[120,0,30], color:'#77889a', mass_kg:2.9,
+          standard:'ISO 1328-1 Class 6', revision:'C',
           surface_finish:'Ra 0.4 μm flank (ground)',
-          heat_treatment:'Case carburize + grind', process:'grinding',
-          notes:'Module 5, 20T, 12° helix RH. Stage 2 ratio 5:1.' },
+          heat_treatment:'Case carburized 58-62 HRC', process:'grinding',
+          notes:'5:1 stage-2 pinion on intermediate shaft.' },
         { id:'g2w001', name:'Output Wheel — 100T Helical', type:'gear', material:'4340 steel',
-          dims:{module:5, num_teeth:100, face_width:70, helix_angle:12, pitch_diameter:500},
-          position:[80,0,0], color:'#7a8a9a', mass_kg:14.2,
-          standard:'ISO 1328-1 Class 6', revision:'B',
-          surface_finish:'Ra 0.8 μm (hobbed+shaved)', heat_treatment:'Normalised + Q&T 280–320 HB',
-          notes:'Output wheel. Shrink-fit to output shaft. Key + keyway backup.' },
-        { id:'sh1001', name:'Input Shaft — 4340 Steel', type:'shaft', material:'4340 steel',
-          dims:{diameter:40, length:200, keyway_width:10, keyway_depth:5},
-          position:[-200,0,0], color:'#8a9aaa', mass_kg:1.6,
-          surface_finish:'Ra 0.4 μm bearing seats', tolerance:'Bearing seat k5',
-          process:'turning', heat_treatment:'Q&T 36–40 HRC',
-          notes:'Input: coupled to motor via flexible coupling. IEC flange option.' },
-        { id:'sh2001', name:'Intermediate Shaft — 4340 Steel', type:'shaft', material:'4340 steel',
-          dims:{diameter:60, length:300},
-          position:[0,0,0], color:'#8a9aaa', mass_kg:3.8,
-          surface_finish:'Ra 0.4 μm bearing seats', heat_treatment:'Q&T 36–40 HRC' },
-        { id:'sh3001', name:'Output Shaft — 4340 Steel', type:'shaft', material:'4340 steel',
-          dims:{diameter:80, length:350, keyway_width:20},
-          position:[200,0,0], color:'#8a9aaa', mass_kg:6.2,
-          surface_finish:'Ra 0.4 μm bearing seats', heat_treatment:'Q&T 36–40 HRC',
-          notes:'Solid output shaft. Parallel key drive. F115 flange optional.' },
-        { id:'brg101', name:'Taper Roller Bearing 32308', type:'bearing', material:'4340 steel',
-          dims:{inner_diameter:40, outer_diameter:90, width:33}, quantity:2,
-          position:[-160,0,60], color:'#c8d8e0', mass_kg:0.82,
-          standard:'ISO 355', notes:'Taper roller, opposed mounting X-arrangement. SKF 32308 J2/Q. Grease lubed.' },
-        { id:'seal001', name:'Radial Shaft Seal — FKM', type:'lip_seal', material:'viton fkm',
-          dims:{shaft_diameter:40, oc_diameter:62, width:7}, quantity:3,
-          position:[-180,0,0], color:'#222222', mass_kg:0.025,
-          standard:'DIN 3760 A', notes:'FKM lip. Dust lip second. 80°C oil temp rated. SKF CR seal.' },
-        { id:'gs001', name:'Gearbox Gasket — PTFE Sheet', type:'gasket', material:'ptfe',
-          dims:{width:450, depth:280, thickness:1.0},
-          position:[0,160,0], color:'#eeeeee', mass_kg:0.08,
-          standard:'ASME B16.21', notes:'Compressed PTFE sheet. Cut to housing split profile. Re-usable.' },
+          dims:{module:5, num_teeth:100, face_width:70, helix_angle:12, pitch_diameter:500, diameter:512, length:70},
+          position:[120,0,280], color:'#8fa2b6', mass_kg:16.8,
+          standard:'ISO 1328-1 Class 6', revision:'C',
+          surface_finish:'Ra 0.8 μm (hobbed+shaved)', heat_treatment:'Q&T 280-320 HB',
+          notes:'Output wheel shrink-fit + key retention.' },
+
+        { id:'brg_in_l', name:'Input Bearing LH — TRB 32308', type:'bearing', material:'4340 steel',
+          dims:{inner_diameter:40, outer_diameter:90, width:33},
+          position:[-220,0,-130], color:'#c8d8e0', mass_kg:0.82, standard:'ISO 355' },
+        { id:'brg_in_r', name:'Input Bearing RH — TRB 32308', type:'bearing', material:'4340 steel',
+          dims:{inner_diameter:40, outer_diameter:90, width:33},
+          position:[220,0,-130], color:'#c8d8e0', mass_kg:0.82, standard:'ISO 355' },
+        { id:'brg_mid_l', name:'Intermediate Bearing LH — TRB 32310', type:'bearing', material:'4340 steel',
+          dims:{inner_diameter:50, outer_diameter:110, width:42},
+          position:[-220,0,30], color:'#c8d8e0', mass_kg:1.15, standard:'ISO 355' },
+        { id:'brg_mid_r', name:'Intermediate Bearing RH — TRB 32310', type:'bearing', material:'4340 steel',
+          dims:{inner_diameter:50, outer_diameter:110, width:42},
+          position:[220,0,30], color:'#c8d8e0', mass_kg:1.15, standard:'ISO 355' },
+        { id:'brg_out_l', name:'Output Bearing LH — TRB 32314', type:'bearing', material:'4340 steel',
+          dims:{inner_diameter:70, outer_diameter:150, width:51},
+          position:[-230,0,280], color:'#c8d8e0', mass_kg:2.4, standard:'ISO 355' },
+        { id:'brg_out_r', name:'Output Bearing RH — TRB 32314', type:'bearing', material:'4340 steel',
+          dims:{inner_diameter:70, outer_diameter:150, width:51},
+          position:[230,0,280], color:'#c8d8e0', mass_kg:2.4, standard:'ISO 355',
+          notes:'Back-to-back arrangement with preload shim stack.' },
+
+        { id:'seal_in', name:'Input Seal — DIN 3760 FKM 42x68x8', type:'lip_seal', material:'viton fkm',
+          dims:{inner_diameter:42, outer_diameter:68, width:8},
+          position:[-280,0,-130], color:'#1f1f1f', mass_kg:0.03, standard:'DIN 3760 A' },
+        { id:'seal_mid', name:'Intermediate Seal — DIN 3760 FKM 58x82x8', type:'lip_seal', material:'viton fkm',
+          dims:{inner_diameter:58, outer_diameter:82, width:8},
+          position:[280,0,30], color:'#1f1f1f', mass_kg:0.04, standard:'DIN 3760 A' },
+        { id:'seal_out', name:'Output Seal — DIN 3760 FKM 72x95x10', type:'lip_seal', material:'viton fkm',
+          dims:{inner_diameter:72, outer_diameter:95, width:10},
+          position:[280,0,280], color:'#1f1f1f', mass_kg:0.05, standard:'DIN 3760 A' },
+
+        { id:'foot_fl', name:'Mounting Foot FL', type:'bracket', material:'cast_iron',
+          dims:{width:70, height:45, depth:120}, position:[-220,-210,-130], color:'#616971', mass_kg:2.8 },
+        { id:'foot_fr', name:'Mounting Foot FR', type:'bracket', material:'cast_iron',
+          dims:{width:70, height:45, depth:120}, position:[220,-210,-130], color:'#616971', mass_kg:2.8 },
+        { id:'foot_rl', name:'Mounting Foot RL', type:'bracket', material:'cast_iron',
+          dims:{width:70, height:45, depth:120}, position:[-220,-210,280], color:'#616971', mass_kg:2.8 },
+        { id:'foot_rr', name:'Mounting Foot RR', type:'bracket', material:'cast_iron',
+          dims:{width:70, height:45, depth:120}, position:[220,-210,280], color:'#616971', mass_kg:2.8 },
+
+        { id:'insp001', name:'Inspection Cover Plate', type:'plate', material:'steel',
+          dims:{width:180, height:12, depth:140}, position:[0,190,75], color:'#8c949f', mass_kg:2.2,
+          notes:'Top inspection/service access cover.' },
+        { id:'vent001', name:'Breather Plug M20', type:'bolt_hex', material:'steel',
+          dims:{diameter:20, length:30}, position:[120,210,230], color:'#4d4d4d', mass_kg:0.08 },
+        { id:'drn001', name:'Drain Plug M20', type:'bolt_hex', material:'steel',
+          dims:{diameter:20, length:26}, position:[180,-205,-30], color:'#4d4d4d', mass_kg:0.08 },
+        { id:'lvl001', name:'Oil Level Plug M16', type:'bolt_hex', material:'steel',
+          dims:{diameter:16, length:20}, position:[300,-40,30], color:'#5a5a5a', mass_kg:0.05 },
+
+        { id:'hb001', name:'Housing Bolt M16×95', type:'bolt_hex', material:'4340 steel',
+          dims:{diameter:16, length:95}, position:[-260,80,-120], color:'#444', mass_kg:0.12 },
+        { id:'hb002', name:'Housing Bolt M16×95', type:'bolt_hex', material:'4340 steel',
+          dims:{diameter:16, length:95}, position:[-260,80,270], color:'#444', mass_kg:0.12 },
+        { id:'hb003', name:'Housing Bolt M16×95', type:'bolt_hex', material:'4340 steel',
+          dims:{diameter:16, length:95}, position:[260,80,-120], color:'#444', mass_kg:0.12 },
+        { id:'hb004', name:'Housing Bolt M16×95', type:'bolt_hex', material:'4340 steel',
+          dims:{diameter:16, length:95}, position:[260,80,270], color:'#444', mass_kg:0.12 },
       ],
-      bom_notes: 'Omitted: oil sight glass, breather, dipstick, motor, coupling guard.'
+      bom_notes: 'Stage-1 center distance 160 mm, stage-2 center distance 250 mm. Oil bath ISO VG 220 with splash lubrication. Includes explicit bearings, seals, split housing halves, and service hardware. Omitted: motor adapter, coupling guard, external oil cooler loop.'
     };
   }
 
@@ -1735,6 +1791,20 @@ function generateFallbackAssemblyPlan(prompt) {
   };
 }
 
+function extractAssemblyPlanFromNarrative(text) {
+  const source = String(text || '');
+  if (!source) return null;
+  const blockMatch = source.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (!blockMatch) return null;
+  try {
+    const parsed = JSON.parse(blockMatch[1].trim());
+    if (parsed && parsed.assembly === true && Array.isArray(parsed.parts)) return parsed;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 // ─── Core narrative generator ────────────────────────────────
 function generateEnkiNarrative(prompt, ctx = {}) {
   const t = (prompt || '').toLowerCase().trim();
@@ -1917,14 +1987,17 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         enki = generateEnkiNarrative(sourcePrompt, ctx);
       }
 
-      // If Ollama responded but didn't include an assembly JSON block for a
-      // design request, override with the richer builtin assembly plan so the
-      // 3-D viewer can render full parts.
+      // Preserve conversational Ollama narrative. If a design request lacks a
+      // parsable assembly plan, synthesize only the plan with builtin logic.
       if (usedOllama && isDesignRequest(sourcePrompt)) {
-        const hasAssemblyJson = /```(?:json)?\s*\{[\s\S]*?"assembly"\s*:\s*true[\s\S]*?```/.test(enki.narrative || '');
-        if (!hasAssemblyJson) {
-          enki = generateEnkiNarrative(sourcePrompt, ctx);
-          usedOllama = false;
+        const parsedPlan = extractAssemblyPlanFromNarrative(enki.narrative);
+        if (parsedPlan) {
+          enki._plan = parsedPlan;
+          enki._source = 'ollama-design';
+        } else {
+          const fallbackPlan = generateFallbackAssemblyPlan(sourcePrompt);
+          enki._plan = fallbackPlan;
+          enki._source = 'ollama-with-fallback-plan';
         }
       }
 

@@ -1,0 +1,9 @@
+{
+  "precision_profile": "high",
+  "linear_deflection_mm": 0.04,
+  "angular_tolerance_deg": 0.12,
+  "heal_solids": true,
+  "healed_part_count": 1,
+  "assembly_mode": "compound",
+  "part_count": 1
+}

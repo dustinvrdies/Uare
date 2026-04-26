@@ -99,6 +99,125 @@ function _normalizePart(part, idx) {
   return p;
 }
 
+function _roundMm3(value) {
+  return Number.isFinite(value) ? Math.round(value * 1000) / 1000 : null;
+}
+
+function _formatMm3(value) {
+  return Number.isFinite(value) ? value.toFixed(3) + ' mm' : null;
+}
+
+function _hasNumericDim(src, keys) {
+  return keys.some((key) => src && src[key] != null && src[key] !== '' && Number.isFinite(Number(src[key])));
+}
+
+function _scaleDimKeys(target, source, keys, scale) {
+  if (!Number.isFinite(scale) || scale <= 0) return false;
+  let changed = false;
+  keys.forEach((key) => {
+    if (!source || source[key] == null || source[key] === '') return;
+    const value = Number(source[key]);
+    if (!Number.isFinite(value)) return;
+    target[key] = _roundMm3(value * scale);
+    changed = true;
+  });
+  return changed;
+}
+
+function _meanFinite(values, fallback) {
+  const valid = values.filter((value) => Number.isFinite(value) && value > 0);
+  if (!valid.length) return fallback;
+  return valid.reduce((sum, value) => sum + value, 0) / valid.length;
+}
+
+function _verificationScale(target, actual) {
+  if (!Number.isFinite(target) || !Number.isFinite(actual) || actual <= 0) return 1;
+  return Math.min(4, Math.max(0.25, target / actual));
+}
+
+function _clonePartForVerification(part) {
+  return Object.assign({}, part, {
+    dims: Object.assign({}, part && part.dims),
+    dimensions_mm: Object.assign({}, part && part.dimensions_mm),
+  });
+}
+
+function _shouldSkipVerificationRepair(part) {
+  const type = String(part && (part.type || part.shape || part.kind) || '').toLowerCase();
+  return /bolt|screw|stud|fastener|nut|washer|dowel_pin|roll_pin|pin/.test(type);
+}
+
+function _repairPartFromVerification(part, verification) {
+  if (!part || !verification) return part;
+
+  const measured = verification.measured_dimensions_mm || {};
+  const expected = verification.expected_envelope_mm || {};
+  const axisMapping = verification.axis_mapping || {};
+  const alignedMeasured = {
+    x: Number.isFinite(Number(measured[axisMapping.x])) ? Number(measured[axisMapping.x]) : Number(measured.x),
+    y: Number.isFinite(Number(measured[axisMapping.y])) ? Number(measured[axisMapping.y]) : Number(measured.y),
+    z: Number.isFinite(Number(measured[axisMapping.z])) ? Number(measured[axisMapping.z]) : Number(measured.z),
+  };
+  const dims = Object.assign({}, part.dims || {});
+  const dimensionsMm = Object.assign({}, part.dimensions_mm || {});
+  const scaleX = _verificationScale(expected.x, alignedMeasured.x);
+  const scaleY = _verificationScale(expected.y, alignedMeasured.y);
+  const scaleZ = _verificationScale(expected.z, alignedMeasured.z);
+  const diameterScale = _meanFinite([scaleX, scaleY], scaleZ);
+  const hasDiameter = _hasNumericDim(dims, ['diameter', 'dia', 'outerD', 'outer_diameter', 'od']) || (_hasNumericDim(dims, ['d']) && _hasNumericDim(dims, ['L', 'length', 'len']) && !_hasNumericDim(dims, ['w', 'width']));
+  const hasWidth = _hasNumericDim(dims, ['w', 'width', 'x']);
+  const hasHeight = _hasNumericDim(dims, ['h', 'height', 'z', 'thickness']);
+  const hasLength = _hasNumericDim(dims, ['L', 'length', 'len']);
+  const hasDepth = _hasNumericDim(dims, ['d', 'depth', 'y']);
+  const next = Object.assign({}, part, { dims, dimensions_mm: dimensionsMm });
+
+  [next.dims, next.dimensions_mm].forEach((store) => {
+    if (hasDiameter) _scaleDimKeys(store, store, ['diameter', 'dia', 'outerD', 'outer_diameter', 'od'], diameterScale);
+    if (hasWidth) _scaleDimKeys(store, store, ['w', 'width', 'x'], scaleX);
+    if (hasHeight) _scaleDimKeys(store, store, ['h', 'height', 'z', 'thickness'], scaleY);
+    if (hasLength) _scaleDimKeys(store, store, ['L', 'length', 'len'], scaleZ);
+    if (hasDepth && (!hasDiameter || !hasLength)) _scaleDimKeys(store, store, ['d', 'depth', 'y'], hasDiameter && !hasWidth ? diameterScale : scaleZ);
+  });
+
+  next.verification = Object.assign({}, verification, { repaired: true });
+  next.tolerance = 'Target ±0.001 mm';
+  return next;
+}
+
+async function _buildPartWithVerification(canvas, CAD, part, onAttempt) {
+  let candidate = _clonePartForVerification(part);
+  const maxAttempts = 3;
+  const skipRepair = _shouldSkipVerificationRepair(candidate);
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (typeof onAttempt === 'function') onAttempt(attempt, maxAttempts, candidate);
+
+    let report = null;
+    if (CAD && CAD.morphAddPart) {
+      report = await CAD.morphAddPart(canvas, candidate);
+    } else if (CAD && CAD.buildScene) {
+      const scene = CAD.buildScene(canvas, candidate.dims || {}, candidate.type || 'bracket');
+      if (scene && scene.animate) scene.animate();
+    }
+
+    const verification = report && report.verification ? Object.assign({}, report.verification, { attempts: attempt }) : null;
+    if (verification) {
+      candidate.verification = verification;
+      candidate.tolerance = verification.within_tolerance ? 'Verified ±0.001 mm' : 'Target ±0.001 mm';
+      if (verification.within_tolerance || skipRepair || attempt === maxAttempts) {
+        return { part: candidate, report, attempts: attempt, verified: verification.within_tolerance };
+      }
+      candidate = _repairPartFromVerification(candidate, verification);
+      await sleep(80);
+      continue;
+    }
+
+    return { part: candidate, report, attempts: attempt, verified: false };
+  }
+
+  return { part: candidate, report: null, attempts: maxAttempts, verified: false };
+}
+
 function _promoteEngineSpecificPartType(part) {
   if (!part || typeof part !== 'object') return part;
   const type = String(part.type || '').toLowerCase();
@@ -327,16 +446,513 @@ const QUICK_PATTERNS = [
   { re: /\b(i.?beam|h.?beam|structural.steel)/i, fn: (t) => ({ assembly:true, name:'I-Beam Structure', description:'Hot-rolled steel I-beam, IPE 200', total_mass_kg:22.4, parts:[{ id:'ib001', name:'I-Beam — IPE 200, S275JR', type:'ibeam', material:'steel', dims:{H:200,W:100,tw:5.6,tf:8.5,L:1000}, position:[0,0,0], color:'#5a6a7a', mass_kg:22.4, notes:'EN 10025 S275JR. Hot-rolled. Moment of inertia Iy=1943cm⁴.' }]}) },
 ];
 
+const DESIGN_INTENT_RE = /\b(design|build|create|generate|model|engineer|assembly|gearbox|transmission|engine|motor|pump|bracket|shaft|bearing|impeller|robot|drone|chassis|suspension|manifold|valve|housing|enclosure|pcb|circuit|heat exchanger|turbine)\b/i;
+const STRICT_KERNEL_MODE_KEY = 'uare.strictKernelMode';
+
+function _isLikelyDesignIntent(text) {
+  const value = String(text || '').trim();
+  if (!value) return false;
+  return DESIGN_INTENT_RE.test(value);
+}
+
 /* ── State ───────────────────────────────────────────────────────────────── */
 let _opts = {};
 let _history = []; // [{role:'user'|'assistant', content:str}]
 let _assembly = null; // current assembly object
+let _strictKernelMode = false;
 let _partBuildQueue = [];
 let _isBusy = false;
 let _pendingCadPlan = null;
 let _pendingDerivedCadSpec = null;
 const _MAX_AUTOLOAD_STL_BYTES = 48 * 1024 * 1024;
 let _engineCycleState = null;
+let _qaCollapsed = true;
+let _gearMeshLegendClosed = false;
+let _gearboxVisualState = {
+  diagnostics: [],
+  stageLabels: [],
+  sequenceRunning: false,
+  isExploded: false,
+};
+let _gearboxExplodeMode = 'staged';
+const _gearboxTolerancePresets = {
+  strict: {
+    centerToleranceMm: 0.8,
+    backlashGain: 0.3,
+    stageDefaults: {
+      stage1: { centerDistanceMm: 160, backlashNominalMm: 0.065, backlashBand: [0.045, 0.11] },
+      stage2: { centerDistanceMm: 250, backlashNominalMm: 0.085, backlashBand: [0.06, 0.145] },
+    },
+  },
+  practical: {
+    centerToleranceMm: 1.2,
+    backlashGain: 0.35,
+    stageDefaults: {
+      stage1: { centerDistanceMm: 160, backlashNominalMm: 0.065, backlashBand: [0.03, 0.14] },
+      stage2: { centerDistanceMm: 250, backlashNominalMm: 0.085, backlashBand: [0.04, 0.18] },
+    },
+  },
+  relaxed: {
+    centerToleranceMm: 1.8,
+    backlashGain: 0.42,
+    stageDefaults: {
+      stage1: { centerDistanceMm: 160, backlashNominalMm: 0.065, backlashBand: [0.02, 0.17] },
+      stage2: { centerDistanceMm: 250, backlashNominalMm: 0.085, backlashBand: [0.03, 0.23] },
+    },
+  },
+};
+let _gearboxTolerancePreset = 'practical';
+const _gearboxCheckBands = _cloneGearboxCheckBands(_gearboxTolerancePresets.practical);
+const _engineeringQcProfile = Object.freeze({
+  name: 'Engineering Grade Critical Gate',
+  maxDimensionalDeviationMm: 0.12,
+  maxMateDeviationMm: 0.08,
+  maxGearMeshCenterDeltaMm: 0.05,
+  minAuditScore: 100,
+  requireStrictGearboxTolerancePreset: true,
+});
+
+function _cloneGearboxCheckBands(preset) {
+  return {
+    centerToleranceMm: Number(preset.centerToleranceMm),
+    backlashGain: Number(preset.backlashGain),
+    stageDefaults: {
+      stage1: {
+        centerDistanceMm: Number(preset.stageDefaults.stage1.centerDistanceMm),
+        backlashNominalMm: Number(preset.stageDefaults.stage1.backlashNominalMm),
+        backlashBand: [
+          Number(preset.stageDefaults.stage1.backlashBand[0]),
+          Number(preset.stageDefaults.stage1.backlashBand[1]),
+        ],
+      },
+      stage2: {
+        centerDistanceMm: Number(preset.stageDefaults.stage2.centerDistanceMm),
+        backlashNominalMm: Number(preset.stageDefaults.stage2.backlashNominalMm),
+        backlashBand: [
+          Number(preset.stageDefaults.stage2.backlashBand[0]),
+          Number(preset.stageDefaults.stage2.backlashBand[1]),
+        ],
+      },
+    },
+  };
+}
+
+function _setStrictKernelMode(enabled, persist) {
+  _strictKernelMode = enabled !== false;
+  if (persist !== false) {
+    try {
+      localStorage.setItem(STRICT_KERNEL_MODE_KEY, _strictKernelMode ? 'true' : 'false');
+    } catch (_) { /* non-fatal */ }
+  }
+}
+
+function _hydrateAssemblyMetadata(plan) {
+  if (!plan) return null;
+  _assembly = plan;
+  _stopEngineCycle(true);
+  _setEngineBenchVisible(plan);
+  const audit = _runAssemblyEngineeringAudit(plan);
+  _updateEngineeringQaPanel(plan, audit);
+  if ($asmName) $asmName.textContent = plan.name || 'Assembly';
+  if ($partCount) {
+    $partCount.textContent = (Array.isArray(plan.parts) ? plan.parts.length : 0) + ' parts';
+    $partCount.classList.remove('hidden');
+  }
+  if ($vpEmpty) $vpEmpty.classList.add('hidden');
+  _updateAssemblyTree(Array.isArray(plan.parts) ? plan.parts : []);
+  _renderBOM(plan);
+  _updateMetrics(plan);
+  _clearSuggestions();
+  _showSuggestions(_buildSuggestions(plan));
+  return audit;
+}
+
+function _gearboxPresetLabel(preset) {
+  if (preset === 'strict') return 'Strict';
+  if (preset === 'relaxed') return 'Relaxed';
+  return 'Practical';
+}
+
+function _setGearboxTolerancePreset(preset, persist) {
+  const normalized = _gearboxTolerancePresets[preset] ? preset : 'practical';
+  _gearboxTolerancePreset = normalized;
+  const source = _cloneGearboxCheckBands(_gearboxTolerancePresets[normalized]);
+  _gearboxCheckBands.centerToleranceMm = source.centerToleranceMm;
+  _gearboxCheckBands.backlashGain = source.backlashGain;
+  _gearboxCheckBands.stageDefaults = source.stageDefaults;
+
+  if ($gearboxToleranceBtn) {
+    $gearboxToleranceBtn.textContent = 'Tolerance: ' + _gearboxPresetLabel(_gearboxTolerancePreset);
+    $gearboxToleranceBtn.dataset.preset = _gearboxTolerancePreset;
+  }
+  if ($legendFormula) {
+    $legendFormula.textContent = 'BL ≈ BL0 + ΔCD × ' + _gearboxCheckBands.backlashGain.toFixed(2);
+  }
+  if (persist !== false) {
+    try {
+      localStorage.setItem('uare.gearboxTolerancePreset', _gearboxTolerancePreset);
+    } catch (_) { /* non-fatal */ }
+  }
+}
+
+function _cycleGearboxTolerancePreset() {
+  const ordered = ['strict', 'practical', 'relaxed'];
+  const idx = ordered.indexOf(_gearboxTolerancePreset);
+  const next = ordered[(idx + 1 + ordered.length) % ordered.length];
+  _setGearboxTolerancePreset(next);
+  if (_assembly && _isGearboxAssembly(_assembly)) _applyGearboxVisualDiagnostics(_assembly);
+}
+
+function _isGearboxAssembly(plan) {
+  if (!plan || !Array.isArray(plan.parts)) return false;
+  const name = String(plan.name || '').toLowerCase();
+  const gearCount = plan.parts.filter((part) => /gear|pinion|wheel/i.test(String(part && part.type || '') + ' ' + String(part && part.name || ''))).length;
+  const assemblyCount = plan.parts.filter((part) => part.type === 'assembly').length;
+  return /(gearbox|reducer|transmission)/.test(name) || gearCount >= 3 || assemblyCount > 0;
+}
+
+function _pickPartDimMm(part, keys) {
+  const dims = Object.assign({}, part && part.dimensions_mm, part && part.dims);
+  for (let i = 0; i < keys.length; i++) {
+    const value = Number(dims[keys[i]]);
+    if (Number.isFinite(value)) return value;
+  }
+  return null;
+}
+
+function _distanceMmBetweenParts(partA, partB) {
+  const pa = Array.isArray(partA && partA.position) ? partA.position : [0, 0, 0];
+  const pb = Array.isArray(partB && partB.position) ? partB.position : [0, 0, 0];
+  const dx = pa[0] - pb[0];
+  const dy = pa[1] - pb[1];
+  const dz = pa[2] - pb[2];
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+function _collectGearMeshChecks(plan) {
+  if (!_isGearboxAssembly(plan)) return [];
+  const parts = Array.isArray(plan && plan.parts) ? plan.parts : [];
+  const byName = (re) => parts.find((part) => re.test(String(part && part.name || '')));
+  const pairs = [];
+  const stage1A = byName(/Stage[- ]?1.*Pinion|Input Pinion/i);
+  const stage1B = byName(/Stage[- ]?1.*Wheel|Stage 1 Wheel/i);
+  const stage2A = byName(/Stage[- ]?2.*Pinion/i);
+  const stage2B = byName(/Output Wheel|Stage[- ]?2.*Wheel/i);
+  if (stage1A && stage1B) pairs.push({
+    key: 'stage1',
+    stage: 'Stage 1',
+    a: stage1A,
+    b: stage1B,
+    expectedBacklashMm: _gearboxCheckBands.stageDefaults.stage1.backlashNominalMm,
+    expectedCenterDistanceMm: _gearboxCheckBands.stageDefaults.stage1.centerDistanceMm,
+    backlashBandMm: _gearboxCheckBands.stageDefaults.stage1.backlashBand,
+  });
+  if (stage2A && stage2B) pairs.push({
+    key: 'stage2',
+    stage: 'Stage 2',
+    a: stage2A,
+    b: stage2B,
+    expectedBacklashMm: _gearboxCheckBands.stageDefaults.stage2.backlashNominalMm,
+    expectedCenterDistanceMm: _gearboxCheckBands.stageDefaults.stage2.centerDistanceMm,
+    backlashBandMm: _gearboxCheckBands.stageDefaults.stage2.backlashBand,
+  });
+
+  return pairs.map((pair) => {
+    const pitchA = _pickPartDimMm(pair.a, ['pitch_diameter', 'pitchDiameter', 'd', 'diameter', 'outerD']) || null;
+    const pitchB = _pickPartDimMm(pair.b, ['pitch_diameter', 'pitchDiameter', 'd', 'diameter', 'outerD']) || null;
+    const pitchDerivedCenter = (pitchA != null && pitchB != null) ? ((pitchA + pitchB) / 2) : null;
+    const expectedCenterDistance = Number.isFinite(pair.expectedCenterDistanceMm) ? pair.expectedCenterDistanceMm : (pitchDerivedCenter || 0);
+    const actualCenterDistance = _distanceMmBetweenParts(pair.a, pair.b);
+    const centerDelta = actualCenterDistance - expectedCenterDistance;
+    const backlashBand = Array.isArray(pair.backlashBandMm) ? pair.backlashBandMm : [0.02, 0.2];
+    const backlashEstimate = Math.max(0, pair.expectedBacklashMm + centerDelta * _gearboxCheckBands.backlashGain);
+    const centerPass = Math.abs(centerDelta) <= _gearboxCheckBands.centerToleranceMm;
+    const backlashPass = backlashEstimate >= backlashBand[0] && backlashEstimate <= backlashBand[1];
+    return {
+      key: pair.key,
+      stage: pair.stage,
+      a: pair.a,
+      b: pair.b,
+      expectedCenterDistanceMm: expectedCenterDistance,
+      pitchCenterDistanceMm: pitchDerivedCenter,
+      actualCenterDistanceMm: actualCenterDistance,
+      centerDistanceDeltaMm: centerDelta,
+      expectedBacklashMm: pair.expectedBacklashMm,
+      backlashBandMm: backlashBand,
+      estimatedBacklashMm: backlashEstimate,
+      centerPass,
+      backlashPass,
+      pass: centerPass && backlashPass,
+    };
+  });
+}
+
+function _setGearboxExplodeMode(mode, persist) {
+  _gearboxExplodeMode = mode === 'classic' ? 'classic' : 'staged';
+  if ($gearboxExplodeModeBtn) {
+    $gearboxExplodeModeBtn.textContent = 'Explode: ' + (_gearboxExplodeMode === 'classic' ? 'Classic' : 'Staged');
+    $gearboxExplodeModeBtn.dataset.mode = _gearboxExplodeMode;
+  }
+  if ($legendModeChip) {
+    $legendModeChip.textContent = _gearboxExplodeMode === 'classic' ? 'Classic' : 'Staged';
+  }
+  if (persist !== false) {
+    try {
+      localStorage.setItem('uare.gearboxExplodeMode', _gearboxExplodeMode);
+    } catch (_) { /* non-fatal */ }
+  }
+}
+
+async function _resetGearboxExplodedView() {
+  const ps = _resolveCadPersistentScene();
+  if (!ps || !ps.partMeshes || _gearboxVisualState.sequenceRunning) return;
+  const targets = {};
+  let hasTargets = false;
+  Object.keys(ps.partMeshes).forEach((id) => {
+    const mesh = ps.partMeshes[id];
+    if (!mesh || !mesh._origPos) return;
+    targets[id] = mesh._origPos.clone();
+    hasTargets = true;
+  });
+  _clearGearboxVisualDiagnostics();
+  if (hasTargets) await _animatePartGroupToTargets(ps.partMeshes, targets, 320);
+  _gearboxVisualState.isExploded = false;
+  if (_assembly) _applyGearboxVisualDiagnostics(_assembly);
+}
+
+function _setGearMeshLegendClosed(closed) {
+  _gearMeshLegendClosed = !!closed;
+  if ($gearMeshLegend) $gearMeshLegend.classList.toggle('hidden', _gearMeshLegendClosed);
+}
+
+function _updateGearMeshLegend(plan, checks) {
+  if (!$gearMeshLegend || !$legendMetrics) return;
+  const isGearbox = _isGearboxAssembly(plan);
+  if ($gearboxExplodeModeBtn) $gearboxExplodeModeBtn.classList.toggle('hidden', !isGearbox);
+  if ($gearboxExplodeResetBtn) {
+    $gearboxExplodeResetBtn.classList.toggle('hidden', !isGearbox);
+    $gearboxExplodeResetBtn.dataset.exploded = _gearboxVisualState.isExploded ? 'true' : 'false';
+  }
+  if ($gearMeshLegendToggleBtn) {
+    $gearMeshLegendToggleBtn.classList.toggle('hidden', !isGearbox);
+    $gearMeshLegendToggleBtn.textContent = _gearMeshLegendClosed ? 'Mesh Checks: Off' : 'Mesh Checks';
+  }
+  if ($gearboxToleranceBtn) $gearboxToleranceBtn.classList.toggle('hidden', !isGearbox);
+  if (!isGearbox || !Array.isArray(checks) || !checks.length) {
+    _gearMeshLegendClosed = false;
+    $gearMeshLegend.classList.add('hidden');
+    $legendMetrics.innerHTML = '';
+    if ($legendStageStatus) $legendStageStatus.innerHTML = '';
+    return;
+  }
+
+  const rows = [
+    { label: 'Center tol', value: '±' + _gearboxCheckBands.centerToleranceMm.toFixed(2) + ' mm' },
+    { label: 'Backlash gain', value: _gearboxCheckBands.backlashGain.toFixed(2) + ' / mm' },
+  ];
+  checks.slice(0, 2).forEach((check) => {
+    rows.push({
+      label: check.stage + ' BL band',
+      value: check.backlashBandMm[0].toFixed(3) + '-' + check.backlashBandMm[1].toFixed(3) + ' mm',
+    });
+  });
+  $legendMetrics.innerHTML = rows.map((row) => '<div class="legend-metric">' + esc(row.label) + ': <strong>' + esc(row.value) + '</strong></div>').join('');
+  if ($legendStageStatus) {
+    $legendStageStatus.innerHTML = checks.map((check) => {
+      const statusClass = check.pass ? 'pass' : 'fail';
+      const statusLabel = check.pass ? 'PASS' : 'FAIL';
+      const summary = check.stage + ' ' + statusLabel
+        + ' · ΔCD ' + (check.centerDistanceDeltaMm >= 0 ? '+' : '') + check.centerDistanceDeltaMm.toFixed(3) + ' mm'
+        + ' · BL ' + check.estimatedBacklashMm.toFixed(3) + ' mm';
+      return '<div class="legend-stage-pill ' + statusClass + '">' + esc(summary) + '</div>';
+    }).join('');
+  }
+  if (!_gearMeshLegendClosed) $gearMeshLegend.classList.remove('hidden');
+  else $gearMeshLegend.classList.add('hidden');
+}
+
+function _resolveCadPersistentScene() {
+  const CAD = global.UARE_CAD;
+  if (!CAD) return null;
+  if (typeof CAD._PS_ref === 'function') return CAD._PS_ref();
+  return CAD._PS || null;
+}
+
+function _makeSceneLabelSprite(text, colorHex, bgHex) {
+  const THREE = global.THREE;
+  if (!THREE) return null;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const fontSize = 26;
+  ctx.font = '600 ' + fontSize + 'px "Segoe UI", sans-serif';
+  const width = Math.ceil(ctx.measureText(text).width + 32);
+  const height = 48;
+  canvas.width = width;
+  canvas.height = height;
+  ctx.font = '600 ' + fontSize + 'px "Segoe UI", sans-serif';
+  ctx.fillStyle = bgHex || 'rgba(8, 16, 30, 0.82)';
+  ctx.fillRect(0, 0, width, height);
+  ctx.strokeStyle = 'rgba(140, 180, 220, 0.85)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, width - 2, height - 2);
+  ctx.fillStyle = colorHex || '#dcecff';
+  ctx.fillText(text, 16, 32);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  const material = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(width * 0.35, height * 0.35, 1);
+  sprite.renderOrder = 30;
+  return sprite;
+}
+
+function _clearGearboxVisualDiagnostics() {
+  const ps = _resolveCadPersistentScene();
+  if (!ps || !ps.scene) return;
+  const disposeObject = (obj) => {
+    if (!obj) return;
+    ps.scene.remove(obj);
+    if (obj.geometry && obj.geometry.dispose) obj.geometry.dispose();
+    if (obj.material) {
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+      mats.forEach((mat) => {
+        if (!mat) return;
+        if (mat.map && mat.map.dispose) mat.map.dispose();
+        if (mat.dispose) mat.dispose();
+      });
+    }
+  };
+  (_gearboxVisualState.diagnostics || []).forEach(disposeObject);
+  (_gearboxVisualState.stageLabels || []).forEach(disposeObject);
+  _gearboxVisualState.diagnostics = [];
+  _gearboxVisualState.stageLabels = [];
+}
+
+function _applyGearboxVisualDiagnostics(plan) {
+  _clearGearboxVisualDiagnostics();
+  if (!_isGearboxAssembly(plan)) {
+    _updateGearMeshLegend(plan, []);
+    return;
+  }
+  const THREE = global.THREE;
+  const ps = _resolveCadPersistentScene();
+  if (!THREE || !ps || !ps.scene || !ps.partMeshes) {
+    _updateGearMeshLegend(plan, []);
+    return;
+  }
+  const checks = _collectGearMeshChecks(plan);
+  _updateGearMeshLegend(plan, checks);
+  checks.forEach((check) => {
+    const meshA = ps.partMeshes[check.a.id];
+    const meshB = ps.partMeshes[check.b.id];
+    if (!meshA || !meshB) return;
+    const p1 = meshA.getWorldPosition(new THREE.Vector3());
+    const p2 = meshB.getWorldPosition(new THREE.Vector3());
+    const color = check.pass ? 0x40d67d : 0xff5f5f;
+
+    const lineGeo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+    const lineMat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 });
+    const line = new THREE.Line(lineGeo, lineMat);
+    line.userData = { type: 'gear-mesh-check', stage: check.stage };
+    ps.scene.add(line);
+    _gearboxVisualState.diagnostics.push(line);
+
+    const mid = p1.clone().add(p2).multiplyScalar(0.5);
+    const labelText = check.stage + ' CD ' + check.actualCenterDistanceMm.toFixed(2) + ' / ' + check.expectedCenterDistanceMm.toFixed(2) + ' mm | BL ' + check.estimatedBacklashMm.toFixed(3) + ' mm';
+    const sprite = _makeSceneLabelSprite(labelText, '#e8f4ff', check.pass ? 'rgba(8, 38, 20, 0.82)' : 'rgba(58, 14, 14, 0.85)');
+    if (sprite) {
+      sprite.position.copy(mid.add(new THREE.Vector3(0, 14, 0)));
+      ps.scene.add(sprite);
+      _gearboxVisualState.diagnostics.push(sprite);
+    }
+  });
+}
+
+function _animatePartGroupToTargets(partMeshes, targets, durationMs) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    const entries = Object.keys(targets).map((id) => {
+      const mesh = partMeshes[id];
+      if (!mesh) return null;
+      return { mesh, from: mesh.position.clone(), to: targets[id].clone() };
+    }).filter(Boolean);
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / Math.max(1, durationMs));
+      const eased = t < 0.5 ? (4 * t * t * t) : (1 - Math.pow(-2 * t + 2, 3) / 2);
+      entries.forEach((entry) => entry.mesh.position.lerpVectors(entry.from, entry.to, eased));
+      if (t < 1) requestAnimationFrame(tick);
+      else resolve();
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+async function _runGearboxExplodedSequence(plan) {
+  if (_gearboxVisualState.sequenceRunning) return;
+  const THREE = global.THREE;
+  const ps = _resolveCadPersistentScene();
+  if (!THREE || !ps || !ps.partMeshes) return;
+  _gearboxVisualState.sequenceRunning = true;
+  _clearGearboxVisualDiagnostics();
+
+  const stageDefs = [
+    { label: 'Stage 1: Housing + Foundation', matcher: /(Housing|Gasket|Foot|Inspection Cover)/i, distance: 70 },
+    { label: 'Stage 2: Shaft Train Layout', matcher: /(Shaft)/i, distance: 110 },
+    { label: 'Stage 3: Gear Mesh Train', matcher: /(Pinion|Wheel|Gear)/i, distance: 160 },
+    { label: 'Stage 4: Bearings + Seals', matcher: /(Bearing|Seal)/i, distance: 210 },
+    { label: 'Stage 5: Service Hardware', matcher: /(Plug|Bolt)/i, distance: 250 },
+  ];
+
+  const meshes = ps.partMeshes;
+  const all = Object.values(meshes);
+  const center = new THREE.Vector3();
+  all.forEach((mesh) => center.add(mesh.position));
+  if (all.length) center.divideScalar(all.length);
+  all.forEach((mesh) => { if (!mesh._origPos) mesh._origPos = mesh.position.clone(); });
+  let explodedAny = false;
+
+  try {
+    for (let i = 0; i < stageDefs.length; i++) {
+      const stage = stageDefs[i];
+      const stageEntries = [];
+      Object.keys(meshes).forEach((id) => {
+        const mesh = meshes[id];
+        const def = mesh && mesh.userData && mesh.userData.partDef;
+        const name = String(def && def.name || '');
+        if (stage.matcher.test(name)) stageEntries.push({ id, mesh });
+      });
+      if (!stageEntries.length) continue;
+
+      const targets = {};
+      let labelPos = new THREE.Vector3();
+      stageEntries.forEach(({ id, mesh }) => {
+        const dir = mesh._origPos.clone().sub(center);
+        if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
+        dir.normalize();
+        targets[id] = mesh._origPos.clone().addScaledVector(dir, stage.distance);
+        labelPos.add(targets[id]);
+      });
+      labelPos.divideScalar(stageEntries.length).add(new THREE.Vector3(0, 26 + i * 3, 0));
+
+      const label = _makeSceneLabelSprite(stage.label, '#f7fbff', 'rgba(15, 33, 63, 0.86)');
+      if (label) {
+        label.position.copy(labelPos);
+        ps.scene.add(label);
+        _gearboxVisualState.stageLabels.push(label);
+      }
+
+      _setActionOverlay(true, stage.label, ((i + 1) / stageDefs.length) * 100);
+      await _animatePartGroupToTargets(meshes, targets, 420);
+      await sleep(140);
+      explodedAny = true;
+    }
+  } finally {
+    _setActionOverlay(false);
+    if (explodedAny) _gearboxVisualState.isExploded = true;
+    _applyGearboxVisualDiagnostics(plan);
+    _gearboxVisualState.sequenceRunning = false;
+  }
+}
 
 /* ── DOM Refs ────────────────────────────────────────────────────────────── */
 let $msgs, $sugg, $input, $sendBtn, $enkiSub, $actionOverlay, $actionText,
@@ -347,8 +963,11 @@ let $msgs, $sugg, $input, $sendBtn, $enkiSub, $actionOverlay, $actionText,
   $engineBenchPanel, $engineThrottle, $engineThrottleVal, $engineLoad,
   $engineLoadVal, $engineRpmTarget, $enginePowerReadout, $engineTorqueReadout,
   $engineOilReadout, $engineCoolantReadout,
-  $qaPanel, $qaScore, $qaDimDev, $qaMateViolations, $qaGeomWarnings,
-  $qaDimensionList, $qaMateList, $qaGeometryList;
+  $qaPanel, $qaScore, $qaGradeBadge, $qaDimDev, $qaMateViolations, $qaGeomWarnings, $qaGateStatus,
+  $qaDimensionList, $qaMateList, $qaGeometryList, $qaToggle, $qaBody,
+  $gearboxExplodeModeBtn, $gearboxExplodeResetBtn, $gearboxToleranceBtn,
+  $gearMeshLegendToggleBtn, $gearMeshLegendCloseBtn,
+  $gearMeshLegend, $legendModeChip, $legendMetrics, $legendStageStatus, $legendFormula;
 
 /* ── Init ────────────────────────────────────────────────────────────────── */
 function _init(opts) {
@@ -389,12 +1008,50 @@ function _init(opts) {
   $engineCoolantReadout = document.getElementById('engine-coolant-readout');
   $qaPanel = document.getElementById('engineering-qa-panel');
   $qaScore = document.getElementById('qa-score');
+  $qaGradeBadge = document.getElementById('qa-grade-badge');
   $qaDimDev = document.getElementById('qa-dim-dev');
   $qaMateViolations = document.getElementById('qa-mate-violations');
   $qaGeomWarnings = document.getElementById('qa-geom-warnings');
+  $qaGateStatus = document.getElementById('qa-gate-status');
   $qaDimensionList = document.getElementById('qa-dimension-list');
   $qaMateList = document.getElementById('qa-mate-list');
   $qaGeometryList = document.getElementById('qa-geometry-list');
+  $qaToggle = document.getElementById('qa-toggle');
+  $qaBody = document.getElementById('qa-panel-body');
+  $gearboxExplodeModeBtn = document.getElementById('btn-gearbox-explode-mode');
+  $gearboxExplodeResetBtn = document.getElementById('btn-gearbox-explode-reset');
+  $gearMeshLegendToggleBtn = document.getElementById('btn-gear-mesh-legend-toggle');
+  $gearMeshLegendCloseBtn = document.getElementById('btn-gear-mesh-legend-close');
+  $gearboxToleranceBtn = document.getElementById('btn-gearbox-tolerance');
+  $gearMeshLegend = document.getElementById('gear-mesh-legend');
+  $legendModeChip = document.getElementById('legend-mode-chip');
+  $legendMetrics = document.getElementById('legend-metrics');
+  $legendStageStatus = document.getElementById('legend-stage-status');
+  $legendFormula = document.getElementById('legend-formula');
+
+  try {
+    const savedQaState = localStorage.getItem('uare.qaPanelCollapsed');
+    if (savedQaState != null) _qaCollapsed = savedQaState === 'true';
+  } catch (error) {
+    console.warn('[Enki] Unable to restore Engineering QA panel state:', error.message);
+  }
+  try {
+    const savedStrictMode = localStorage.getItem(STRICT_KERNEL_MODE_KEY);
+    if (savedStrictMode != null) _strictKernelMode = savedStrictMode !== 'false';
+    else _strictKernelMode = false;
+  } catch (_) { /* non-fatal */ }
+  try {
+    const savedExplodeMode = localStorage.getItem('uare.gearboxExplodeMode');
+    if (savedExplodeMode) _gearboxExplodeMode = savedExplodeMode === 'classic' ? 'classic' : 'staged';
+  } catch (_) { /* non-fatal */ }
+  try {
+    const savedTolerancePreset = localStorage.getItem('uare.gearboxTolerancePreset');
+    if (savedTolerancePreset) _gearboxTolerancePreset = savedTolerancePreset;
+  } catch (_) { /* non-fatal */ }
+  _applyQaCollapsedState();
+  _setGearboxExplodeMode(_gearboxExplodeMode, false);
+  _setGearboxTolerancePreset(_gearboxTolerancePreset, false);
+  _updateGearMeshLegend(null, []);
 
   _bindEvents();
   _showGreeting();
@@ -433,6 +1090,9 @@ function _bindEvents() {
     _resetAssemblyUI();
     _resetDerivedSpecPanel();
     if (global.UARE_CAD && global.UARE_CAD.clearScene) global.UARE_CAD.clearScene();
+    _gearboxVisualState.isExploded = false;
+    _setGearMeshLegendClosed(false);
+    _updateGearMeshLegend(null, []);
     if ($vpEmpty) $vpEmpty.classList.remove('hidden');
     _showGreeting();
   });
@@ -464,6 +1124,18 @@ function _bindEvents() {
   const $propsClose = document.getElementById('btn-props-close');
   const $propsPanel = document.getElementById('part-props');
   if ($propsClose && $propsPanel) $propsClose.addEventListener('click', () => $propsPanel.classList.add('collapsed'));
+
+  if ($qaToggle) {
+    $qaToggle.addEventListener('click', () => {
+      _qaCollapsed = !_qaCollapsed;
+      _applyQaCollapsedState();
+      try {
+        localStorage.setItem('uare.qaPanelCollapsed', String(_qaCollapsed));
+      } catch (error) {
+        console.warn('[Enki] Unable to persist Engineering QA panel state:', error.message);
+      }
+    });
+  }
 
   // Voice input button
   const $voiceBtn = document.getElementById('btn-voice');
@@ -657,6 +1329,19 @@ async function _onSend() {
 
 /* ── Message Processing ──────────────────────────────────────────────────── */
 async function _processMessage(text) {
+  const strictModeToggle = String(text || '').trim().match(/^strict\s+(?:precision|kernel)\s+(on|off)$/i);
+  if (strictModeToggle) {
+    const enabled = strictModeToggle[1].toLowerCase() === 'on';
+    _setStrictKernelMode(enabled);
+    _addMsg('assistant', 'Strict precision mode is now <strong>' + (enabled ? 'ON' : 'OFF') + '</strong>. ' +
+      (enabled
+        ? 'Design requests will render only after kernel-verified CAD mesh is available.'
+        : 'Design requests may show provisional concept geometry before kernel verification.'));
+    _history.push({ role: 'assistant', content: 'Strict precision mode ' + (enabled ? 'enabled' : 'disabled') + '.' });
+    return;
+  }
+
+  const designIntent = _isLikelyDesignIntent(text);
   const quickPattern = QUICK_PATTERNS.find((pattern) => pattern.re.test(text)) || null;
   _resetDerivedSpecPanel();
   // 1. Show typing
@@ -674,15 +1359,65 @@ async function _processMessage(text) {
       plan = quickPattern.fn(text);
     }
     if (plan && plan.assembly && plan.parts && plan.parts.length > 0) {
+      plan = Object.assign({}, plan || {}, {
+        parts: (plan.parts || []).map((p, i) => _promoteEngineSpecificPartType(_normalizePart(p, i))),
+      });
+      _resolveAssemblyConstraints(plan);
+
       _addMsg('assistant', _mdToHtml(_stripJsonBlock(response)));
-      await _buildAssemblyFromPlan(plan);
       _renderDerivedSpecPanel(resp.derived_cad_spec || plan.derived_cad_spec || null, plan);
+
+      if (designIntent && _strictKernelMode) {
+        let executionId = resp.cad_execution_id || null;
+
+        if (!executionId) {
+          try {
+            const execResponse = await fetch('/cad/execute', {
+              method: 'POST',
+              headers: Object.assign({ 'Content-Type': 'application/json' }, _opts.headers),
+              body: JSON.stringify({ plan: plan }),
+            });
+            const execData = await execResponse.json();
+            if (execResponse.ok && execData && execData.ok && execData.manifest && execData.manifest.execution_id) {
+              executionId = execData.manifest.execution_id;
+            }
+          } catch (_) { /* handled below */ }
+        }
+
+        if (executionId) {
+          _addMsg('assistant',
+            '🔒 Strict precision mode active. Waiting for kernel-verified CAD mesh — <a href="/lab/?execution_id=' + esc(executionId) + '">open run</a>.'
+          );
+          _setEnkiLive(true, 'Waiting for kernel CAD mesh…');
+          const loaded = await _loadKernelSTLWhenReady(executionId, plan && plan.name);
+          _setEnkiLive(false);
+          if (loaded) {
+            const audit = _hydrateAssemblyMetadata(plan) || { score: '--', issueCount: '--', precisionGatePassed: false };
+            _addMsg('assistant',
+              'Kernel-verified assembly loaded. Engineering audit: <strong>' + audit.score + '/100</strong>; QC gate: <strong>'
+              + (audit.precisionGatePassed ? 'PASS' : 'FAIL') + '</strong>.'
+            );
+            _history.push({ role: 'assistant', content: '[Kernel Assembly: ' + plan.name + ', ' + plan.parts.length + ' parts]' });
+            return;
+          }
+
+          _addMsg('assistant', 'Precision gate active: kernel mesh is not ready yet, so provisional geometry is blocked. Keep this run open and retry once kernel artifacts finish.');
+          return;
+        }
+
+        _addMsg('assistant', 'Precision gate active: no CAD execution ID is available yet, so provisional geometry is blocked for this request.');
+        return;
+      }
+
+      await _buildAssemblyFromPlan(plan);
       if (resp.cad_execution_id) {
         _addMsg('assistant',
           '🔩 CadQuery kernel execution started — <a href="/lab/?execution_id=' + esc(resp.cad_execution_id) + '">Open in unified app</a>'
         );
         // Auto-load the accurate kernel STL into the 3D viewport once ready
         _loadKernelSTLWhenReady(resp.cad_execution_id, plan && plan.name);
+      } else if (designIntent) {
+        _addMsg('assistant', 'Precision note: this is a concept preview scene. Kernel-verified geometry was not started for this request, so treat this as provisional until a CAD execution ID is returned.');
       } else if (resp.derived_cad_spec) {
         _addMsg('assistant', 'Review the <strong>Derived CAD Spec</strong> panel, then click <strong>Generate CAD</strong> when the inferred dimensions and tolerances look right.');
       }
@@ -711,16 +1446,19 @@ async function _processMessage(text) {
 
 /* ── LLM Call ────────────────────────────────────────────────────────────── */
 async function _callLLM(userText) {
-  // Build conversation context for Ollama (last 6 turns)
-  const history = _history.slice(-12).map(m => m.content).join('\n');
-  const contextualPrompt = history ? history + '\n' + userText : userText;
+  // Build conversation context with explicit speaker roles so Enki stays contextual.
+  const history = _history.slice(-12)
+    .map((m) => (m.role === 'user' ? 'User: ' : 'Enki: ') + m.content)
+    .join('\n');
+  const contextualPrompt = history ? history + '\nUser: ' + userText : 'User: ' + userText;
+  const autoExecuteCad = _isLikelyDesignIntent(userText);
 
   // Use /copilot/contextual-analysis which routes to Ollama (with fallback to builtin)
   const endpoint = _opts.endpoint.replace(/\/?$/, '').replace(/\/contextual-analysis$/, '') + '/contextual-analysis';
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: Object.assign({ 'Content-Type': 'application/json' }, _opts.headers),
-    body: JSON.stringify({ prompt: contextualPrompt, current_prompt: userText, system_prompt: SYSTEM_PROMPT, auto_execute_cad: false })
+    body: JSON.stringify({ prompt: contextualPrompt, current_prompt: userText, system_prompt: SYSTEM_PROMPT, auto_execute_cad: autoExecuteCad })
   });
   if (!res.ok) throw new Error('LLM API error ' + res.status);
   const data = await res.json();
@@ -768,37 +1506,23 @@ async function _loadKernelSTLWhenReady(executionId, assemblyName) {
       const data = await r.json();
       const artifacts = Array.isArray(data.artifacts) ? data.artifacts : [];
       const kernelArt = artifacts.find((artifact) => artifact.type === 'stl_kernel' || /kernel/i.test(artifact.filename || ''));
-      const envelopeArt = artifacts.find((artifact) => /\.stl$/i.test(artifact.filename || '') && !/kernel/i.test(artifact.filename || ''));
       const kernelWithinLimit = !kernelArt || !kernelArt.bytes || Number(kernelArt.bytes) <= _MAX_AUTOLOAD_STL_BYTES;
-      const envelopeWithinLimit = !envelopeArt || !envelopeArt.bytes || Number(envelopeArt.bytes) <= _MAX_AUTOLOAD_STL_BYTES;
 
-      let art = null;
-      if (kernelArt && kernelWithinLimit) art = kernelArt;
-      else if (envelopeArt && envelopeWithinLimit) art = envelopeArt;
-      else if (kernelArt || envelopeArt) {
+      if (!kernelArt) continue;
+      if (!kernelWithinLimit) {
         _addMsg('assistant', 'Kernel mesh artifacts are ready, but the STL is too large for automatic browser loading. The viewport will keep the lighter parametric scene to avoid memory failure.');
         return false;
       }
-      if (!art) continue;
 
-      if (art === envelopeArt && kernelArt && !kernelWithinLimit) {
-        _addMsg('assistant', 'Loaded the lighter envelope STL because the full kernel mesh is too large for safe browser autoload.');
-      }
-
-      const stlUrl = art.url || ('/cad/artifacts/' + executionId + '/' + art.filename);
+      const stlUrl = kernelArt.url || ('/cad/artifacts/' + executionId + '/' + kernelArt.filename);
       const loaded = await CAD.loadKernelSTL(stlUrl, assemblyName || 'Assembly');
-      if (!loaded && art !== envelopeArt && envelopeArt && envelopeWithinLimit) {
-        const fallbackUrl = envelopeArt.url || ('/cad/artifacts/' + executionId + '/' + envelopeArt.filename);
-        const fallbackLoaded = await CAD.loadKernelSTL(fallbackUrl, assemblyName || 'Assembly');
-        if (fallbackLoaded) {
-          _addMsg('assistant', '✅ <strong>Envelope mesh loaded</strong> — the browser fell back to a lighter STL because the full kernel mesh could not be loaded safely.');
-          return true;
-        }
-      }
       if (loaded) {
         _addMsg('assistant', '✅ <strong>Accurate CadQuery geometry loaded</strong> — 3D viewport updated with real kernel mesh.');
         return true;
       }
+
+      _addMsg('assistant', 'Kernel STL could not be loaded in-browser for this run. Falling back to provisional assembly render so work can continue.');
+      return false;
     } catch (_) { /* keep polling */ }
   }
   return false;
@@ -878,13 +1602,12 @@ async function _buildAssemblyFromPlan(plan) {
     _setEnkiLive(true, part.name + '…');
     // Build the part geometry
     try {
-      if (CAD && CAD.morphAddPart) {
-        await CAD.morphAddPart(canvas, part);
-      } else if (CAD && CAD.buildScene) {
-        // Fallback: build just this part using buildScene (only last part stays visible)
-        const s = CAD.buildScene(canvas, part.dims || {}, part.type || 'bracket');
-        if (s && s.animate) s.animate();
-      }
+      const result = await _buildPartWithVerification(canvas, CAD, part, (attempt, maxAttempts) => {
+        const passLabel = attempt > 1 ? ' · verify/fix pass ' + attempt + '/' + maxAttempts : '';
+        _setActionOverlay(true, 'Building: ' + part.name + passLabel + ' (' + (i+1) + '/' + totalParts + ')', (i/totalParts)*100);
+        _setEnkiLive(true, part.name + passLabel + '…');
+      });
+      plan.parts[i] = result.part;
     } catch (err) {
       console.warn('[Enki] Part build failed:', part.name, err.message);
     }
@@ -897,16 +1620,31 @@ async function _buildAssemblyFromPlan(plan) {
   _setActionOverlay(false);
   _setEnkiLive(false);
   _setEnkiStatus('Engineering AI · Ready');
+  {
+    const ps = _resolveCadPersistentScene();
+    if (ps && ps.partMeshes) {
+      Object.values(ps.partMeshes).forEach((mesh) => {
+        if (mesh) mesh._origPos = mesh.position.clone();
+      });
+    }
+    _gearboxVisualState.isExploded = false;
+    _setGearMeshLegendClosed(false);
+  }
+  _applyGearboxVisualDiagnostics(plan);
   // Summary message
   const mass = plan.total_mass_kg != null ? plan.total_mass_kg + ' kg' : '—';
   _addMsg('assistant',
     'Assembly complete! <strong>' + plan.parts.length + ' parts</strong> built.' +
     (plan.bom_notes ? '<br><em>' + esc(plan.bom_notes) + '</em>' : '') +
     '<br><span class="text-muted">Total mass: ' + mass + '</span>' +
-    '<br><span class="text-muted">Engineering audit: ' + audit.score + '/100 (' + audit.issueCount + ' issue(s)).</span>'
+    '<br><span class="text-muted">Engineering audit: ' + audit.score + '/100 (' + audit.issueCount + ' issue(s)).</span>' +
+    '<br><span class="text-muted">QC gate: <strong>' + (audit.precisionGatePassed ? 'PASS' : 'FAIL') + '</strong> (' + esc(String(audit.engineeringGrade || '').replace(/_/g, ' ')) + ')</span>'
   );
   if (audit.issueCount) {
     _addMsg('assistant', '<strong>Engineering Findings</strong><br>' + audit.issues.slice(0, 6).map((issue) => '• ' + esc(issue)).join('<br>'));
+  }
+  if (Array.isArray(audit.criticalFindings) && audit.criticalFindings.length) {
+    _addMsg('assistant', '<strong>Critical QC Findings</strong><br>' + audit.criticalFindings.slice(0, 6).map((finding) => '• ' + esc(finding.message || 'Critical quality gate failure.')).join('<br>'));
   }
   _history.push({ role: 'assistant', content: '[Assembly: ' + plan.name + ', ' + plan.parts.length + ' parts]' });
   // Show suggestions
@@ -1098,6 +1836,10 @@ function _showPartProps(part, partDefOverride) {
   const mat = _matLookup(d.material);
   const dims= d.dims || {};
   const fea = _getFeaResult(d.id) || {};
+  const verification = d.verification || {};
+  const measured = verification.measured_dimensions_mm || {};
+  const expectedEnvelope = verification.expected_envelope_mm || {};
+  const deviations = verification.deviations_mm || {};
 
   // Compute derived quantities
   const massG   = d.mass_kg != null ? (d.mass_kg * 1000).toFixed(1) : null;
@@ -1150,7 +1892,7 @@ function _showPartProps(part, partDefOverride) {
     {
       title: 'GEOMETRY',
       rows: [
-        ...Object.entries(dims).map(([k, v]) => [k.toUpperCase() + ' [mm]', v]),
+        ...Object.entries(dims).map(([k, v]) => [k.toUpperCase() + ' [mm]', Number.isFinite(Number(v)) ? _formatMm3(Number(v)) : v]),
         ['Volume [cm³]',  volCm3],
         ['Surface finish',d.surface_finish || (mat ? 'Ra 1.6 μm (default)' : null)],
         ['Tolerance',     d.tolerance || 'General ±0.1 mm per ISO 2768-m'],
@@ -1161,6 +1903,25 @@ function _showPartProps(part, partDefOverride) {
         ['Assembly joint',d.joint_type],
         ['Clearance fit', d.clearance_fit],
         ['Interference',  d.interference_um != null ? d.interference_um + ' μm' : null],
+      ]
+    },
+    {
+      title: 'DIMENSION VERIFICATION',
+      rows: [
+        ['Status', verification.checks_run ? (verification.within_tolerance ? 'Verified' : 'Needs manual correction') : null],
+        ['Attempts', verification.attempts],
+        ['Precision', verification.precision_mm != null ? _formatMm3(verification.precision_mm) : null],
+        ['Tolerance', verification.tolerance_mm != null ? _formatMm3(verification.tolerance_mm) : null],
+        ['Measured X', measured.x != null ? _formatMm3(measured.x) : null],
+        ['Measured Y', measured.y != null ? _formatMm3(measured.y) : null],
+        ['Measured Z', measured.z != null ? _formatMm3(measured.z) : null],
+        ['Expected X', expectedEnvelope.x != null ? _formatMm3(expectedEnvelope.x) : null],
+        ['Expected Y', expectedEnvelope.y != null ? _formatMm3(expectedEnvelope.y) : null],
+        ['Expected Z', expectedEnvelope.z != null ? _formatMm3(expectedEnvelope.z) : null],
+        ['ΔX', deviations.x != null ? _formatMm3(deviations.x) : null],
+        ['ΔY', deviations.y != null ? _formatMm3(deviations.y) : null],
+        ['ΔZ', deviations.z != null ? _formatMm3(deviations.z) : null],
+        ['Max deviation', verification.max_deviation_mm != null ? _formatMm3(verification.max_deviation_mm) : null],
       ]
     },
     {
@@ -1321,17 +2082,37 @@ function _renderQaRows(container, rows, formatValue) {
   }).join('');
 }
 
+function _applyQaCollapsedState() {
+  if (!$qaPanel) return;
+  $qaPanel.classList.toggle('is-collapsed', _qaCollapsed);
+  if ($qaBody) $qaBody.hidden = _qaCollapsed;
+  if ($qaToggle) {
+    $qaToggle.textContent = _qaCollapsed ? 'Show' : 'Hide';
+    $qaToggle.setAttribute('aria-expanded', _qaCollapsed ? 'false' : 'true');
+    $qaToggle.setAttribute('aria-label', _qaCollapsed ? 'Expand Engineering QA' : 'Collapse Engineering QA');
+  }
+}
+
 function _updateEngineeringQaPanel(plan, audit) {
   if (!$qaPanel) return;
   if (!plan || !audit) {
     $qaPanel.classList.add('hidden');
     if ($qaScore) $qaScore.textContent = '--/100';
+    if ($qaGradeBadge) {
+      $qaGradeBadge.textContent = '--';
+      $qaGradeBadge.classList.remove('pass', 'fail');
+    }
     if ($qaDimDev) $qaDimDev.textContent = '-- mm';
     if ($qaMateViolations) $qaMateViolations.textContent = '--';
     if ($qaGeomWarnings) $qaGeomWarnings.textContent = '--';
+    if ($qaGateStatus) {
+      $qaGateStatus.textContent = '--';
+      $qaGateStatus.classList.remove('pass', 'fail');
+    }
     if ($qaDimensionList) $qaDimensionList.innerHTML = '<div class="qa-empty">No assembly loaded.</div>';
     if ($qaMateList) $qaMateList.innerHTML = '<div class="qa-empty">No assembly loaded.</div>';
     if ($qaGeometryList) $qaGeometryList.innerHTML = '<div class="qa-empty">No assembly loaded.</div>';
+    _applyQaCollapsedState();
     return;
   }
 
@@ -1352,10 +2133,23 @@ function _updateEngineeringQaPanel(plan, audit) {
 
   const maxDim = Number(audit.maxDimensionalDeviationMm || 0);
   const geomWarnings = Array.isArray(audit.geometryWarnings) ? audit.geometryWarnings : [];
+  const criticalFindings = Array.isArray(audit.criticalFindings) ? audit.criticalFindings : [];
+  const gatePassed = audit.precisionGatePassed === true;
+  const grade = String(audit.engineeringGrade || (gatePassed ? 'ENGINEERING_GRADE' : 'REJECTED'));
   if ($qaScore) $qaScore.textContent = String(audit.score || 0) + '/100';
+  if ($qaGradeBadge) {
+    $qaGradeBadge.textContent = grade.replace(/_/g, ' ');
+    $qaGradeBadge.classList.toggle('pass', gatePassed);
+    $qaGradeBadge.classList.toggle('fail', !gatePassed);
+  }
   if ($qaDimDev) $qaDimDev.textContent = maxDim.toFixed(2) + ' mm';
   if ($qaMateViolations) $qaMateViolations.textContent = String(mateRows.length);
   if ($qaGeomWarnings) $qaGeomWarnings.textContent = String(geomWarnings.length);
+  if ($qaGateStatus) {
+    $qaGateStatus.textContent = gatePassed ? 'PASS' : 'FAIL';
+    $qaGateStatus.classList.toggle('pass', gatePassed);
+    $qaGateStatus.classList.toggle('fail', !gatePassed);
+  }
 
   _renderQaRows($qaDimensionList, audit.dimensionalChecks || [], (row) => {
     return row && row.deviationMm != null
@@ -1363,8 +2157,14 @@ function _updateEngineeringQaPanel(plan, audit) {
       : 'n/a';
   });
   _renderQaRows($qaMateList, mateRows, (row) => Number(row.deviationMm || 0).toFixed(2) + ' mm');
-  _renderQaRows($qaGeometryList, geomWarnings.map((message, index) => ({ label: 'Warning ' + (index + 1), message })), (row) => row.message || '');
+  const warningRows = geomWarnings.map((message, index) => ({ label: 'Warning ' + (index + 1), message }));
+  const criticalRows = criticalFindings.map((finding, index) => ({
+    label: 'Critical ' + (index + 1),
+    message: finding && finding.message ? finding.message : 'Critical quality gate failure.',
+  }));
+  _renderQaRows($qaGeometryList, criticalRows.concat(warningRows), (row) => row.message || '');
   $qaPanel.classList.remove('hidden');
+  _applyQaCollapsedState();
 }
 
 function _resetDerivedSpecPanel() {
@@ -1763,6 +2563,7 @@ function _runAssemblyEngineeringAudit(plan) {
   const dimensionalChecks = [];
   const byName = (pattern) => parts.find((part) => pattern.test(String(part && part.name || '')));
   const byNameAll = (pattern) => parts.filter((part) => pattern.test(String(part && part.name || '')));
+  const countByName = (pattern) => byNameAll(pattern).length;
   const pos = (part) => Array.isArray(part && part.position) ? part.position : [0, 0, 0];
   const dist = (a, b) => {
     const pa = pos(a);
@@ -1781,6 +2582,8 @@ function _runAssemblyEngineeringAudit(plan) {
   const intake = byName(/Intake Manifold/);
   const starter = byName(/Starter Motor/);
   const flywheel = byName(/Flywheel/);
+  const expectedCylinderCount = Math.max(1, Number(block && block.dims && block.dims.cylinders) || 4);
+  const isInline4Engine = expectedCylinderCount === 4 && parts.length >= 150 && block && head && crank;
   const checkRange = (label, actual, lo, hi) => {
     const deviation = actual < lo ? (lo - actual) : actual > hi ? (actual - hi) : 0;
     dimensionalChecks.push({ label, actualMm: actual, expectedMinMm: lo, expectedMaxMm: hi, toleranceMm: 0, deviationMm: deviation });
@@ -1839,9 +2642,196 @@ function _runAssemblyEngineeringAudit(plan) {
     issues.push(msg);
   }
 
+  const criticalCoverage = {
+    expectedCylinderCount,
+    inline4ChecksApplied: isInline4Engine,
+    missingSubsystems: [],
+    countMismatches: [],
+  };
+
+  if (isInline4Engine) {
+    [
+      { label: 'Oil pump', pattern: /Oil Pump/ },
+      { label: 'Water pump', pattern: /Water Pump/ },
+      { label: 'Thermostat', pattern: /^Thermostat\b/ },
+      { label: 'Intake manifold', pattern: /Intake Manifold/ },
+      { label: 'Exhaust manifold', pattern: /Exhaust Manifold/ },
+      { label: 'Fuel rail', pattern: /Fuel Rail/ },
+      { label: 'Timing chain', pattern: /Timing Chain/ },
+      { label: 'Alternator', pattern: /Alternator\b/ },
+      { label: 'Starter motor', pattern: /Starter Motor/ },
+      { label: 'Cylinder head gasket', pattern: /Head Gasket/ },
+      { label: 'Oil pan gasket', pattern: /Oil Pan Gasket/ },
+    ].forEach((check) => {
+      if (!byName(check.pattern)) criticalCoverage.missingSubsystems.push(check.label);
+    });
+
+    [
+      { label: 'Pistons', pattern: /^Piston #\d+\b/, expected: expectedCylinderCount },
+      { label: 'Connecting rods', pattern: /^Connecting Rod #\d+\b/, expected: expectedCylinderCount },
+      { label: 'Cylinder liners', pattern: /^Cylinder Liner #\d+\b/, expected: expectedCylinderCount },
+      { label: 'Fuel injectors', pattern: /^Fuel Injector #\d+\b/, expected: expectedCylinderCount },
+      { label: 'Spark plugs', pattern: /^Spark Plug #\d+\b/, expected: expectedCylinderCount },
+      { label: 'Ignition coils', pattern: /^Ignition Coil #\d+\b/, expected: expectedCylinderCount },
+      { label: 'Intake valves', pattern: /^Intake Valve #\d+\b/, expected: expectedCylinderCount * 2 },
+      { label: 'Exhaust valves', pattern: /^Exhaust Valve #\d+\b/, expected: expectedCylinderCount * 2 },
+      { label: 'Valve springs', pattern: /^Valve Spring #\d+\b/, expected: expectedCylinderCount * 4 },
+      { label: 'Hydraulic lash adjusters', pattern: /^Hydraulic Lash Adjuster \(HLA\) #\d+\b/, expected: expectedCylinderCount * 4 },
+      { label: 'Main bearing shells', pattern: /^Main Bearing #\d+ (Upper|Lower) Shell\b/, expected: (expectedCylinderCount + 1) * 2 },
+      { label: 'Rod bearing shells', pattern: /^Rod Bearing #\d+ (Upper|Lower)\b/, expected: expectedCylinderCount * 2 },
+    ].forEach((check) => {
+      const actual = countByName(check.pattern);
+      if (actual !== check.expected) {
+        criticalCoverage.countMismatches.push({ label: check.label, expected: check.expected, actual });
+      }
+    });
+
+    if (criticalCoverage.missingSubsystems.length) {
+      const msg = 'Engine subsystem coverage is incomplete: missing ' + criticalCoverage.missingSubsystems.join(', ') + '.';
+      issues.push(msg);
+      geometryWarnings.push(msg);
+    }
+    if (criticalCoverage.countMismatches.length) {
+      criticalCoverage.countMismatches.forEach((mismatch) => {
+        const msg = mismatch.label + ' count mismatch (' + mismatch.actual + ' found, expected ' + mismatch.expected + ').';
+        issues.push(msg);
+        geometryWarnings.push(msg);
+      });
+    }
+  }
+
   const maxDimensionalDeviationMm = dimensionalChecks.reduce((mx, row) => Math.max(mx, Number(row.deviationMm || 0)), 0);
 
-  const score = Math.max(0, Math.min(100, 100 - issues.length * 9));
+  const gearMeshChecks = _collectGearMeshChecks(plan);
+  if (gearMeshChecks.length) {
+    gearMeshChecks.forEach((check) => {
+      const centerTol = _gearboxCheckBands.centerToleranceMm;
+      dimensionalChecks.push({
+        label: check.stage + ' center distance',
+        actualMm: check.actualCenterDistanceMm,
+        expectedMinMm: check.expectedCenterDistanceMm - centerTol,
+        expectedMaxMm: check.expectedCenterDistanceMm + centerTol,
+        toleranceMm: centerTol,
+        deviationMm: Math.abs(check.centerDistanceDeltaMm),
+      });
+      if (!check.centerPass) {
+        const msg = check.stage + ' center distance is out of tolerance by ' + Math.abs(check.centerDistanceDeltaMm).toFixed(3) +
+          ' mm (actual ' + check.actualCenterDistanceMm.toFixed(3) + ', expected ' + check.expectedCenterDistanceMm.toFixed(3) + ').';
+        issues.push(msg);
+        geometryWarnings.push(msg);
+      }
+      if (!check.backlashPass) {
+        const msg = check.stage + ' backlash estimate (' + check.estimatedBacklashMm.toFixed(3) +
+          ' mm) is outside target ' + check.backlashBandMm[0].toFixed(3) + '-' + check.backlashBandMm[1].toFixed(3) + ' mm.';
+        issues.push(msg);
+        geometryWarnings.push(msg);
+      }
+    });
+  }
+
+  const criticalFindings = [];
+  const pushCriticalFinding = (code, message, details) => {
+    criticalFindings.push({
+      code: String(code || 'critical_quality_failure'),
+      severity: 'critical',
+      message: String(message || 'Critical engineering quality failure.'),
+      details: details || null,
+    });
+  };
+
+  const worstMateDeviationMm = mateRows => mateRows.reduce((mx, row) => Math.max(mx, Math.abs(Number(row.deviationMm || 0))), 0);
+  const mateRowsForGate = [];
+  (solver && solver.violations ? solver.violations : []).forEach((violation) => {
+    mateRowsForGate.push({ deviationMm: Number(violation && violation.deviationMm || 0) });
+  });
+  (solver && solver.conflicts ? solver.conflicts : []).forEach((conflict) => {
+    mateRowsForGate.push({ deviationMm: Number(conflict && conflict.deltaMm || 0) });
+  });
+  const maxMateDeviationMm = worstMateDeviationMm(mateRowsForGate);
+  const worstGearMeshCenterDeltaMm = gearMeshChecks.reduce((mx, check) => Math.max(mx, Math.abs(Number(check && check.centerDistanceDeltaMm || 0))), 0);
+  const hasGearMeshFailure = gearMeshChecks.some((check) => !check.pass);
+
+  if (maxDimensionalDeviationMm > _engineeringQcProfile.maxDimensionalDeviationMm) {
+    pushCriticalFinding(
+      'dimensional_precision_exceeded',
+      'Dimensional precision exceeded strict limit (' + maxDimensionalDeviationMm.toFixed(3) + ' mm > ' + _engineeringQcProfile.maxDimensionalDeviationMm.toFixed(3) + ' mm).',
+      { maxDimensionalDeviationMm }
+    );
+  }
+  if (mateViolationCount > 0) {
+    pushCriticalFinding(
+      'mate_constraints_unresolved',
+      'Constraint solver reported unresolved mate violations/conflicts (' + mateViolationCount + ').',
+      { mateViolationCount, maxMateDeviationMm }
+    );
+  }
+  if (maxMateDeviationMm > _engineeringQcProfile.maxMateDeviationMm) {
+    pushCriticalFinding(
+      'mate_deviation_exceeded',
+      'Mate deviation exceeds strict limit (' + maxMateDeviationMm.toFixed(3) + ' mm > ' + _engineeringQcProfile.maxMateDeviationMm.toFixed(3) + ' mm).',
+      { maxMateDeviationMm }
+    );
+  }
+  if (missingMaterials > 0) {
+    pushCriticalFinding(
+      'missing_material_assignments',
+      missingMaterials + ' part(s) are missing material assignments.',
+      { missingMaterials }
+    );
+  }
+  if (genericEngineParts.length > 0) {
+    pushCriticalFinding(
+      'generic_engine_geometry',
+      genericEngineParts.length + ' engine-critical part(s) still use generic geometry types.',
+      { genericEngineParts: genericEngineParts.length }
+    );
+  }
+  if (criticalCoverage.missingSubsystems.length || criticalCoverage.countMismatches.length) {
+    pushCriticalFinding(
+      'critical_subsystem_coverage_incomplete',
+      'Critical subsystem coverage is incomplete for this assembly.',
+      {
+        missingSubsystems: criticalCoverage.missingSubsystems.slice(),
+        countMismatches: criticalCoverage.countMismatches.slice(),
+      }
+    );
+  }
+  if (hasGearMeshFailure) {
+    pushCriticalFinding(
+      'gear_mesh_failure',
+      'At least one gearbox stage failed center-distance/backlash mesh checks.',
+      { failedStages: gearMeshChecks.filter((check) => !check.pass).map((check) => check.stage) }
+    );
+  }
+  if (gearMeshChecks.length && worstGearMeshCenterDeltaMm > _engineeringQcProfile.maxGearMeshCenterDeltaMm) {
+    pushCriticalFinding(
+      'gear_mesh_center_delta_exceeded',
+      'Gear mesh center-distance delta exceeds strict limit (' + worstGearMeshCenterDeltaMm.toFixed(3) + ' mm > ' + _engineeringQcProfile.maxGearMeshCenterDeltaMm.toFixed(3) + ' mm).',
+      { worstGearMeshCenterDeltaMm }
+    );
+  }
+  if (_engineeringQcProfile.requireStrictGearboxTolerancePreset && _isGearboxAssembly(plan) && _gearboxTolerancePreset !== 'strict') {
+    pushCriticalFinding(
+      'gearbox_tolerance_mode_not_strict',
+      'Gearbox QC requires strict tolerance preset, but current preset is ' + _gearboxPresetLabel(_gearboxTolerancePreset) + '.',
+      { tolerancePreset: _gearboxTolerancePreset }
+    );
+  }
+
+  const precisionGatePassed = criticalFindings.length === 0 && issues.length === 0;
+  const issuePenalty = issues.length * 8;
+  const criticalPenalty = criticalFindings.length * 24;
+  const dimensionalPenalty = Math.max(0, maxDimensionalDeviationMm - 0.02) * 140;
+  const matePenalty = maxMateDeviationMm * 180;
+  const meshPenalty = worstGearMeshCenterDeltaMm * 220;
+  let score = Math.round(Math.max(0, 100 - issuePenalty - criticalPenalty - dimensionalPenalty - matePenalty - meshPenalty));
+  if (precisionGatePassed) score = 100;
+  if (!precisionGatePassed) score = Math.min(score, 89);
+
+  const engineeringGrade = precisionGatePassed && score >= _engineeringQcProfile.minAuditScore
+    ? 'ENGINEERING_GRADE'
+    : criticalFindings.length ? 'REJECTED' : 'NEEDS_REWORK';
+
   const result = {
     score,
     issueCount: issues.length,
@@ -1851,6 +2841,18 @@ function _runAssemblyEngineeringAudit(plan) {
     dimensionalChecks,
     mateViolations: solver ? (solver.violations || []) : [],
     geometryWarnings,
+    criticalCoverage,
+    gearMeshChecks,
+    criticalFindings,
+    precisionGatePassed,
+    engineeringGrade,
+    qcProfile: _engineeringQcProfile,
+    qcSummary: {
+      maxDimensionalDeviationMm,
+      maxMateDeviationMm,
+      worstGearMeshCenterDeltaMm,
+      criticalFindingCount: criticalFindings.length,
+    },
   };
   plan.engineering_audit = result;
   return result;
@@ -2433,11 +3435,59 @@ function _initViewportControls() {
       if (global.UARE_CAD && global.UARE_CAD.setRenderMode) global.UARE_CAD.setRenderMode(btn.dataset.mode);
     });
   });
+  if ($gearboxExplodeModeBtn) {
+    $gearboxExplodeModeBtn.addEventListener('click', () => {
+      _setGearboxExplodeMode(_gearboxExplodeMode === 'staged' ? 'classic' : 'staged');
+    });
+  }
+  if ($gearboxExplodeResetBtn) {
+    $gearboxExplodeResetBtn.addEventListener('click', async () => {
+      await _resetGearboxExplodedView();
+    });
+  }
+  if ($gearMeshLegendToggleBtn) {
+    $gearMeshLegendToggleBtn.addEventListener('click', () => {
+      _setGearMeshLegendClosed(!_gearMeshLegendClosed);
+      if (_assembly && _isGearboxAssembly(_assembly)) {
+        _updateGearMeshLegend(_assembly, _collectGearMeshChecks(_assembly));
+      }
+    });
+  }
+  if ($gearMeshLegendCloseBtn) {
+    $gearMeshLegendCloseBtn.addEventListener('click', () => {
+      _setGearMeshLegendClosed(true);
+      if (_assembly && _isGearboxAssembly(_assembly)) {
+        _updateGearMeshLegend(_assembly, _collectGearMeshChecks(_assembly));
+      }
+    });
+  }
+  if ($gearboxToleranceBtn) {
+    $gearboxToleranceBtn.addEventListener('click', () => {
+      _cycleGearboxTolerancePreset();
+    });
+  }
   const $explode = document.getElementById('btn-explode');
-  if ($explode) $explode.addEventListener('click', () => {
+  if ($explode) $explode.addEventListener('click', async () => {
+    if (_assembly && _isGearboxAssembly(_assembly) && _gearboxExplodeMode === 'staged') {
+      await _runGearboxExplodedSequence(_assembly);
+      return;
+    }
     if (global.UARE_CAD && global.UARE_CAD.getLastScene) {
       const sc = global.UARE_CAD.getLastScene();
-      if (sc) { sc.explode && sc.explode(2.5); }
+      if (sc) {
+        if (sc.partMeshes) {
+          Object.values(sc.partMeshes).forEach((mesh) => {
+            if (mesh && !mesh._origPos) mesh._origPos = mesh.position.clone();
+          });
+        }
+        if (sc.explode) {
+          sc.explode(2.5);
+          _gearboxVisualState.isExploded = true;
+          if (_assembly && _isGearboxAssembly(_assembly)) {
+            _updateGearMeshLegend(_assembly, _collectGearMeshChecks(_assembly));
+          }
+        }
+      }
     }
   });
 }
@@ -2460,6 +3510,47 @@ function _initSimControls() {
     $status.className = 'sim-badge ' + s;
     const labels = { idle: '● Idle', running: '▶ Running', complete: '✓ Complete', fail: '✗ Failed' };
     $status.textContent = labels[s] || s;
+  }
+
+  async function runBackendStructuralPhysics(parts) {
+    try {
+      const first = (Array.isArray(parts) && parts.length) ? parts[0] : null;
+      const dims = _canonicalDims(first || {});
+      const length = Number(dims.L || dims.length || dims.w || 120);
+      const width = Number(dims.w || dims.width || dims.d || 40);
+      const height = Number(dims.h || dims.height || dims.z || 25);
+      const holeDia = Number(dims.hole_diameter || dims.holeDiameter || 6);
+      const response = await fetch('/physics/jobs', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, _opts.headers || {}),
+        body: JSON.stringify({
+          job: {
+            domain: 'structural_static',
+            fidelity_tier: 'tier_2_mid',
+            geometry: {
+              type: 'parametric',
+              parameters: {
+                bracket_length_mm: Number.isFinite(length) ? length : 120,
+                bracket_width_mm: Number.isFinite(width) ? width : 40,
+                bracket_height_mm: Number.isFinite(height) ? height : 25,
+                bolt_hole_diameter_mm: Number.isFinite(holeDia) ? holeDia : 6,
+              },
+            },
+            materials: {
+              youngs_modulus_mpa: 69000,
+              yield_strength_mpa: 250,
+            },
+            loads: [{ type: 'force', magnitude_n: 120 }],
+            boundary_conditions: [{ type: 'fixed', face: 'back' }],
+          },
+        }),
+      });
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data && data.job && data.job.result_json ? data.job.result_json : null;
+    } catch (_) {
+      return null;
+    }
   }
 
   if ($run) $run.addEventListener('click', async () => {
@@ -2566,6 +3657,8 @@ function _initSimControls() {
     let minSafetyFactor = 99;
     let hotspotCount = 0;
 
+    const backendPhysics = await runBackendStructuralPhysics(parts);
+
     const fea = global.UARE_SIM && global.UARE_SIM.runFEA
       ? global.UARE_SIM.runFEA({ parts: parts }, feaLoadN)
       : null;
@@ -2577,6 +3670,13 @@ function _initSimControls() {
       });
       maxStressVal = Number(fea.maxStress || 0);
       minSafetyFactor = Number(fea.minSafety || 99);
+    }
+
+    if (backendPhysics) {
+      const backendStress = Number(backendPhysics.max_stress_mpa);
+      const backendSafety = Number(backendPhysics.safety_factor);
+      if (Number.isFinite(backendStress)) maxStressVal = backendStress;
+      if (Number.isFinite(backendSafety) && backendSafety > 0) minSafetyFactor = backendSafety;
     }
 
     if (sc.partMeshes) {
@@ -2620,6 +3720,9 @@ function _initSimControls() {
         (minSafetyFactor < 1.5 ? '⚠️ <strong>Below 1.5 — redesign required</strong>' :
          minSafetyFactor < 2.5 ? '✓ Acceptable for dynamic load' : '✓ Safe') + '<br>' +
       'High-stress parts (&gt;70% of max): <code>' + hotspotCount + '</code><br>' +
+      (backendPhysics && backendPhysics.provider
+        ? '<em>Authoritative solver: ' + esc(String(backendPhysics.provider)) + '. Visual heatmap remains local for interactive inspection.</em><br>'
+        : '') +
       '<em>Red = highest stress, blue = lowest. Use <strong>Solid</strong> to reset colours.</em>');
   });
   if ($stress) $stress.addEventListener('click', () => {
@@ -3159,61 +4262,93 @@ function _buildEngine4Cyl(text) {
 function _buildGearAssembly(text) {
   return {
     assembly: true,
-    name: '2-Stage Helical Gearbox — 400 N·m / i=20:1',
-    description: '2-stage helical gear reducer. Input 1450 RPM, output 72.5 RPM. Rated torque 400 N·m. Centre distance 160/250 mm. ISO 6336 Class 6 gears. Horizontally split cast iron housing, taper roller bearings.',
-    total_mass_kg: 58.0,
+    name: '2-Stage Helical Gearbox — Industrial Horizontal Split Case',
+    description: 'Industrial 2-stage horizontal helical reducer. Input 1450 RPM, output 72.5 RPM, nominal 400 N·m, ratio 20:1. Explicit shafts, gear mesh layout, split housing halves, six bearings, three seals, and structural mounting feet.',
+    total_mass_kg: 96.4,
     parts: [
-      { id:'cs001', name:'Gearbox Casing — Grey Iron EN-GJL-250', type:'housing', material:'cast_iron',
-        dims:{w:450,h:320,d:280}, position:[0,0,0], color:'#6a7070', mass_kg:22.0,
+      { id:'cs001', name:'Lower Housing — EN-GJL-250', type:'housing', material:'cast_iron',
+        dims:{w:620,h:210,d:500}, position:[0,-95,75], color:'#646c72', mass_kg:34.0,
         surface_finish:'Ra 1.6 μm bearing bores, Ra 3.2 μm split face',
-        tolerance:'Bearing bores H7, split face flatness 0.05 mm',
+        tolerance:'Bearing bores H7, split face flatness 0.04 mm',
         process:'casting', coating:'Internal: oil-resistant epoxy. External: RAL 7035',
-        notes:'Horizontally split. Oil level indicator. Breather plug top. Drain plug M20 bottom.' },
-      { id:'g1p001', name:'Input Pinion — 18T Helical 4340', type:'gear', material:'steel',
-        dims:{module:3, num_teeth:18, face_width:55, helix_angle:15, pitch_diameter:54},
-        position:[-120,0,0], color:'#7a8a9a', mass_kg:1.2,
+        notes:'Horizontal split lower case with oil sump, drain boss, and stiffening ribs.' },
+      { id:'cs002', name:'Upper Housing Cover — EN-GJL-250', type:'housing', material:'cast_iron',
+        dims:{w:620,h:170,d:500}, position:[0,95,75], color:'#707982', mass_kg:23.0,
+        process:'casting', coating:'Internal anti-foam coating',
+        notes:'Upper clamshell cover with breather and inspection flange.' },
+      { id:'gs001', name:'Split-Plane Gasket — PTFE', type:'gasket', material:'ptfe',
+        dims:{w:620,depth:500,thickness:1.2}, position:[0,0,75], color:'#efefef', mass_kg:0.14,
+        notes:'Compressed PTFE sheet, laser cut to split profile.' },
+
+      { id:'sh1001', name:'Input Shaft — 4340 Q&T', type:'shaft', material:'steel_4340',
+        dims:{d:42,L:540}, position:[0,0,-130], rotation:[0,0,90], color:'#8a96a8', mass_kg:4.8,
+        surface_finish:'Ra 0.4 μm bearing seats', tolerance:'k5', notes:'Input coupling journal at LH side.' },
+      { id:'sh2001', name:'Intermediate Shaft — 4340 Q&T', type:'shaft', material:'steel_4340',
+        dims:{d:58,L:520}, position:[0,0,30], rotation:[0,0,90], color:'#8794a6', mass_kg:6.4,
+        notes:'Integral two-gear shaft for stage transfer.' },
+      { id:'sh3001', name:'Output Shaft — 4340 Q&T', type:'shaft', material:'steel_4340',
+        dims:{d:72,L:560}, position:[0,0,280], rotation:[0,0,90], color:'#8390a0', mass_kg:9.1,
+        notes:'Output flange side at RH side, keyed backup.' },
+
+      { id:'g1p001', name:'Stage-1 Pinion — 18T Helical', type:'gear', material:'steel_4340',
+        dims:{module:3, teeth:18, faceW:58, d:62, L:58, pitch_diameter:54},
+        position:[-120,0,-130], color:'#77889a', mass_kg:1.4,
         surface_finish:'Ra 0.4 μm tooth flank (ground)', tolerance:'ISO 1328-1 Class 6',
-        process:'grinding', heat_treatment:'Case carburize 1.0 mm, surface 58–62 HRC',
-        notes:'Module 3, 18T, 15° helix LH. Ground after carburising.' },
-      { id:'g1w001', name:'Stage-1 Wheel — 72T Helical 4340', type:'gear', material:'steel',
-        dims:{module:3, num_teeth:72, face_width:50, helix_angle:15, pitch_diameter:216},
-        position:[0,0,0], color:'#8a9aaa', mass_kg:6.8,
+        process:'grinding', heat_treatment:'Case carburized 58-62 HRC', notes:'LH helix, keyed fit on input shaft.' },
+      { id:'g1w001', name:'Stage-1 Wheel — 72T Helical', type:'gear', material:'steel_4340',
+        dims:{module:3, teeth:72, faceW:56, d:224, L:56, pitch_diameter:216},
+        position:[-120,0,30], color:'#8395a8', mass_kg:8.7,
         surface_finish:'Ra 0.8 μm flank (hobbed+shaved)',
-        heat_treatment:'Through-hardened 42–48 HRC',
-        notes:'Integral with intermediate shaft. Stage 1 ratio 4:1.' },
-      { id:'g2p001', name:'Stage-2 Pinion — 20T Helical 4340', type:'gear', material:'steel',
-        dims:{module:5, num_teeth:20, face_width:75, helix_angle:12, pitch_diameter:100},
-        position:[0,0,0], color:'#7a8a9a', mass_kg:2.4,
+        heat_treatment:'Through-hardened 42-48 HRC', notes:'4:1 stage-1 mesh with input pinion.' },
+      { id:'g2p001', name:'Stage-2 Pinion — 20T Helical', type:'gear', material:'steel_4340',
+        dims:{module:5, teeth:20, faceW:76, d:108, L:76, pitch_diameter:100},
+        position:[120,0,30], color:'#77889a', mass_kg:2.9,
         surface_finish:'Ra 0.4 μm flank (ground)',
-        heat_treatment:'Case carburize + grind, surface 58–62 HRC',
-        notes:'Module 5, 20T, 12° helix RH. Stage 2 ratio 5:1.' },
-      { id:'g2w001', name:'Output Wheel — 100T Helical 4340', type:'gear', material:'steel',
-        dims:{module:5, num_teeth:100, face_width:70, helix_angle:12, pitch_diameter:500},
-        position:[80,0,0], color:'#8a9aaa', mass_kg:14.2,
+        heat_treatment:'Case carburized 58-62 HRC', notes:'5:1 stage-2 pinion on intermediate shaft.' },
+      { id:'g2w001', name:'Output Wheel — 100T Helical', type:'gear', material:'steel_4340',
+        dims:{module:5, teeth:100, faceW:70, d:512, L:70, pitch_diameter:500},
+        position:[120,0,280], color:'#8fa2b6', mass_kg:16.8,
         surface_finish:'Ra 0.8 μm (hobbed+shaved)',
-        heat_treatment:'Normalised + Q&T 280–320 HB',
-        notes:'Output wheel. Shrink-fit to output shaft. Key + keyway backup.' },
-      { id:'sh1001', name:'Input Shaft — 4340 Steel', type:'shaft', material:'steel',
-        dims:{diameter:40, length:200, keyway_width:10}, position:[-200,0,0], color:'#8a9aaa', mass_kg:1.6,
-        surface_finish:'Ra 0.4 μm bearing seats', tolerance:'k5',
-        heat_treatment:'Q&T 36–40 HRC', notes:'IEC B3 flange option.' },
-      { id:'sh2001', name:'Intermediate Shaft — 4340 Steel', type:'shaft', material:'steel',
-        dims:{diameter:60, length:300}, position:[0,0,0], color:'#8a9aaa', mass_kg:3.8,
-        heat_treatment:'Q&T 36–40 HRC' },
-      { id:'sh3001', name:'Output Shaft — 4340 Steel', type:'shaft', material:'steel',
-        dims:{diameter:80, length:350, keyway_width:20}, position:[200,0,0], color:'#8a9aaa', mass_kg:6.2,
-        heat_treatment:'Q&T 36–40 HRC', notes:'F115 flange optional.' },
-      { id:'brg101', name:'Taper Roller Bearing SKF 32308', type:'bearing', material:'steel',
-        dims:{innerD:40, outerD:90, width:33}, quantity:6, position:[-160,0,60], color:'#c8d8e0', mass_kg:0.82,
-        standard:'ISO 355', notes:'SKF 32308 J2/Q. X-arrangement. Grease lubed. 6× (2 per shaft).' },
-      { id:'seal001', name:'Radial Shaft Seal FKM DIN 3760', type:'lip_seal', material:'viton',
-        dims:{innerD:40, outerD:62, width:7}, quantity:3, position:[-180,0,0], color:'#222222', mass_kg:0.025,
-        standard:'DIN 3760 A', notes:'FKM lip + dust lip. 80°C oil rated. 3× (input, output, vent).' },
-      { id:'gs001', name:'Housing Gasket — PTFE Sheet', type:'gasket', material:'ptfe',
-        dims:{w:450, depth:280, thickness:1.0}, position:[0,160,0], color:'#eeeeee', mass_kg:0.08,
-        notes:'Compressed PTFE. Cut to housing split profile.' },
+        heat_treatment:'Q&T 280-320 HB', notes:'Output wheel shrink-fit + key retention.' },
+
+      { id:'brg_in_l', name:'Input Bearing LH — TRB 32308', type:'bearing', material:'steel',
+        dims:{innerD:40,outerD:90,width:33}, position:[-220,0,-130], color:'#c8d8e0', mass_kg:0.82 },
+      { id:'brg_in_r', name:'Input Bearing RH — TRB 32308', type:'bearing', material:'steel',
+        dims:{innerD:40,outerD:90,width:33}, position:[220,0,-130], color:'#c8d8e0', mass_kg:0.82 },
+      { id:'brg_mid_l', name:'Intermediate Bearing LH — TRB 32310', type:'bearing', material:'steel',
+        dims:{innerD:50,outerD:110,width:42}, position:[-220,0,30], color:'#c8d8e0', mass_kg:1.15 },
+      { id:'brg_mid_r', name:'Intermediate Bearing RH — TRB 32310', type:'bearing', material:'steel',
+        dims:{innerD:50,outerD:110,width:42}, position:[220,0,30], color:'#c8d8e0', mass_kg:1.15 },
+      { id:'brg_out_l', name:'Output Bearing LH — TRB 32314', type:'bearing', material:'steel',
+        dims:{innerD:70,outerD:150,width:51}, position:[-230,0,280], color:'#c8d8e0', mass_kg:2.4 },
+      { id:'brg_out_r', name:'Output Bearing RH — TRB 32314', type:'bearing', material:'steel',
+        dims:{innerD:70,outerD:150,width:51}, position:[230,0,280], color:'#c8d8e0', mass_kg:2.4,
+        notes:'Back-to-back arrangement with preload shim stack.' },
+
+      { id:'seal_in', name:'Input Seal — DIN 3760 FKM 42x68x8', type:'lip_seal', material:'viton',
+        dims:{innerD:42,outerD:68,width:8}, position:[-280,0,-130], color:'#1f1f1f', mass_kg:0.03 },
+      { id:'seal_out', name:'Output Seal — DIN 3760 FKM 72x95x10', type:'lip_seal', material:'viton',
+        dims:{innerD:72,outerD:95,width:10}, position:[280,0,280], color:'#1f1f1f', mass_kg:0.05 },
+      { id:'seal_mid', name:'Intermediate Seal — DIN 3760 FKM 58x82x8', type:'lip_seal', material:'viton',
+        dims:{innerD:58,outerD:82,width:8}, position:[280,0,30], color:'#1f1f1f', mass_kg:0.04 },
+
+      { id:'foot_fl', name:'Mounting Foot FL', type:'bracket', material:'cast_iron', dims:{w:70,h:45,d:120}, position:[-220,-210,-130], color:'#616971', mass_kg:2.8 },
+      { id:'foot_fr', name:'Mounting Foot FR', type:'bracket', material:'cast_iron', dims:{w:70,h:45,d:120}, position:[220,-210,-130], color:'#616971', mass_kg:2.8 },
+      { id:'foot_rl', name:'Mounting Foot RL', type:'bracket', material:'cast_iron', dims:{w:70,h:45,d:120}, position:[-220,-210,280], color:'#616971', mass_kg:2.8 },
+      { id:'foot_rr', name:'Mounting Foot RR', type:'bracket', material:'cast_iron', dims:{w:70,h:45,d:120}, position:[220,-210,280], color:'#616971', mass_kg:2.8 },
+
+      { id:'insp001', name:'Inspection Cover Plate', type:'plate', material:'steel', dims:{w:180,h:12,d:140}, position:[0,190,75], color:'#8c949f', mass_kg:2.2,
+        notes:'Top inspection/service access cover.' },
+      { id:'vent001', name:'Breather Plug M20', type:'bolt_hex', material:'steel', dims:{d:20,L:30}, position:[120,210,230], color:'#4d4d4d', mass_kg:0.08 },
+      { id:'drn001', name:'Drain Plug M20', type:'bolt_hex', material:'steel', dims:{d:20,L:26}, position:[180,-205,-30], color:'#4d4d4d', mass_kg:0.08 },
+      { id:'lvl001', name:'Oil Level Plug M16', type:'bolt_hex', material:'steel', dims:{d:16,L:20}, position:[300,-40,30], color:'#5a5a5a', mass_kg:0.05 },
+
+      { id:'hb001', name:'Housing Bolt M16×95', type:'bolt_hex', material:'steel_4340', dims:{d:16,L:95}, position:[-260,80,-120], color:'#444', mass_kg:0.12 },
+      { id:'hb002', name:'Housing Bolt M16×95', type:'bolt_hex', material:'steel_4340', dims:{d:16,L:95}, position:[-260,80,270], color:'#444', mass_kg:0.12 },
+      { id:'hb003', name:'Housing Bolt M16×95', type:'bolt_hex', material:'steel_4340', dims:{d:16,L:95}, position:[260,80,-120], color:'#444', mass_kg:0.12 },
+      { id:'hb004', name:'Housing Bolt M16×95', type:'bolt_hex', material:'steel_4340', dims:{d:16,L:95}, position:[260,80,270], color:'#444', mass_kg:0.12 },
     ],
-    bom_notes: 'Total ratio 20:1. Oil bath ISO VG 220. Omitted: oil sight glass, breather, coupling guard.'
+    bom_notes: 'Stage-1 center distance 160 mm, stage-2 center distance 250 mm. Oil bath ISO VG 220 with splash lubrication. Includes explicit bearings, seals, split housing halves, and service hardware. Omitted: motor adapter, coupling guard, external oil cooler loop.'
   };
 }
 function _buildDrone(text) {

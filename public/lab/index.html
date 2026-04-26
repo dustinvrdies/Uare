@@ -132,8 +132,27 @@
             <button class="vp-btn" data-mode="wire">Wire</button>
             <button class="vp-btn" data-mode="xray">X-Ray</button>
           </div>
+          <button class="vp-btn hidden" id="btn-gearbox-explode-mode" aria-label="Toggle gearbox explode mode">Explode: Staged</button>
+          <button class="vp-btn hidden" id="btn-gear-mesh-legend-toggle" aria-label="Show or hide gear mesh checks">Mesh Checks</button>
+          <button class="vp-btn hidden" id="btn-gearbox-explode-reset" aria-label="Reset exploded gearbox view">Reset Explode</button>
           <button class="vp-btn explode-btn" id="btn-explode">&#128165; Explode</button>
         </div>
+
+        <aside id="gear-mesh-legend" class="hidden" aria-label="Gear mesh diagnostic legend">
+          <div class="legend-head">
+            <span class="legend-title">Gear Mesh Checks</span>
+            <div class="legend-head-actions">
+              <button id="btn-gearbox-tolerance" class="legend-btn" type="button" aria-label="Cycle gearbox tolerance preset">Tolerance: Practical</button>
+              <span id="legend-mode-chip" class="legend-chip">Staged</span>
+              <button id="btn-gear-mesh-legend-close" class="legend-close" type="button" aria-label="Close gear mesh checks">&#10005;</button>
+            </div>
+          </div>
+          <div id="legend-metrics" class="legend-metrics"></div>
+          <div id="legend-stage-status" class="legend-stage-status"></div>
+          <div class="legend-row"><span class="legend-dot legend-pass"></span><span>Pass (green): center distance and backlash within configured band</span></div>
+          <div class="legend-row"><span class="legend-dot legend-fail"></span><span>Fail (red): outside tolerance or backlash band</span></div>
+          <div class="legend-row"><span id="legend-formula" class="legend-eq">BL ≈ BL₀ + ΔCD × 0.35</span></div>
+        </aside>
 
         <!-- Enki action status overlay (shows during generation) -->
         <div id="action-overlay" class="hidden" aria-live="polite">
@@ -150,27 +169,41 @@
           <span id="hud-scale">1:1</span>
         </div>
 
-        <section id="engineering-qa-panel" class="hidden" aria-label="Engineering QA">
+        <section id="engineering-qa-panel" class="hidden is-collapsed" aria-label="Engineering QA">
           <div class="qa-head">
             <span class="qa-title">Engineering QA</span>
-            <span id="qa-score" class="qa-score">--/100</span>
+            <div class="qa-head-actions">
+              <span id="qa-score" class="qa-score">--/100</span>
+              <span id="qa-grade-badge" class="qa-grade-badge">--</span>
+              <button
+                id="qa-toggle"
+                class="qa-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="qa-panel-body"
+                aria-label="Expand Engineering QA"
+              >Show</button>
+            </div>
           </div>
-          <div class="qa-metrics">
-            <div class="qa-metric"><span>Dimensional Deviation</span><strong id="qa-dim-dev">-- mm</strong></div>
-            <div class="qa-metric"><span>Mate Violations</span><strong id="qa-mate-violations">--</strong></div>
-            <div class="qa-metric"><span>Geometry Warnings</span><strong id="qa-geom-warnings">--</strong></div>
-          </div>
-          <div class="qa-section">
-            <div class="qa-section-title">Dimensional Checks</div>
-            <div id="qa-dimension-list" class="qa-list"></div>
-          </div>
-          <div class="qa-section">
-            <div class="qa-section-title">Mate Violations</div>
-            <div id="qa-mate-list" class="qa-list"></div>
-          </div>
-          <div class="qa-section">
-            <div class="qa-section-title">Geometry Realism Warnings</div>
-            <div id="qa-geometry-list" class="qa-list"></div>
+          <div id="qa-panel-body" class="qa-body">
+            <div class="qa-metrics">
+              <div class="qa-metric"><span>Dimensional Deviation</span><strong id="qa-dim-dev">-- mm</strong></div>
+              <div class="qa-metric"><span>Mate Violations</span><strong id="qa-mate-violations">--</strong></div>
+              <div class="qa-metric"><span>Geometry Warnings</span><strong id="qa-geom-warnings">--</strong></div>
+              <div class="qa-metric"><span>QC Gate</span><strong id="qa-gate-status">--</strong></div>
+            </div>
+            <div class="qa-section">
+              <div class="qa-section-title">Dimensional Checks</div>
+              <div id="qa-dimension-list" class="qa-list"></div>
+            </div>
+            <div class="qa-section">
+              <div class="qa-section-title">Mate Violations</div>
+              <div id="qa-mate-list" class="qa-list"></div>
+            </div>
+            <div class="qa-section">
+              <div class="qa-section-title">Geometry Realism Warnings</div>
+              <div id="qa-geometry-list" class="qa-list"></div>
+            </div>
           </div>
         </section>
 

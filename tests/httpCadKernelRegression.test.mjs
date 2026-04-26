@@ -167,6 +167,7 @@ const shapeCases = [
   { type: 'clutch_disc', dims: { outer_diameter: 240, inner_diameter: 130, thickness: 8, hub_diameter: 26 }, expectedKeys: ['outer_diameter', 'inner_diameter', 'thickness', 'hub_diameter'] },
   { type: 'timing_chain', dims: { pitch: 9.525, link_count: 96, width: 18, roller_diameter: 6.2 }, expectedKeys: ['pitch', 'link_count', 'width', 'roller_diameter'] },
   { type: 'nut_hex', dims: { across_flats: 13, thickness: 8, thread_diameter: 8 }, expectedKeys: ['across_flats', 'thickness', 'thread_diameter'] },
+  { type: 'socket_head_screw', dims: { d: 12, L: 85, pitch: 1.75 }, expectedKeys: ['d', 'L', 'pitch'] },
   { type: 'washer', dims: { outer_diameter: 16, inner_diameter: 8.4, thickness: 1.6 }, expectedKeys: ['outer_diameter', 'inner_diameter', 'thickness'] },
   { type: 'dowel_pin', dims: { diameter: 8, length: 20 }, expectedKeys: ['diameter', 'length'] },
 ];

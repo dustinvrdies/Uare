@@ -1,0 +1,60 @@
+{
+  "parts": [
+    {
+      "id": "part-main",
+      "name": "Main body",
+      "kind": "mechanical",
+      "dimensions_mm": {
+        "x": 120.0,
+        "y": 40.0,
+        "z": 30.0,
+        "w": 120.0,
+        "width": 120.0,
+        "d": 40.0,
+        "depth": 40.0,
+        "h": 30.0,
+        "height": 30.0,
+        "length": 30.0,
+        "L": 30.0,
+        "diameter": 40.0,
+        "dia": 40.0,
+        "outer_diameter": 40.0,
+        "outerD": 40.0
+      },
+      "transform_mm": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 15.0
+      },
+      "bbox_mm": {
+        "x": 120.0,
+        "y": 40.0,
+        "z": 30.0
+      },
+      "kernel_metrics": {
+        "material": "aluminum_6061",
+        "density_kg_m3": 2700.0,
+        "volume_mm3": 144000.0,
+        "surface_area_mm2": 19200.0,
+        "mass_proxy_kg": 0.38880000000000003,
+        "bbox_fill_ratio": 1.0,
+        "thin_wall_proxy_mm": 15.0,
+        "inertia_proxy_kg_m2": {
+          "ix": 8.1e-05,
+          "iy": 0.0004957200000000001,
+          "iz": 0.0005184
+        },
+        "center_mm": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 15.0
+        }
+      },
+      "feature_report": {
+        "requested": 0,
+        "applied": [],
+        "failed": []
+      }
+    }
+  ]
+}

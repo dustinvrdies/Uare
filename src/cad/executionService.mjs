@@ -24,6 +24,11 @@ import {
   buildDesignVariationMatrix,
 } from './advancedArtifactBuilders.mjs';
 import { buildViewerOptions } from './viewerBuilder.mjs';
+import { optimizeMaterialSelection, generateOptimizedGeometry, selectOptimalManufacturingProcess, scoreDesignQuality, predictPotentialFailureModes } from './aiOptimizationEngine.mjs';
+import { getMaterialProperties, calculateSafetyFactors, analyzeThermalPerformance } from './materialPropertiesDatabase.mjs';
+import { analyzeStress, analyzeBendingStress, analyzeBuckling, analyzeCombinedStress, analyzeFatigue, analyzeThermalStress } from './physicsValidation.mjs';
+import { generateFEAConfiguration, generateMeshSettings, generateRefinedSTL, generateBoundaryConditions } from './simulationPreparation.mjs';
+import { executeFullOptimizationCycle } from './iterativeOptimizer.mjs';
 
 function readExecutionJson(artifactStore, executionId, filename, fallback = null) {
   try {
@@ -182,12 +187,40 @@ function deepCloneJson(value = {}) {
   return JSON.parse(JSON.stringify(value || {}));
 }
 
+function getDimensionAliasValue(dims = {}, aliases = []) {
+  for (const alias of aliases) {
+    if (dims[alias] == null || dims[alias] === '') continue;
+    const value = Number(dims[alias]);
+    if (Number.isFinite(value) && value > 0) return value;
+  }
+  return null;
+}
+
+function extractPartDiameter(part = {}) {
+  const dims = part?.dimensions_mm || part?.dims || {};
+  return getDimensionAliasValue(dims, [
+    'diameter',
+    'thread_diameter',
+    'major_diameter',
+    'shank_diameter',
+    'outer_diameter',
+    'outerD',
+    'od',
+    'd',
+  ]);
+}
+
 function extractPartDims(part = {}) {
   const dims = part?.dimensions_mm || part?.dims || {};
+  const diameter = extractPartDiameter(part);
+  const length = getDimensionAliasValue(dims, ['L', 'length', 'len']);
+  const width = getDimensionAliasValue(dims, ['x', 'w', 'width']);
+  const depth = getDimensionAliasValue(dims, ['y', 'depth']);
+  const height = getDimensionAliasValue(dims, ['z', 'h', 'height', 'thickness']);
   return {
-    x: normalizeDimensionValue(dims.x ?? dims.length ?? dims.width ?? dims.outer_diameter ?? dims.diameter, 40),
-    y: normalizeDimensionValue(dims.y ?? dims.width ?? dims.depth ?? dims.outer_diameter ?? dims.diameter, 30),
-    z: normalizeDimensionValue(dims.z ?? dims.height ?? dims.thickness ?? dims.length, 20),
+    x: normalizeDimensionValue(width ?? diameter ?? length ?? dims.length ?? dims.width ?? dims.outer_diameter ?? dims.diameter, 40),
+    y: normalizeDimensionValue(depth ?? width ?? diameter ?? dims.width ?? dims.depth ?? dims.outer_diameter ?? dims.diameter, 30),
+    z: normalizeDimensionValue(height ?? length ?? dims.height ?? dims.thickness ?? dims.length, 20),
   };
 }
 
@@ -638,8 +671,9 @@ function inferCadRecipeParameters(plan = {}) {
   const primaryMeta = primary.part?.metadata || {};
   const pcbPart = parts.find((part) => String(part?.kind || '').includes('electrical_pcb') || String(part?.shape || '').toLowerCase() === 'pcb');
   const pcbDims = pcbPart ? extractPartDims(pcbPart) : null;
-  const holeCandidate = parts.find((part) => /bolt|fastener|mount|flange/i.test(String(part?.name || '') + ' ' + String(part?.type || '') + ' ' + String(part?.shape || '')));
+  const holeCandidate = parts.find((part) => /bolt|screw|stud|fastener|mount|flange|socket/i.test(String(part?.name || '') + ' ' + String(part?.type || '') + ' ' + String(part?.shape || '') + ' ' + String(part?.kind || '')));
   const holeDims = holeCandidate ? extractPartDims(holeCandidate) : null;
+  const holeDiameter = holeCandidate ? extractPartDiameter(holeCandidate) : null;
 
   const inferred = {
     bracket_length_mm: round(primaryDims.x, 3),
@@ -649,6 +683,7 @@ function inferCadRecipeParameters(plan = {}) {
     bolt_hole_diameter_mm: round(normalizeDimensionValue(
       primary.part?.metadata?.hole_diameter_mm
       ?? primary.part?.dimensions_mm?.hole_diameter_mm
+      ?? holeDiameter
       ?? holeDims?.x
       ?? (Math.min(primaryDims.x, primaryDims.y) * 0.08),
       6,
@@ -932,14 +967,14 @@ function createBaseArtifacts(executionId, plan, options = {}) {
     asmMinX = Infinity; asmMinY = Infinity; asmMinZ = Infinity;
     asmMaxX = -Infinity; asmMaxY = -Infinity; asmMaxZ = -Infinity;
     for (const part of planParts) {
-      const d = Object.assign({}, part.dimensions_mm || {}, part.dims || {});
+      const d = extractPartDims(part);
       const pos = Array.isArray(part.position) ? part.position : [0, 0, 0];
       const px = Number(pos[0]) || 0;
       const py = Number(pos[1]) || 0;
       const pz = Number(pos[2]) || 0;
-      const hw = (Number(d.w || d.width  || d.d || 60)) / 2;
-      const hh = (Number(d.h || d.height || d.L || 60)) / 2;
-      const hd = (Number(d.d || d.depth  || d.w || 60)) / 2;
+      const hw = (Number(d.x || 60)) / 2;
+      const hh = (Number(d.y || 60)) / 2;
+      const hd = (Number(d.z || 60)) / 2;
       asmMinX = Math.min(asmMinX, px - hw); asmMaxX = Math.max(asmMaxX, px + hw);
       asmMinY = Math.min(asmMinY, py - hh); asmMaxY = Math.max(asmMaxY, py + hh);
       asmMinZ = Math.min(asmMinZ, pz - hd); asmMaxZ = Math.max(asmMaxZ, pz + hd);
@@ -1468,8 +1503,38 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
     const versionProbe = command
       ? spawnSync(command, [...prefixArgs, '--version'], { encoding: 'utf8', timeout: 10000, windowsHide: true })
       : { status: 1, stdout: '', stderr: 'No python command resolved' };
+    const moduleProbeScript = [
+      'import importlib',
+      'class _IVtkStub:',
+      '    def __init__(self, *args, **kwargs):',
+      '        pass',
+      'for _ in range(16):',
+      '    try:',
+      '        import cadquery',
+      '        break',
+      '    except Exception as exc:',
+      '        msg = str(exc)',
+      '        prefix = "cannot import name \"".replace("\"", "\'")',
+      '        marker = "\' from \"OCP.IVtkOCC\"".replace("\"", "\'")',
+      '        start = msg.find(prefix)',
+      '        end = msg.find(marker, start + len(prefix)) if start >= 0 else -1',
+      '        if start < 0 or end < 0:',
+      '            raise',
+      '        missing = msg[start + len(prefix):end].strip()',
+      '        if not missing:',
+      '            raise',
+      '        mod = importlib.import_module("OCP.IVtkOCC")',
+      '        module_vars = vars(mod)',
+      '        if missing not in module_vars:',
+      '            setattr(mod, missing, _IVtkStub)',
+      '        if "__getattr__" not in module_vars:',
+      '            setattr(mod, "__getattr__", lambda _name: _IVtkStub)',
+      'else:',
+      '    raise RuntimeError("CadQuery import retry limit reached")',
+      "print('kernel-ok')",
+    ].join('\n');
     const moduleProbe = command
-      ? spawnSync(command, [...prefixArgs, '-c', "import cadquery, OCP; print('kernel-ok')"], { encoding: 'utf8', timeout: 15000, windowsHide: true })
+      ? spawnSync(command, [...prefixArgs, '-c', moduleProbeScript], { encoding: 'utf8', timeout: 15000, windowsHide: true })
       : { status: 1, stdout: '', stderr: 'No python command resolved' };
 
     const versionOk = !versionProbe.error && versionProbe.status === 0;
