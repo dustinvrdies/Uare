@@ -1,0 +1,38 @@
+# deploy/fly/fly.toml — Fly.io deployment config for UARE backend
+# Deploy with: fly deploy (from project root)
+# First time:  fly launch --no-deploy then fly secrets set ...
+
+app = "uare-backend"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 200
+    hard_limit = 250
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "1gb"
+
+[env]
+  NODE_ENV         = "production"
+  PORT             = "8787"
+  CUSTOM_BACKEND_MODE    = "postgres"
+  RATE_LIMIT_MODE        = "redis"
+  EVENT_BUS_MODE         = "redis"
+  EVENT_REPLAY_STORE_MODE = "postgres"
+  WORKER_STORE_MODE      = "postgres"
+  JOB_STORE_MODE         = "postgres"
+  ALLOW_DEV_HEADER_AUTH  = "false"
+  TRUST_PROXY            = "true"
+  PUBLIC_HEALTH_DETAILS  = "false"

@@ -1,0 +1,58 @@
+{
+  "family": "uare-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/uareTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "uare-backend",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/uare-backend:latest",
+      "portMappings": [
+        {
+          "containerPort": 8787,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV",               "value": "production" },
+        { "name": "PORT",                   "value": "8787" },
+        { "name": "CUSTOM_BACKEND_MODE",    "value": "postgres" },
+        { "name": "RATE_LIMIT_MODE",        "value": "redis" },
+        { "name": "EVENT_BUS_MODE",         "value": "redis" },
+        { "name": "EVENT_REPLAY_STORE_MODE","value": "postgres" },
+        { "name": "WORKER_STORE_MODE",      "value": "postgres" },
+        { "name": "JOB_STORE_MODE",         "value": "postgres" },
+        { "name": "ALLOW_DEV_HEADER_AUTH",  "value": "false" },
+        { "name": "TRUST_PROXY",            "value": "true" }
+      ],
+      "secrets": [
+        { "name": "DATABASE_URL",            "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/DATABASE_URL" },
+        { "name": "REDIS_URL",               "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/REDIS_URL" },
+        { "name": "SESSION_SECRET",          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/SESSION_SECRET" },
+        { "name": "STRIPE_SECRET_KEY",       "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/STRIPE_SECRET_KEY" },
+        { "name": "STRIPE_WEBHOOK_SECRET",   "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/STRIPE_WEBHOOK_SECRET" },
+        { "name": "OPS_METRICS_TOKEN",       "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/OPS_METRICS_TOKEN" },
+        { "name": "APP_BASE_URL",            "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/APP_BASE_URL" },
+        { "name": "CORS_ALLOWED_ORIGINS",    "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:uare/CORS_ALLOWED_ORIGINS" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/uare-backend",
+          "awslogs-region": "REGION",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "wget -qO- http://localhost:8787/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 5,
+        "startPeriod": 25
+      }
+    }
+  ]
+}
