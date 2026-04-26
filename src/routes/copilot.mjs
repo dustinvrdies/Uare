@@ -6,6 +6,10 @@ import { getEnhancedSystemPrompt } from '../enki/enhancedPrompt.mjs';
 // ─── Ollama LLM integration ──────────────────────────────────
 const OLLAMA_URL   = process.env.OLLAMA_URL   || 'http://127.0.0.1:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3';
+const OLLAMA_MODELS = String(process.env.OLLAMA_MODELS || '')
+  .split(',')
+  .map((entry) => entry.trim())
+  .filter(Boolean);
 
 // ─── Enki's full canonical system prompt ─────────────────────
 // This is THE brain. Client can override per-request via req.body.system_prompt.
@@ -239,6 +243,168 @@ async function tryOllama(prompt, systemPrompt) {
     .forEach(m => warnings.push(m[0].replace(/^⚠\s*/, '')));
 
   return { narrative: content, insights: [], warnings, suggestions };
+}
+
+function getOllamaModelCandidates(preferredModel = null) {
+  const candidates = [];
+  const pushUnique = (model) => {
+    const next = String(model || '').trim();
+    if (!next || candidates.includes(next)) return;
+    candidates.push(next);
+  };
+  pushUnique(preferredModel);
+  pushUnique(OLLAMA_MODEL);
+  for (const model of OLLAMA_MODELS) pushUnique(model);
+  if (!candidates.length) candidates.push('llama3');
+  return candidates;
+}
+
+async function getOllamaHealth() {
+  try {
+    const resp = await fetch(`${OLLAMA_URL}/api/tags`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!resp.ok) {
+      return {
+        ok: false,
+        error: `Ollama tags HTTP ${resp.status}`,
+        availableModels: [],
+      };
+    }
+    const payload = await resp.json();
+    const availableModels = Array.isArray(payload?.models)
+      ? payload.models
+          .map((entry) => String(entry?.name || '').trim())
+          .filter(Boolean)
+      : [];
+    return { ok: true, error: null, availableModels };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error?.message || 'Failed to contact Ollama',
+      availableModels: [],
+    };
+  }
+}
+
+async function tryOllamaWithRetry(prompt, systemPrompt, preferredModel = null) {
+  const health = await getOllamaHealth();
+  if (!health.ok) {
+    return {
+      ok: false,
+      reason: 'ollama_unreachable',
+      detail: health.error,
+      attempts: [],
+      available_models: [],
+      selected_model: null,
+      health_ok: false,
+    };
+  }
+
+  const requested = getOllamaModelCandidates(preferredModel);
+  const availableSet = new Set(health.availableModels);
+  const candidates = health.availableModels.length
+    ? requested.filter((model) => availableSet.has(model))
+    : requested;
+
+  if (!candidates.length) {
+    return {
+      ok: false,
+      reason: 'ollama_model_unavailable',
+      detail: `Configured models not found in Ollama: ${requested.join(', ')}`,
+      attempts: [],
+      available_models: health.availableModels,
+      selected_model: null,
+      health_ok: true,
+    };
+  }
+
+  const attempts = [];
+  for (const model of candidates) {
+    try {
+      const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt || getEnhancedSystemPrompt() },
+            {
+              role: 'user',
+              content: isDesignRequest(prompt)
+                ? `${prompt}\n\n[ENKI INSTRUCTION: Respond with engineering rationale AND a complete JSON assembly block as specified in your system prompt. Include every individual part, subsystem, sensor, fastener, and structural member you can. Aim for maximum part detail and realism.]`
+                : prompt,
+            },
+          ],
+          stream: false,
+          options: {
+            temperature: 0.82,
+            top_p: 0.9,
+            repeat_penalty: 1.2,
+            seed: Date.now() % 2147483647,
+            num_predict: 8192,
+            num_ctx: 16384,
+            stop: ['<|im_end|>', '<|eot_id|>'],
+          },
+        }),
+        signal: AbortSignal.timeout(120000),
+      });
+
+      if (!response.ok) {
+        attempts.push({ model, ok: false, error: `HTTP ${response.status}` });
+        continue;
+      }
+
+      const data = await response.json();
+      const content = (data?.message?.content || data?.response || '').trim();
+      if (!content) {
+        attempts.push({ model, ok: false, error: 'empty response' });
+        continue;
+      }
+
+      const suggestions = [];
+      const suggBlock = content.match(
+        /(?:next steps?|suggested actions?|recommendations?|you can|try:?)\s*\n((?:\s*[-*•\d]+\.?\s+[^\n]+\n?)+)/i,
+      );
+      if (suggBlock) {
+        suggBlock[1].split('\n')
+          .map((line) => line.replace(/^\s*[-*•\d.]+\s*/, '').trim())
+          .filter(Boolean)
+          .slice(0, 3)
+          .forEach((entry) => suggestions.push(entry));
+      }
+
+      const warnings = [];
+      [...content.matchAll(/⚠[^\n]+|warning[:\s]+[^\n]+|caution[:\s]+[^\n]+/gi)]
+        .slice(0, 3)
+        .forEach((match) => warnings.push(match[0].replace(/^⚠\s*/, '')));
+
+      attempts.push({ model, ok: true, error: null });
+      return {
+        ok: true,
+        enki: { narrative: content, insights: [], warnings, suggestions },
+        reason: null,
+        detail: null,
+        attempts,
+        available_models: health.availableModels,
+        selected_model: model,
+        health_ok: true,
+      };
+    } catch (error) {
+      attempts.push({ model, ok: false, error: error?.message || 'request failed' });
+    }
+  }
+
+  return {
+    ok: false,
+    reason: 'ollama_generation_failed',
+    detail: attempts.length ? attempts[attempts.length - 1].error : 'No generation attempts made',
+    attempts,
+    available_models: health.availableModels,
+    selected_model: null,
+    health_ok: true,
+  };
 }
 
 // ─── Material knowledge base ────────────────────────────────
@@ -2164,14 +2330,18 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         simulation:    req.body?.simulation    || null,
       };
 
-      // Try Ollama first; fall back to built-in narrative engine
+      // Try Ollama with health/model checks and retries; fall back to built-in narrative engine.
+      const preferredOllamaModel = req.body?.ollama_model ? String(req.body.ollama_model) : null;
+      const ollamaResult = await tryOllamaWithRetry(prompt, systemPrompt, preferredOllamaModel);
       let enki;
       let usedOllama = false;
-      try {
-        enki = await tryOllama(prompt, systemPrompt);
+      let fallbackReason = null;
+      if (ollamaResult.ok) {
+        enki = ollamaResult.enki;
         usedOllama = true;
-      } catch {
+      } else {
         enki = generateEnkiNarrative(sourcePrompt, ctx);
+        fallbackReason = ollamaResult.reason || 'ollama_failed';
       }
 
       // Preserve conversational Ollama narrative. If a design request lacks a
@@ -2220,6 +2390,18 @@ export function buildCopilotRoutes(runtime, cadExecutionService = null) {
         ok:           true,
         actor:        { id: actor.id, role: actor.role },
         engine:       enki._source || (usedOllama ? 'ollama' : 'builtin'),
+        generation_path: usedOllama ? 'ollama' : 'builtin_fallback',
+        fallback_reason: usedOllama ? null : fallbackReason,
+        fallback_detail: usedOllama ? null : (ollamaResult.detail || null),
+        ollama: {
+          health_ok: Boolean(ollamaResult.health_ok),
+          preferred_model: preferredOllamaModel,
+          selected_model: ollamaResult.selected_model || null,
+          attempted_models: Array.isArray(ollamaResult.attempts)
+            ? ollamaResult.attempts.map((attempt) => ({ model: attempt.model, ok: attempt.ok, error: attempt.error || null }))
+            : [],
+          available_models: Array.isArray(ollamaResult.available_models) ? ollamaResult.available_models : [],
+        },
         narrative:    enki.narrative,
         insights:     [...new Set([...(enki.insights  || []), ...legacy.insights])],
         warnings:     [...new Set([...(enki.warnings  || []), ...legacy.warnings])],
