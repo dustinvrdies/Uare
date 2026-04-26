@@ -38,7 +38,7 @@ export function buildCadRoutes(runtime, cadExecutionService, artifactStore, lear
         if (manifest.status === 'blocked') {
           return res.status(422).json({
             ok: false,
-            error: 'CAD execution blocked by critical engineering guardrails.',
+            error: 'CAD execution blocked by plan contract or critical engineering guardrails.',
             manifest,
           });
         }

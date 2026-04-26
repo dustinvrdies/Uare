@@ -29,6 +29,7 @@ import { getMaterialProperties, calculateSafetyFactors, analyzeThermalPerformanc
 import { analyzeStress, analyzeBendingStress, analyzeBuckling, analyzeCombinedStress, analyzeFatigue, analyzeThermalStress } from './physicsValidation.mjs';
 import { generateFEAConfiguration, generateMeshSettings, generateRefinedSTL, generateBoundaryConditions } from './simulationPreparation.mjs';
 import { executeFullOptimizationCycle } from './iterativeOptimizer.mjs';
+import { validatePlanContract } from './planContract.mjs';
 
 function readExecutionJson(artifactStore, executionId, filename, fallback = null) {
   try {
@@ -1081,14 +1082,34 @@ function createBaseArtifacts(executionId, plan, options = {}) {
 }
 
 function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
-    const normalizedPlan = normalizeCadPlan(plan || {});
+    const contract = validatePlanContract(plan || {});
+    const normalizedPlan = normalizeCadPlan(contract.normalizedPlan || plan || {});
     const executionId = options.executionId || makeExecutionId();
+    if (!contract.ok) {
+      return {
+        execution_id: executionId,
+        project_id: normalizedPlan?.project_id || null,
+        status: 'blocked',
+        deterministic: true,
+        engine: normalizedPlan?.engine || 'cadquery',
+        created_at: new Date().toISOString(),
+        actor_id: actor?.id || 'unknown',
+        execution_mode: contract.execution_mode,
+        contract_validation: {
+          ok: false,
+          errors: contract.errors || [],
+          warnings: contract.warnings || [],
+        },
+        notes: ['Execution blocked by plan contract validation before queueing.'],
+      };
+    }
     return {
       execution_id: executionId,
       project_id: normalizedPlan?.project_id || null,
       status: 'queued',
       deterministic: true,
       engine: normalizedPlan?.engine || 'cadquery',
+      execution_mode: contract.execution_mode,
       created_at: new Date().toISOString(),
       actor_id: actor?.id || 'unknown',
       plan_signature: sha256(JSON.stringify(normalizedPlan?.recipe?.parameters || {}) + '\n' + String(normalizedPlan?.script || '')),
@@ -1126,7 +1147,20 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
   }
 
   async function execute(plan, actor, options = {}) {
-    const normalizedPlan = normalizeCadPlan(plan || {});
+    const contract = validatePlanContract(plan || {});
+    if (!contract.ok) {
+      const error = new Error('CAD execution blocked by strict plan contract validation');
+      error.statusCode = 422;
+      error.code = 'CAD_PLAN_CONTRACT_INVALID';
+      error.details = {
+        execution_mode: contract.execution_mode,
+        errors: contract.errors,
+        warnings: contract.warnings,
+      };
+      throw error;
+    }
+
+    const normalizedPlan = normalizeCadPlan(contract.normalizedPlan || plan || {});
     const domainPreset = applyDomainPreset(normalizedPlan || {});
     const layoutMetadata = autoLayoutPlan(domainPreset.plan || normalizedPlan || {}, { clearanceMm: 12, rowPitchMm: 150 });
     const preprocessedPlan = layoutMetadata.plan || (normalizedPlan || {});
@@ -1237,6 +1271,7 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
       status: 'completed',
       deterministic: true,
       engine: plan?.engine || 'cadquery',
+      execution_mode: contract.execution_mode,
       created_at: new Date().toISOString(),
       actor_id: actor?.id || 'unknown',
       plan_signature: sha256(JSON.stringify(plan?.recipe?.parameters || {}) + '\n' + String(plan?.script || '')),
@@ -1266,6 +1301,11 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
         domain: domainPreset?.manifest?.domain || 'general',
         preset_applied: Boolean(domainPreset?.manifest?.preset_applied),
         part_count: Number(domainPreset?.manifest?.part_count || 0),
+      },
+      contract_validation: {
+        ok: true,
+        errors: [],
+        warnings: contract.warnings || [],
       },
       kernel_execution: {
         attempted: Boolean(runtime.cadKernelEnabled),
@@ -1415,11 +1455,12 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
   }
 
   function analyze(plan = {}, actor = {}) {
-    const domainPreset = applyDomainPreset(plan || {});
-    const layoutMetadata = autoLayoutPlan(domainPreset.plan || plan || {}, { clearanceMm: 12, rowPitchMm: 150 });
-    const assessment = applyEngineeringGuardrails(layoutMetadata.plan || plan || {});
+    const contract = validatePlanContract(plan || {});
+    const domainPreset = applyDomainPreset(contract.normalizedPlan || plan || {});
+    const layoutMetadata = autoLayoutPlan(domainPreset.plan || contract.normalizedPlan || plan || {}, { clearanceMm: 12, rowPitchMm: 150 });
+    const assessment = applyEngineeringGuardrails(layoutMetadata.plan || contract.normalizedPlan || plan || {});
     const report = assessment.report || {};
-    const normalizedPlan = assessment.normalizedPlan || (layoutMetadata.plan || plan || {});
+    const normalizedPlan = assessment.normalizedPlan || (layoutMetadata.plan || contract.normalizedPlan || plan || {});
     const configuredOverride = runtime?.cadGuardrailOverrideToken ? String(runtime.cadGuardrailOverrideToken) : null;
     const providedOverride = plan?.engineering_override_token ? String(plan.engineering_override_token) : null;
     const overrideUsed = Boolean(configuredOverride && providedOverride && configuredOverride === providedOverride);
@@ -1457,9 +1498,15 @@ function buildQueuedManifest(plan = {}, actor = {}, options = {}) {
     });
 
     return {
-      ok: !blocked,
-      blocked,
+      ok: contract.ok && !blocked,
+      blocked: blocked || !contract.ok,
       actor_id: actor?.id || null,
+      contract_validation: {
+        ok: contract.ok,
+        execution_mode: contract.execution_mode,
+        errors: contract.errors || [],
+        warnings: contract.warnings || [],
+      },
       engineering_summary: {
         severity: selectedReport.severity || 'ok',
         manufacturability_score: Number(selectedReport.manufacturability_score || 0),
