@@ -910,17 +910,61 @@ function applyDerivedCadSpecToPlan(plan = {}, derivedCadSpec = null) {
   return next;
 }
 
+const INVENTION_THEME_RULES = [
+  {
+    theme: 'drivetrain / power transmission component',
+    weight: 5,
+    patterns: [/gearbox/, /transmission/, /drivetrain/, /gear/, /pinion/, /worm/, /shaft/, /bearing/, /coupling/, /slew/],
+  },
+  {
+    theme: 'fluid control component',
+    weight: 5,
+    patterns: [/pump/, /impeller/, /volute/, /manifold/, /valve/, /hydraulic/, /pneumatic/, /fluid/, /seal/],
+  },
+  {
+    theme: 'electronics mounting / sensor assembly',
+    weight: 5,
+    patterns: [/pcb/, /sensor/, /controller/, /electronics/, /connector/, /microcontroller/, /board/],
+  },
+  {
+    theme: 'thermal management component',
+    weight: 4,
+    patterns: [/heat\s*sink/, /thermal/, /cooling/, /fin/, /radiator/, /heat exchanger/],
+  },
+  {
+    theme: 'aerospace structural component',
+    weight: 4,
+    patterns: [/satellite/, /aerospace/, /spacecraft/, /rocket/, /thruster/, /nozzle/],
+  },
+  {
+    theme: 'unmanned aerial vehicle component',
+    weight: 4,
+    patterns: [/drone/, /uav/, /rotor/, /propeller/, /multirotor/, /quadcopter/],
+  },
+  {
+    theme: 'protective housing / enclosure',
+    weight: 3,
+    patterns: [/housing/, /enclosure/, /case/, /shell/, /casing/],
+  },
+  {
+    theme: 'structural bracket / mounting hardware',
+    weight: 2,
+    patterns: [/bracket/, /mount/, /clamp/, /fixture/, /brace/],
+  },
+];
+
 function pickInventionTheme(text) {
-  const t = text.toLowerCase();
-  if (/bracket|mount|clamp|fixture|brace/.test(t)) return 'structural bracket / mounting hardware';
-  if (/heat\s*sink|thermal|cooling|fin/.test(t)) return 'thermal management component';
-  if (/gear|shaft|bearing|drivetrain/.test(t)) return 'drivetrain / power transmission component';
-  if (/housing|enclosure|case|shell/.test(t)) return 'protective housing / enclosure';
-  if (/satellite|aerospace|spacecraft|rocket/.test(t)) return 'aerospace structural component';
-  if (/drone|uav|rotor|propeller/.test(t)) return 'unmanned aerial vehicle component';
-  if (/sensor|pcb|module/.test(t)) return 'electronics mounting / sensor assembly';
-  if (/valve|fluid|hydraulic|pneumatic/.test(t)) return 'fluid control component';
-  return 'precision mechanical component';
+  const t = String(text || '').toLowerCase();
+  let bestTheme = 'precision mechanical component';
+  let bestScore = 0;
+  for (const rule of INVENTION_THEME_RULES) {
+    const score = rule.patterns.reduce((total, pattern) => total + (pattern.test(t) ? rule.weight : 0), 0);
+    if (score > bestScore) {
+      bestScore = score;
+      bestTheme = rule.theme;
+    }
+  }
+  return bestTheme;
 }
 
 function inferPromptIntent(prompt = '') {
@@ -950,14 +994,49 @@ function buildConstraintHighlights(prompt = '') {
 function buildFollowupQuestions(prompt = '', constraints = null) {
   const t = String(prompt || '').toLowerCase();
   const state = constraints || buildConstraintHighlights(prompt);
+  const theme = pickInventionTheme(prompt);
   const questions = [];
+
+  const pushQuestion = (question, condition = true) => {
+    if (!condition || !question || questions.includes(question)) return;
+    questions.push(question);
+  };
+
+  if (theme === 'drivetrain / power transmission component') {
+    pushQuestion('What target torque, speed, and ratio should the drivetrain be sized for?', !/\b(torque|n\s*·?m|rpm|ratio|i=)\b/.test(t));
+    pushQuestion('What lubrication strategy should I assume: grease, splash oil, or forced oil?', !/\b(grease|oil|lubricat|splash|forced oil)\b/.test(t));
+    pushQuestion('Which interfaces need defined fits: bearing seats, shaft journals, or gear hubs?', !state.fits.length);
+  }
+
+  if (theme === 'fluid control component') {
+    pushQuestion('What design point should I use for flow, pressure/head, and operating speed?', !/\b(flow|m3\/h|l\/min|pressure|bar|head|rpm)\b/.test(t));
+    pushQuestion('What fluid and temperature range should drive material and seal selection?', !/\b(water|oil|coolant|fuel|acid|chemical|temperature|degc|°c)\b/.test(t));
+    pushQuestion('Do you want a mechanical seal, lip seal, or packed gland arrangement?', !/\b(mechanical seal|lip seal|packed gland|seal)\b/.test(t));
+  }
+
+  if (theme === 'electronics mounting / sensor assembly') {
+    pushQuestion('What supply voltage, current, and peak power should the electronics be designed around?', !/\b(v|volt|voltage|amp|current|power|watt|w)\b/.test(t));
+    pushQuestion('Which connectors, buses, or sensors are mandatory on the PCB?', !/\b(can|uart|i2c|spi|usb|ethernet|connector|sensor)\b/.test(t));
+    pushQuestion('What PCB outline, mounting pattern, and enclosure clearance should I hold?', !state.dimensions.length && !state.holePatterns.length);
+  }
+
+  if (theme === 'thermal management component') {
+    pushQuestion('What heat load, ambient temperature, and allowable temperature rise should I size for?', !/\b(heat|watt|kw|ambient|temperature rise|degc|°c)\b/.test(t));
+    pushQuestion('Is this natural convection, forced air, or liquid cooling?', !/\b(convection|forced air|fan|liquid|coolant)\b/.test(t));
+  }
+
+  if (theme === 'structural bracket / mounting hardware') {
+    pushQuestion('What load direction and peak load should I design the bracket around?', !/\b(load|force|moment|torque|n|kn)\b/.test(t));
+    pushQuestion('What mounting-hole count and pattern should be enforced?', !state.holePatterns.length);
+  }
+
   if (!state.dimensions.length) questions.push('What envelope should I enforce (L x W x H in mm)?');
   if (!/\b(aluminum|aluminium|steel|stainless|titanium|inconel|peek|nylon|carbon|composite|cast iron)\b/.test(t)) {
-    questions.push('Which material grade should be baseline?');
+    pushQuestion('Which material grade should be baseline?');
   }
-  if (!state.tolerances.length) questions.push('Do you want a general tolerance class or explicit plus/minus values?');
+  if (!state.tolerances.length) pushQuestion('Do you want a general tolerance class or explicit plus/minus values?');
   if (/\b(shaft|bearing|gear|journal|bore|fit|press)\b/.test(t) && !state.fits.length) {
-    questions.push('Should shaft/bore interfaces be clearance, transition, or interference fits?');
+    pushQuestion('Should shaft/bore interfaces be clearance, transition, or interference fits?');
   }
   return questions.slice(0, 3);
 }
