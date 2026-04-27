@@ -3136,11 +3136,21 @@ function _renderPendingQuestionsSection(responseProfile) {
   }
   $derivedSpecQuestions.innerHTML = '<section class="derived-spec-questions-block">'
     + '<div class="derived-spec-section-title">Missing Inputs</div>'
-    + '<div class="derived-spec-empty">Confirm these before locking the CAD recipe.</div>'
+    + '<div class="derived-spec-empty">Click a question to add it to chat.</div>'
     + '<ul class="derived-spec-question-list">'
-    + pending.map((entry) => '<li class="derived-spec-question-item">' + esc(String(entry)) + '</li>').join('')
+    + pending.map((entry, index) => '<li class="derived-spec-question-item" data-question-index="' + index + '" style="cursor: pointer; padding: 8px; border-radius: 4px; background: #f0f8ff; margin: 4px 0; transition: background 0.2s;" onmouseover="this.style.background=\'#e0f2ff\'" onmouseout="this.style.background=\'#f0f8ff\'" onclick="_onClickPendingQuestion(this)">' + esc(String(entry)) + '</li>').join('')
     + '</ul>'
     + '</section>';
+}
+
+function _onClickPendingQuestion(element) {
+  if (!element || !$input) return;
+  const question = element.textContent.trim();
+  if (!question) return;
+  $input.value = question;
+  $input.focus();
+  if ($sendBtn) $sendBtn.disabled = false;
+  setTimeout(_onSend, 100);
 }
 
 function _coerceSpecInputValue(input) {

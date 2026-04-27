@@ -816,6 +816,25 @@ function buildDomainPromptParts(theme, selected, material, baseLength, baseWidth
     addPart(buildPromptPlanPart('connector_signal', 'Signal Connector', 'connector_header', 'copper_pcb', { x: 18, y: 10, z: 10 }, [-baseLength * 0.28, baseWidth * 0.12, baseHeight * 0.34], 'Signal and communications connector.'));
     addPart(buildPromptPlanPart('mount_standoff_a', 'PCB Standoff A', 'bracket', 'aluminum_6061_t6', { x: 10, y: 10, z: Math.max(16, Math.round(baseHeight * 0.18)) }, [-baseLength * 0.16, -baseWidth * 0.16, baseHeight * 0.18], 'Supports PCB mounting stack-up.'));
     addPart(buildPromptPlanPart('mount_standoff_b', 'PCB Standoff B', 'bracket', 'aluminum_6061_t6', { x: 10, y: 10, z: Math.max(16, Math.round(baseHeight * 0.18)) }, [baseLength * 0.16, baseWidth * 0.16, baseHeight * 0.18], 'Supports PCB mounting stack-up.'));
+  } else if (theme === 'thermal management component') {
+    addPart(buildPromptPlanPart('heatsink_base', 'Heat Sink Base Plate', 'housing', material, { x: baseLength, y: baseWidth, z: Math.max(12, Math.round(baseHeight * 0.15)) }, [0, 0, Math.max(6, Math.round(baseHeight * 0.075))], 'Thermal interface base plate with integrated cooling fins.'));
+    addPart(buildPromptPlanPart('fin_array_1', 'Primary Fin Array', 'heat_sink', 'aluminum_6061_t6', { x: baseLength, y: Math.max(8, Math.round(baseWidth * 0.1)), z: Math.max(80, Math.round(baseHeight * 0.8)) }, [0, -baseWidth * 0.3, baseHeight * 0.5], 'Primary heat dissipation fin stack.'));
+    addPart(buildPromptPlanPart('fin_array_2', 'Secondary Fin Array', 'heat_sink', 'aluminum_6061_t6', { x: baseLength, y: Math.max(8, Math.round(baseWidth * 0.1)), z: Math.max(80, Math.round(baseHeight * 0.8)) }, [0, baseWidth * 0.3, baseHeight * 0.5], 'Secondary heat dissipation fin stack.'));
+    addPart(buildPromptPlanPart('thermal_pad', 'Thermal Interface Pad', 'bracket', 'silicone_pad', { x: baseLength, y: baseWidth, z: Math.max(1, Math.round(baseHeight * 0.01)) }, [0, 0, Math.max(12, Math.round(baseHeight * 0.15))], 'Thermal conductivity interface between component and base.'));
+    addPart(buildPromptPlanPart('mount_clip_a', 'Mounting Clip A', 'bracket', 'stainless_316l', { x: Math.max(20, Math.round(baseLength * 0.18)), y: 10, z: Math.max(16, Math.round(baseHeight * 0.16)) }, [-baseLength * 0.35, 0, baseHeight * 0.5], 'Secures heat sink to assembly interface.'));
+    addPart(buildPromptPlanPart('mount_clip_b', 'Mounting Clip B', 'bracket', 'stainless_316l', { x: Math.max(20, Math.round(baseLength * 0.18)), y: 10, z: Math.max(16, Math.round(baseHeight * 0.16)) }, [baseLength * 0.35, 0, baseHeight * 0.5], 'Secures heat sink to assembly interface.'));
+  } else if (theme === 'aerospace structural component') {
+    addPart(buildPromptPlanPart('primary_frame', 'Primary Structure Frame', 'beam', 'aluminum_7075_t6', { x: baseLength, y: baseWidth, z: Math.max(40, Math.round(baseHeight * 0.4)) }, [0, 0, baseHeight * 0.5], 'Aerospace-grade primary load-carrying structure.'));
+    addPart(buildPromptPlanPart('secondary_frame', 'Secondary Truss Grid', 'beam', 'aluminum_7075_t6', { x: Math.max(200, Math.round(baseLength * 0.9)), y: Math.max(140, Math.round(baseWidth * 0.9)), z: Math.max(30, Math.round(baseHeight * 0.3)) }, [0, 0, baseHeight * 0.25], 'Internal lattice truss for stiffness without mass.'));
+    addPart(buildPromptPlanPart('panel_upper', 'Upper Access Panel', 'plate', 'carbon_fiber', { x: baseLength, y: baseWidth, z: Math.max(3, Math.round(baseHeight * 0.03)) }, [0, 0, baseHeight * 0.95], 'Composite skin panel for aerospace heat-shedding.'));
+    addPart(buildPromptPlanPart('panel_lower', 'Lower Access Panel', 'plate', 'carbon_fiber', { x: baseLength, y: baseWidth, z: Math.max(3, Math.round(baseHeight * 0.03)) }, [0, 0, Math.max(3, Math.round(baseHeight * 0.03))], 'Composite skin panel for structural closure.'));
+    addPart(buildPromptPlanPart('fastener_interface', 'Fastener Insert Grid', 'bracket', 'titanium_ti6al4v', { x: Math.max(80, Math.round(baseLength * 0.36)), y: Math.max(60, Math.round(baseWidth * 0.42)), z: Math.max(18, Math.round(baseHeight * 0.18)) }, [0, 0, baseHeight * 0.5], 'High-strength titanium insert grid for distributed load paths.'));
+  } else if (theme === 'structural bracket / mounting hardware') {
+    addPart(buildPromptPlanPart('main_bracket', 'Main Load-Bearing Bracket', 'bracket', material, { x: baseLength, y: baseWidth, z: baseHeight }, [0, 0, baseHeight / 2], 'Primary structural bracket for load transmission.'));
+    addPart(buildPromptPlanPart('web_reinforcement', 'Web Reinforcement Plate', 'plate', material, { x: Math.max(100, Math.round(baseLength * 0.5)), y: Math.max(40, Math.round(baseWidth * 0.4)), z: Math.max(8, Math.round(baseHeight * 0.08)) }, [baseLength * 0.12, 0, baseHeight * 0.35], 'Internal web stiffener to prevent deflection.'));
+    addPart(buildPromptPlanPart('corner_gusset_1', 'Corner Gusset A', 'bracket', material, { x: Math.max(60, Math.round(baseLength * 0.3)), y: Math.max(60, Math.round(baseWidth * 0.42)), z: Math.max(12, Math.round(baseHeight * 0.12)) }, [-baseLength * 0.25, -baseWidth * 0.3, baseHeight * 0.3], 'Gusset plate for corner stress concentration relief.'));
+    addPart(buildPromptPlanPart('corner_gusset_2', 'Corner Gusset B', 'bracket', material, { x: Math.max(60, Math.round(baseLength * 0.3)), y: Math.max(60, Math.round(baseWidth * 0.42)), z: Math.max(12, Math.round(baseHeight * 0.12)) }, [baseLength * 0.25, baseWidth * 0.3, baseHeight * 0.3], 'Gusset plate for corner stress concentration relief.'));
+    addPart(buildPromptPlanPart('clearance_hole_ring', 'Mounting Hole Ring', 'plate', material, { x: Math.max(100, Math.round(baseLength * 0.45)), y: Math.max(80, Math.round(baseWidth * 0.6)), z: Math.max(6, Math.round(baseHeight * 0.06)) }, [0, 0, baseHeight * 0.65], 'Reinforced mounting interface with pilot hole locations.'));
   } else {
     addPart(buildPromptPlanPart('primary_body_1', 'Primary Body', 'housing', material, { x: baseLength, y: baseWidth, z: baseHeight }, [0, 0, baseHeight / 2], 'Prompt-derived envelope body.'));
   }
@@ -1084,11 +1103,19 @@ function buildFollowupQuestions(prompt = '', constraints = null) {
   if (theme === 'thermal management component') {
     pushQuestion('What heat load, ambient temperature, and allowable temperature rise should I size for?', !/\b(heat|watt|kw|ambient|temperature rise|degc|°c)\b/.test(t));
     pushQuestion('Is this natural convection, forced air, or liquid cooling?', !/\b(convection|forced air|fan|liquid|coolant)\b/.test(t));
+    pushQuestion('What fin geometry (pin-fin, plate-fin, louvered) and material conductivity are needed?', !/\b(fin|louvre|louver|plate|pin|geometry|thermal conductivity)\b/.test(t));
+  }
+
+  if (theme === 'aerospace structural component') {
+    pushQuestion('What mission load case and ultimate/yield factors should I design for?', !/\b(load case|ultimate|yield|factor|safety|missionload)\b/.test(t));
+    pushQuestion('Is this aluminum airframe, composite structure, or titanium primary structure?', !/\b(aluminum|composite|carbon|titanium|airframe|primary)\b/.test(t));
+    pushQuestion('What natural frequency (Hz) and damping ratio constraints apply?', !/\b(frequency|hz|damping|vibration|resonance)\b/.test(t));
   }
 
   if (theme === 'structural bracket / mounting hardware') {
     pushQuestion('What load direction and peak load should I design the bracket around?', !/\b(load|force|moment|torque|n|kn)\b/.test(t));
     pushQuestion('What mounting-hole count and pattern should be enforced?', !state.holePatterns.length);
+    pushQuestion('Should this bracket support shear, bending, torsion, or combined loading?', !/\b(shear|bending|torsion|combined|loading|stress)\b/.test(t));
   }
 
   if (!state.dimensions.length) questions.push('What envelope should I enforce (L x W x H in mm)?');

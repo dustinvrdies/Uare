@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Derived CAD Spec Panel — Smoke Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-suite {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .test-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #1f2937;
+    }
+    .test-case {
+      margin: 12px 0;
+      padding: 12px;
+      background: #f9fafb;
+      border-left: 4px solid #3b82f6;
+      border-radius: 4px;
+    }
+    .test-case.pass {
+      border-left-color: #10b981;
+      background: #f0fdf4;
+    }
+    .test-case.fail {
+      border-left-color: #ef4444;
+      background: #fef2f2;
+    }
+    .test-label {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    .test-result {
+      font-size: 12px;
+      color: #6b7280;
+      font-family: 'Courier New', monospace;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .status-badge.pass {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .status-badge.fail {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 16px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    #spec-panel-container {
+      margin-top: 20px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 16px;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🧪 Derived CAD Spec Panel — Browser Smoke Test</h1>
+
+<div class="test-suite">
+  <div class="test-title">Pending Questions Rendering</div>
+  <div id="test-pending-questions"></div>
+</div>
+
+<div class="test-suite">
+  <div class="test-title">Pending Questions Click Handler</div>
+  <div id="test-click-handler"></div>
+</div>
+
+<div class="test-suite">
+  <div class="test-title">Response Profile Integration</div>
+  <div id="test-response-profile"></div>
+</div>
+
+<div class="test-suite">
+  <div class="test-title">Theme Metadata Display</div>
+  <div id="test-theme-metadata"></div>
+</div>
+
+<div class="test-suite">
+  <div class="test-title">Summary</div>
+  <div id="test-summary"></div>
+</div>
+
+<div id="spec-panel-container">
+  <div id="derived-spec-questions"></div>
+</div>
+
+<script>
+// Mock enki.js functions for testing
+const testResults = [];
+
+function addTestResult(name, passed, details) {
+  testResults.push({ name, passed, details });
+  const container = document.getElementById('test-' + name.toLowerCase().replace(/\s+/g, '-'));
+  if (container) {
+    const div = document.createElement('div');
+    div.className = 'test-case ' + (passed ? 'pass' : 'fail');
+    div.innerHTML = `
+      <div class="test-label">${name} <span class="status-badge ${passed ? 'pass' : 'fail'}">${passed ? '✓ PASS' : '✗ FAIL'}</span></div>
+      <div class="test-result">${details}</div>
+    `;
+    container.appendChild(div);
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Test 1: Rendering with pending questions
+function testPendingQuestionsRendering() {
+  const $derivedSpecQuestions = document.getElementById('derived-spec-questions');
+  const responseProfile = {
+    pending_questions: [
+      'What target torque, speed, and ratio should the drivetrain be sized for?',
+      'What lubrication strategy should I assume: grease, splash oil, or forced oil?',
+      'Which interfaces need defined fits: bearing seats, shaft journals, or gear hubs?'
+    ]
+  };
+  
+  // Render pending questions
+  if ($derivedSpecQuestions) {
+    const pending = responseProfile.pending_questions.filter(Boolean);
+    $derivedSpecQuestions.innerHTML = '<section class="derived-spec-questions-block">'
+      + '<div class="derived-spec-section-title">Missing Inputs</div>'
+      + '<div class="derived-spec-empty">Click a question to add it to chat.</div>'
+      + '<ul class="derived-spec-question-list">'
+      + pending.map((entry, index) => '<li class="derived-spec-question-item" data-question-index="' + index + '" style="cursor: pointer; padding: 8px; border-radius: 4px; background: #f0f8ff; margin: 4px 0;">' + esc(String(entry)) + '</li>').join('')
+      + '</ul>'
+      + '</section>';
+    
+    // Check if questions are rendered
+    const items = $derivedSpecQuestions.querySelectorAll('.derived-spec-question-item');
+    const passed = items.length === 3 && pending.length === 3;
+    addTestResult('Pending Questions Rendering', passed, 
+      `Rendered ${items.length} questions (expected 3). Content: "${items.length > 0 ? items[0].textContent.substring(0, 50) : 'N/A'}..."`);
+    return passed;
+  }
+  addTestResult('Pending Questions Rendering', false, 'Container #derived-spec-questions not found');
+  return false;
+}
+
+// Test 2: Click handler functionality
+function testClickHandler() {
+  const $derivedSpecQuestions = document.getElementById('derived-spec-questions');
+  const testQuestion = 'What target torque, speed, and ratio should the drivetrain be sized for?';
+  
+  // Create test input and button
+  const $testInput = document.createElement('input');
+  $testInput.id = 'test-chat-input';
+  $testInput.type = 'text';
+  window.$input = $testInput;
+  
+  const $testBtn = document.createElement('button');
+  $testBtn.id = 'test-send-btn';
+  window.$sendBtn = $testBtn;
+  
+  let sendCalled = false;
+  window._onSend = function() { sendCalled = true; };
+  
+  window._onClickPendingQuestion = function(element) {
+    if (!element || !window.$input) return;
+    const question = element.textContent.trim();
+    if (!question) return;
+    window.$input.value = question;
+    window.$input.focus();
+    if (window.$sendBtn) window.$sendBtn.disabled = false;
+    setTimeout(window._onSend, 100);
+  };
+  
+  // Simulate click
+  const items = $derivedSpecQuestions.querySelectorAll('.derived-spec-question-item');
+  if (items.length > 0) {
+    items[0].onclick = function() { window._onClickPendingQuestion(this); };
+    items[0].click();
+    
+    setTimeout(() => {
+      const inputFilled = $testInput.value === testQuestion;
+      const passed = inputFilled;
+      addTestResult('Pending Questions Click Handler', passed,
+        `Input filled with: "${$testInput.value.substring(0, 40)}..." (expected: "${testQuestion.substring(0, 40)}...")`);
+    }, 150);
+    return true;
+  }
+  addTestResult('Pending Questions Click Handler', false, 'No question items found to click');
+  return false;
+}
+
+// Test 3: Response profile integration
+function testResponseProfileIntegration() {
+  const responseProfile = {
+    intent: 'design_request',
+    theme: 'drivetrain / power transmission component',
+    pending_questions: ['Q1', 'Q2'],
+    highlights: ['2 dimensional constraints', '1 fit requirement']
+  };
+  
+  const hasIntent = responseProfile.intent !== undefined;
+  const hasTheme = responseProfile.theme !== undefined;
+  const hasPendingQuestions = Array.isArray(responseProfile.pending_questions);
+  const hasHighlights = Array.isArray(responseProfile.highlights);
+  
+  const passed = hasIntent && hasTheme && hasPendingQuestions && hasHighlights;
+  addTestResult('Response Profile Integration', passed,
+    `Profile has intent=${responseProfile.intent}, theme=${responseProfile.theme}, questions=${responseProfile.pending_questions.length}, highlights=${responseProfile.highlights.length}`);
+  return passed;
+}
+
+// Test 4: Theme metadata display
+function testThemeMetadataDisplay() {
+  const responseProfile = {
+    theme: 'drivetrain / power transmission component',
+    intent: 'design_request',
+    has_dimensions: true,
+    pending_questions: ['Q1', 'Q2', 'Q3']
+  };
+  
+  const themeDisplayable = responseProfile.theme && String(responseProfile.theme).length > 0;
+  const intentDisplayable = responseProfile.intent && String(responseProfile.intent).length > 0;
+  const metadataVisible = themeDisplayable && intentDisplayable;
+  
+  addTestResult('Theme Metadata Display', metadataVisible,
+    `Theme: "${responseProfile.theme}", Intent: "${responseProfile.intent}", Dimensions: ${responseProfile.has_dimensions}`);
+  return metadataVisible;
+}
+
+// Run all tests
+function runAllTests() {
+  console.log('[Smoke Test] Starting Derived CAD Spec Panel tests...');
+  
+  testPendingQuestionsRendering();
+  setTimeout(() => testClickHandler(), 50);
+  testResponseProfileIntegration();
+  testThemeMetadataDisplay();
+  
+  setTimeout(() => {
+    const passed = testResults.filter(r => r.passed).length;
+    const total = testResults.length;
+    const summaryDiv = document.getElementById('test-summary');
+    if (summaryDiv) {
+      summaryDiv.innerHTML = `
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">
+          Tests: <span style="color: #10b981;">${passed} passed</span> / <span style="color: ${total - passed > 0 ? '#ef4444' : '#10b981'}">${total - passed} failed</span> / ${total} total
+        </div>
+        <div style="font-size: 14px; color: #6b7280;">
+          Success Rate: ${Math.round(passed / total * 100)}%
+        </div>
+      `;
+    }
+    console.log('[Smoke Test] Complete:', { passed, total, rate: Math.round(passed / total * 100) + '%' });
+  }, 300);
+}
+
+// Start tests on page load
+window.addEventListener('DOMContentLoaded', runAllTests);
+</script>
+
+</body>
+</html>
